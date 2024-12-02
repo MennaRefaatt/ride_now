@@ -210,7 +210,7 @@ class TextStyles {
   static TextStyle get font14grayRegular => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeightHelper.regular,
-    color: AppColors.grey,
+    color: AppColors.hint,
   );
 
   static TextStyle get font18primaryRegular => TextStyle(
