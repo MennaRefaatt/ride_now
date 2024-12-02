@@ -115,7 +115,7 @@ class TextStyles {
   static TextStyle font14BlueSemiBold = TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeightHelper.semiBold,
-    color: AppColors.primary,
+    color: AppColors.primaryLight,
   );
 
   static TextStyle font15primaryMedium = TextStyle(
@@ -218,6 +218,11 @@ class TextStyles {
     fontWeight: FontWeightHelper.regular,
     color: AppColors.primary,
   );
+  static TextStyle get font18BlackRegular => TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontWeightHelper.regular,
+    color: AppColors.black,
+  );
 
   static TextStyle get font12primarySemiBold => TextStyle(
     fontSize: 12.sp,
@@ -250,4 +255,9 @@ class TextStyles {
     color: Colors.white,
   );
 
+  static TextStyle get font34BlackExtraBold => TextStyle(
+    fontSize: 34.sp,
+    fontWeight: FontWeightHelper.extraBold,
+    color: AppColors.black,
+  );
 }

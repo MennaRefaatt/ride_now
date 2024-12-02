@@ -152,7 +152,9 @@
   "myOrderDetails": "تفاصيل طلبي",
   "productsYouMightLike": "المنتجات التي تعجبك",
   "cancelOrder": "الغاء الطلب",
-  "noOrdersFound": "لم يتم العثور على طلبات"
+  "noOrdersFound": "لم يتم العثور على طلبات",
+  "signInWithGoogle": "تسجيل الدخول باستخدام جوجل",
+  "signInWithFacebook": "تسجيل الدخول باستخدام فيسبوك"
 
 
 }

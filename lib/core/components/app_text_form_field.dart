@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
 
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
@@ -66,65 +67,74 @@ class AppTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      enabled: enable ?? true,
-      focusNode: focusNode ?? FocusNode(),
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      minLines: minLines,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      controller: controller,
-      initialValue: initialValue,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: borderRadius ?? BorderRadius.circular(20.0.r),
-        ),
-        isDense: true,
-        labelText: withTitle == true ? title : null,
-        labelStyle: titleStyle??TextStyles.font14grayRegular,
-        contentPadding: contentPadding ??
-            EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderSide: BorderSide(
-                color: borderColor ?? AppColors.primary,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (withTitle == true)
+        Text(title ?? '', style: TextStyles.font14BlackRegular.copyWith(
+          fontWeight: FontWeight.bold
+        )),
+        verticalSpacing(10.h),
+        TextFormField(
+          enabled: enable ?? true,
+          focusNode: focusNode ?? FocusNode(),
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          minLines: minLines,
+          maxLines: maxLines,
+          maxLength: maxLength,
+          controller: controller,
+          initialValue: initialValue,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+            ),
+            isDense: true,
+            labelStyle: titleStyle??TextStyles.font14grayRegular,
+            contentPadding: contentPadding ??
+                EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+            focusedBorder: focusedBorder ??
+                OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: borderColor ?? AppColors.hint,
+                    width: 1.3,
+                  ),
+                  borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+                ),
+            enabledBorder: enabledBorder ??
+                OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: borderColor ?? Colors.grey.shade300,
+                    width: 1.3,
+                  ),
+                  borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+                ),
+            errorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
                 width: 1.3,
               ),
-              borderRadius: borderRadius ?? BorderRadius.circular(20.0.r),
+              borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
             ),
-        enabledBorder: enabledBorder ??
-            OutlineInputBorder(
-              borderSide: BorderSide(
-                color: borderColor ?? AppColors.primary,
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: const BorderSide(
+                color: Colors.red,
                 width: 1.3,
               ),
-              borderRadius: borderRadius ?? BorderRadius.circular(20.0.r),
+              borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
             ),
-        errorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 1.3,
+            hintStyle: hintStyle ?? TextStyles.font14grayRegular,
+            hintText: withHint == true ? hintText : null,
+            suffixIcon: suffixIcon,
+            fillColor: backgroundColor ?? Colors.transparent,
+            filled: isFilled ?? false,
           ),
-          borderRadius: borderRadius ?? BorderRadius.circular(20.0.r),
+          obscureText: isObscureText ?? false,
+          style: TextStyles.font14primaryMedium,
+          onChanged: onChanged,
+          validator: validator,
         ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.red,
-            width: 1.3,
-          ),
-          borderRadius: borderRadius ?? BorderRadius.circular(20.0.r),
-        ),
-        hintStyle: hintStyle ?? TextStyles.font14grayRegular,
-        hintText: withHint == true ? hintText : null,
-        suffixIcon: suffixIcon,
-        fillColor: backgroundColor ?? Colors.transparent,
-        filled: isFilled ?? false,
-      ),
-      obscureText: isObscureText ?? false,
-      style: TextStyles.font14primaryMedium,
-      onChanged: onChanged,
-      validator: validator,
+      ],
     );
   }
 }
