@@ -6,7 +6,7 @@
   "shopByCategory": "Shop By Category",
   "passwordsDon'tMatch": "Passwords Don't Match",
   "alreadyHaveAnAccount?": "Already Have An Account ?",
-  "createAccount": "Create Account",
+  "createAccount": "Create account",
   "manageAccount": "Manage Account",
   "profileInfo": "Profile Info",
   "settings": "Settings",
@@ -120,8 +120,8 @@
 "enterYourPhone": "Enter Your Phone",
   "signIn": "Sign In",
   "signUp": "Sign Up",
-  "or": "Or",
-  "forgotPassword": "Forgot Password",
+  "or": "OR",
+  "forgotPassword": "Forgot Password?",
   "resetPassword": "Reset Password",
   "enterYourEmailToResetPassword": "Enter Your Email To Reset Password",
   "enterYourNewPassword": "Enter Your New Password",
@@ -155,5 +155,7 @@
   "shipmentDetails": "Shipment Details",
   "productsYouMightLike": "Products You Might Like",
   "noOrdersFound": "No Orders Found",
-  "chats": "Chats"
+  "chats": "Chats",
+  "signInWithGoogle": "Sign In With Google",
+  "signInWithFacebook": "Sign In With Facebook"
 }

@@ -13,7 +13,7 @@ class AppButton extends StatelessWidget {
 
   });
  int? height;
- int? width;
+ double? width;
   final String text;
   final Color backgroundColor;
   final VoidCallback onPressed;
@@ -30,7 +30,7 @@ class AppButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: backgroundColor,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.r),
+              borderRadius: BorderRadius.circular(30.r),
             ),
           ),
           child: Text(
