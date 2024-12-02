@@ -1,0 +1,10 @@
+- animated splash
+- firebase auth
+- riverpod
+- ui
+- google maps
+- license plate scanner
+- payment
+- animations
+- chat
+- audio & video calls

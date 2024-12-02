@@ -1,0 +1,67 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.rideNow.ride_now"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = 26
+    flavorDimensions "default"
+    productFlavors {
+        production {
+            dimension "default"
+            resValue "string", "app_name", "RideNow prod"
+        }
+        staging {
+            dimension "default"
+            resValue "string", "app_name", "RideNow staging"
+        }
+        development {
+            dimension "default"
+            resValue "string", "app_name", "RideNow dev"
+            applicationIdSuffix ".dev"
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId = "com.rideNow.ride_now"
+        minSdk = 23
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.6.0')
+    implementation('com.google.firebase:firebase-messaging:24.1.0') {
+        exclude group: 'com.google.firebase', module: 'firebase-iid'
+    }
+
+    configurations.all {
+        exclude group: 'com.google.firebase', module: 'firebase-iid'
+    }
+
+}
+
+flutter {
+    source = "../.."
+}
