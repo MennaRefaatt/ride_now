@@ -28,7 +28,7 @@ class AppBottomNavBar extends StatelessWidget {
         currentIndex: index,
         selectedLabelStyle: TextStyle(fontSize: 12.sp),
         selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.grey,
+        unselectedItemColor: AppColors.hint,
         showSelectedLabels: true,
         items:  [
           BottomNavigationBarItem(
