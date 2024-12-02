@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 1));
 
     setState(() {
-      _opacity = 1.0;
+       _opacity = 1.0;
     });
 
     _animationController.forward();
