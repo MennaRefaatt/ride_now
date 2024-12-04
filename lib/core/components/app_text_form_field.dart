@@ -83,13 +83,14 @@ class AppTextFormField extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
               boxShadow: [
-                if (withShadow!)
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 10,
-                    offset: const Offset(0, 3), // changes position of shadow
-                  ),
+                BoxShadow(
+                  color: withShadow == true
+                      ? Colors.grey.withOpacity(0.5)
+                      : Colors.transparent,
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
               ]),
           child: TextFormField(
             enabled: enable ?? true,
