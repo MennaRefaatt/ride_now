@@ -1,0 +1,108 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/components/app_name.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
+import 'package:ride_now/core/theming/app_colors.dart';
+import '../core/services/routing/routing_endpoints.dart';
+import '../core/theming/styles.dart';
+import '../core/utils/app_image.dart';
+
+class OnBoardingScreen extends StatefulWidget {
+  const OnBoardingScreen({super.key});
+
+  @override
+  OnBoardingScreenState createState() => OnBoardingScreenState();
+}
+
+class OnBoardingScreenState extends State<OnBoardingScreen> {
+  bool isAlignedLeft = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAnimation();
+  }
+
+  void _startAnimation() {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        setState(() {
+          isAlignedLeft = !isAlignedLeft;
+        });
+        _startAnimation();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          const AppImage(
+            path: "images/green_car.jpg",
+            width: double.infinity,
+            height: double.infinity,
+            fit: BoxFit.fill,
+          ),
+          Padding(
+            padding: EdgeInsets.all(15.sp),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                verticalSpacing(30.h),
+                const AppName(),
+                verticalSpacing(50.h),
+                Text("Taxi of your\ndreams",
+                    style: TextStyles.font34WhiteMedium),
+                verticalSpacing(30.h),
+                Text("Ride now your taxi and ride with ease",
+                    style:
+                        TextStyles.font14WhiteRegular.copyWith(fontSize: 20)),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 20.h,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: InkWell(
+                onTap: () => Navigator.pushReplacementNamed(
+                    context, RoutingEndpoints.login),
+                child: Container(
+                  padding: EdgeInsets.all(10.sp),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.r),
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      horizontalSpacing(10.w),
+                      Text("Get Started", style: TextStyles.font18BlackRegular),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
+                        child: CircleAvatar(
+                          backgroundColor: AppColors.black,
+                          child: AnimatedAlign(
+                            alignment: isAlignedLeft
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            duration: const Duration(seconds: 1),
+                            child: const Icon(Icons.arrow_forward_ios,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
