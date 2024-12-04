@@ -154,7 +154,21 @@
   "cancelOrder": "الغاء الطلب",
   "noOrdersFound": "لم يتم العثور على طلبات",
   "signInWithGoogle": "تسجيل الدخول باستخدام جوجل",
-  "signInWithFacebook": "تسجيل الدخول باستخدام فيسبوك"
-
+  "signInWithFacebook": "تسجيل الدخول باستخدام فيسبوك",
+  "order": "طلب",
+  "yourBalance": "رصيدك",
+  "addMore": "اضافة المزيد",
+  "recentRides": "الرحلات الحديثة",
+  "noRidesFound": "لم يتم العثور على رحلات",
+  "ride": "رحلة",
+  "rideDetails": "تفاصيل الرحلة",
+  "rideSummary": "ملخص الرحلة",
+  "openMap": "فتح الخريطة",
+  "whereTo": "اين؟",
+  "rideDate": "تاريخ الرحلة",
+  "rideTime": "وقت الرحلة",
+  "rideType": "نوع الرحلة",
+  "rideDistance": "المسافة الرحلية",
+  "fromWhere": "من اين؟"
 
 }

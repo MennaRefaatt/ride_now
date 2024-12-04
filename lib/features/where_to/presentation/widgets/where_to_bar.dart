@@ -7,6 +7,8 @@ import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/core/utils/app_image.dart';
 
+import '../../../../core/components/app_icon.dart';
+
 class WhereToBar extends StatelessWidget {
   const WhereToBar({super.key});
 
@@ -27,15 +29,12 @@ class WhereToBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: const CircleAvatar(
-                  backgroundColor: Colors.white10,
-                  child: Icon(
-                    CupertinoIcons.back,
-                    color: Colors.white,
-                  ),
-                ),
+              AppIcon(
+                icon: CupertinoIcons.back,
+                backgroundColor: Colors.white10,
+                iconColor: Colors.white,
+                navigation: () => Navigator.pop(context),
+                withShadow: true,
               ),
               Container(
                 padding: EdgeInsets.all(10.sp),
@@ -57,12 +56,12 @@ class WhereToBar extends StatelessWidget {
                   ],
                 ),
               ),
-              const CircleAvatar(
+              AppIcon(
+                withShadow: true,
+                icon: Icons.more_horiz,
                 backgroundColor: Colors.white10,
-                child: Icon(
-                  Icons.more_horiz,
-                  color: Colors.white,
-                ),
+                iconColor: Colors.white,
+                navigation: () {},
               ),
             ],
           ),
@@ -82,8 +81,8 @@ class WhereToBar extends StatelessWidget {
                     ),
                     Text(
                       "|",
-                      style: TextStyles.font12WhiteBold.copyWith(
-                          fontSize: 40, fontWeight: FontWeight.w300),
+                      style: TextStyles.font12WhiteBold
+                          .copyWith(fontSize: 40, fontWeight: FontWeight.w300),
                     ),
                     const Icon(
                       CupertinoIcons.location_solid,
