@@ -23,7 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.all(15.sp),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             verticalSpacing(100.h),
             Text(
               S().loginText,
@@ -44,7 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
             AppButton(
                 text: S().login,
                 backgroundColor: AppColors.primary,
-                onPressed: () {},
+                onPressed: () => Navigator.pushReplacementNamed(
+                    context, RoutingEndpoints.home),
                 width: double.infinity,
                 textStyle: TextStyles.font14BlackRegular),
             verticalSpacing(20.h),
