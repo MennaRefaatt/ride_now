@@ -53,6 +53,7 @@ class SavedAddress extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (index != 1)
                 Divider(
                   color: Colors.grey.shade300,
                 )
