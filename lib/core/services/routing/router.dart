@@ -4,6 +4,7 @@ import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dar
 import 'package:ride_now/features/auth/register/presentation/pages/register_screen.dart';
 import 'package:ride_now/features/home/presentation/pages/home_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
+import 'package:ride_now/features/open_maps/presentation/pages/open_maps_screen.dart';
 import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/splash.dart';
 import 'package:ride_now/features/where_to/presentation/pages/where_to_screen.dart';
@@ -32,6 +33,8 @@ class RouteServices {
         return _customFadeRoute(const HomeScreen(), routeSettings.name!);
       case RoutingEndpoints.whereTo:
         return _customFadeRoute(const WhereToScreen(), routeSettings.name!);
+        case RoutingEndpoints.openMaps:
+        return _customFadeRoute(const OpenMapsScreen(), routeSettings.name!);
       default:
         return _errorRoute();
     }
