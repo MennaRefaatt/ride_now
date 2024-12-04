@@ -14,6 +14,7 @@ class AppTextFormField extends StatelessWidget {
   final String? hintText;
   final bool? isObscureText;
   final Widget? suffixIcon;
+  final Widget? prefixIcon;
   final Color? backgroundColor;
   final TextEditingController? controller;
   final FormFieldValidator<String>? validator;
@@ -33,6 +34,7 @@ class AppTextFormField extends StatelessWidget {
   final Color? borderColor;
   final bool? withHint;
   final TextStyle? titleStyle;
+  final bool? withShadow;
 
   const AppTextFormField({
     super.key,
@@ -63,6 +65,8 @@ class AppTextFormField extends StatelessWidget {
     this.borderColor,
     this.withHint,
     this.titleStyle,
+    this.prefixIcon,
+    this.withShadow = false,
   });
 
   @override
@@ -71,68 +75,82 @@ class AppTextFormField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (withTitle == true)
-        Text(title ?? '', style: TextStyles.font14BlackRegular.copyWith(
-          fontWeight: FontWeight.bold
-        )),
+          Text(title ?? '',
+              style: TextStyles.font14BlackRegular
+                  .copyWith(fontWeight: FontWeight.bold)),
         verticalSpacing(10.h),
-        TextFormField(
-          enabled: enable ?? true,
-          focusNode: focusNode ?? FocusNode(),
-          keyboardType: keyboardType,
-          textInputAction: textInputAction,
-          minLines: minLines,
-          maxLines: maxLines,
-          maxLength: maxLength,
-          controller: controller,
-          initialValue: initialValue,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
+        Container(
+          decoration: BoxDecoration(
               borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
-            ),
-            isDense: true,
-            labelStyle: titleStyle??TextStyles.font14grayRegular,
-            contentPadding: contentPadding ??
-                EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
-            focusedBorder: focusedBorder ??
-                OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: borderColor ?? AppColors.hint,
-                    width: 1.3,
+              boxShadow: [
+                if (withShadow!)
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3), // changes position of shadow
                   ),
-                  borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
-                ),
-            enabledBorder: enabledBorder ??
-                OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: borderColor ?? Colors.grey.shade300,
-                    width: 1.3,
+              ]),
+          child: TextFormField(
+            enabled: enable ?? true,
+            focusNode: focusNode ?? FocusNode(),
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            minLines: minLines,
+            maxLines: maxLines,
+            maxLength: maxLength,
+            controller: controller,
+            initialValue: initialValue,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+              ),
+              isDense: true,
+              labelStyle: titleStyle ?? TextStyles.font14grayRegular,
+              contentPadding: contentPadding ??
+                  EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
+              focusedBorder: focusedBorder ??
+                  OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: borderColor ?? AppColors.hint,
+                      width: 1.3,
+                    ),
+                    borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
                   ),
-                  borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+              enabledBorder: enabledBorder ??
+                  OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: borderColor ?? Colors.grey.shade300,
+                      width: 1.3,
+                    ),
+                    borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+                  ),
+              errorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                  width: 1.3,
                 ),
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
-                width: 1.3,
+                borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
               ),
-              borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                color: Colors.red,
-                width: 1.3,
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                  width: 1.3,
+                ),
+                borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
               ),
-              borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+              hintStyle: hintStyle ?? TextStyles.font14grayRegular,
+              hintText: withHint == true ? hintText : null,
+              suffixIcon: suffixIcon,
+              fillColor: backgroundColor ?? Colors.transparent,
+              filled: isFilled ?? false,
+              prefixIcon: prefixIcon,
             ),
-            hintStyle: hintStyle ?? TextStyles.font14grayRegular,
-            hintText: withHint == true ? hintText : null,
-            suffixIcon: suffixIcon,
-            fillColor: backgroundColor ?? Colors.transparent,
-            filled: isFilled ?? false,
+            obscureText: isObscureText ?? false,
+            style: TextStyles.font14primaryMedium,
+            onChanged: onChanged,
+            validator: validator,
           ),
-          obscureText: isObscureText ?? false,
-          style: TextStyles.font14primaryMedium,
-          onChanged: onChanged,
-          validator: validator,
         ),
       ],
     );

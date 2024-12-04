@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
 import 'package:ride_now/features/auth/register/presentation/pages/register_screen.dart';
+import 'package:ride_now/features/home/presentation/pages/home_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
 import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/splash.dart';
@@ -23,6 +24,8 @@ class RouteServices {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case RoutingEndpoints.register:
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
+case RoutingEndpoints.home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
 
       default:
         return _errorRoute();
