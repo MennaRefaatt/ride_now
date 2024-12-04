@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 2));
     _audioPlayer.play(AssetSource('sounds/car_horn.mp3'));
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.pushReplacementNamed(context, RoutingEndpoints.login) ;
+    Navigator.pushReplacementNamed(context, RoutingEndpoints.onBoardingScreen); ;
   }
 
   @override
