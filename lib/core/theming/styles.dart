@@ -260,4 +260,9 @@ class TextStyles {
     fontWeight: FontWeightHelper.extraBold,
     color: AppColors.black,
   );
+  static TextStyle get font34WhiteMedium => TextStyle(
+    fontSize: 34.sp,
+    fontWeight: FontWeightHelper.medium,
+    color: Colors.white,
+  );
 }
