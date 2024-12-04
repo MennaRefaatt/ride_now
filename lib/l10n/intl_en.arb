@@ -157,5 +157,20 @@
   "noOrdersFound": "No Orders Found",
   "chats": "Chats",
   "signInWithGoogle": "Sign In With Google",
-  "signInWithFacebook": "Sign In With Facebook"
+  "signInWithFacebook": "Sign In With Facebook",
+  "order": "Order",
+  "yourBalance": "Your Balance",
+  "addMore": "Add More",
+  "recentRides": "Recent Rides",
+  "noRidesFound": "No Rides Found",
+  "ride": "Ride",
+  "rideDetails": "Ride Details",
+  "rideSummary": "Ride Summary",
+  "openMap": "Open Map",
+  "whereTo": "Where To ?",
+  "rideDate": "Ride Date",
+  "rideTime": "Ride Time",
+  "rideType": "Ride Type",
+  "rideDistance": "Ride Distance",
+  "fromWhere": "From Where"
 }
