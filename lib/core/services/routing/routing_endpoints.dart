@@ -7,4 +7,6 @@ class RoutingEndpoints {
   static const home = '/home';
   static const whereTo = '/whereTo';
   static const openMaps = '/openMaps';
+
+
 }

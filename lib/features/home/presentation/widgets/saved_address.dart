@@ -18,7 +18,7 @@ class SavedAddress extends StatelessWidget {
             Text(S().savedAddresses,
                 style: TextStyles.font18BlackRegular
                     .copyWith(fontWeight: FontWeight.bold)),
-            Text("S().addMore", style: TextStyles.font14primaryBold),
+            Text(S().addMore, style: TextStyles.font14primaryBold),
           ],
         ),
         ListView.builder(

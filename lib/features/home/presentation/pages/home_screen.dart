@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
                   margin: EdgeInsets.all(15.sp),
                   child: Column(
                     children: [
-                      verticalSpacing(350.h),
+                      verticalSpacing(250.h),
                       const RideCategories(),
                       verticalSpacing(20.h),
                       const SavedAddress(),

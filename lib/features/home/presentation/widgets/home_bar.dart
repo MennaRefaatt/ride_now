@@ -18,6 +18,7 @@ class HomeBar extends StatelessWidget {
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(30.r),
             bottomRight: Radius.circular(30.r),
+
           ),
           color: AppColors.primaryLight),
       child: Column(

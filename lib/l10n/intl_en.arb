@@ -4,8 +4,8 @@
   "seeAll":"See All",
   "spacialForYou": "Spacial For You",
   "shopByCategory": "Shop By Category",
-  "passwordsDon'tMatch": "Passwords Don't Match",
-  "alreadyHaveAnAccount?": "Already Have An Account ?",
+  "passwordsDontMatch": "Passwords Don't Match",
+  "alreadyHaveAnAccount": "Already Have An Account ?",
   "createAccount": "Create account",
   "manageAccount": "Manage Account",
   "profileInfo": "Profile Info",
@@ -38,7 +38,6 @@
   "region": "Region",
   "required": "Required",
   "optional": "Optional",
-
   "buyNow": "Buy Now",
   "addToCart": "Add To Cart",
   "profile": "Profile",
