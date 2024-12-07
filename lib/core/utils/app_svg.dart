@@ -19,7 +19,7 @@ class AppSvg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      "assets/svg/$path.svg",
+      "assets/svgs/$path.svgs",
       color: color ?? Colors.black,
       height: height ?? 50.h,
       width: width ?? 50.w,
