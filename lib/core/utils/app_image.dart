@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class AppImage extends StatelessWidget {
-  const AppImage({
+class AppImageAsset extends StatelessWidget {
+  const AppImageAsset({
     super.key,
     required this.path,
     this.height,

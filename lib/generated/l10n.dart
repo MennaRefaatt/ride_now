@@ -100,14 +100,30 @@ class S {
     );
   }
 
-  // skipped getter for the 'passwordsDon\'tMatch' key
+  /// `Passwords Don't Match`
+  String get passwordsDontMatch {
+    return Intl.message(
+      'Passwords Don\'t Match',
+      name: 'passwordsDontMatch',
+      desc: '',
+      args: [],
+    );
+  }
 
-  // skipped getter for the 'alreadyHaveAnAccount?' key
+  /// `Already Have An Account ?`
+  String get alreadyHaveAnAccount {
+    return Intl.message(
+      'Already Have An Account ?',
+      name: 'alreadyHaveAnAccount',
+      desc: '',
+      args: [],
+    );
+  }
 
-  /// `Create Account`
+  /// `Create account`
   String get createAccount {
     return Intl.message(
-      'Create Account',
+      'Create account',
       name: 'createAccount',
       desc: '',
       args: [],
@@ -1234,20 +1250,20 @@ class S {
     );
   }
 
-  /// `Or`
+  /// `OR`
   String get or {
     return Intl.message(
-      'Or',
+      'OR',
       name: 'or',
       desc: '',
       args: [],
     );
   }
 
-  /// `Forgot Password`
+  /// `Forgot Password?`
   String get forgotPassword {
     return Intl.message(
-      'Forgot Password',
+      'Forgot Password?',
       name: 'forgotPassword',
       desc: '',
       args: [],
@@ -1571,6 +1587,186 @@ class S {
     return Intl.message(
       'No Orders Found',
       name: 'noOrdersFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chats`
+  String get chats {
+    return Intl.message(
+      'Chats',
+      name: 'chats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign In With Google`
+  String get signInWithGoogle {
+    return Intl.message(
+      'Sign In With Google',
+      name: 'signInWithGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sign In With Facebook`
+  String get signInWithFacebook {
+    return Intl.message(
+      'Sign In With Facebook',
+      name: 'signInWithFacebook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Order`
+  String get order {
+    return Intl.message(
+      'Order',
+      name: 'order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Balance`
+  String get yourBalance {
+    return Intl.message(
+      'Your Balance',
+      name: 'yourBalance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add More`
+  String get addMore {
+    return Intl.message(
+      'Add More',
+      name: 'addMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent Rides`
+  String get recentRides {
+    return Intl.message(
+      'Recent Rides',
+      name: 'recentRides',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Rides Found`
+  String get noRidesFound {
+    return Intl.message(
+      'No Rides Found',
+      name: 'noRidesFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride`
+  String get ride {
+    return Intl.message(
+      'Ride',
+      name: 'ride',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride Details`
+  String get rideDetails {
+    return Intl.message(
+      'Ride Details',
+      name: 'rideDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride Summary`
+  String get rideSummary {
+    return Intl.message(
+      'Ride Summary',
+      name: 'rideSummary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open Map`
+  String get openMap {
+    return Intl.message(
+      'Open Map',
+      name: 'openMap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Where To ?`
+  String get whereTo {
+    return Intl.message(
+      'Where To ?',
+      name: 'whereTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride Date`
+  String get rideDate {
+    return Intl.message(
+      'Ride Date',
+      name: 'rideDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride Time`
+  String get rideTime {
+    return Intl.message(
+      'Ride Time',
+      name: 'rideTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride Type`
+  String get rideType {
+    return Intl.message(
+      'Ride Type',
+      name: 'rideType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ride Distance`
+  String get rideDistance {
+    return Intl.message(
+      'Ride Distance',
+      name: 'rideDistance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From Where`
+  String get fromWhere {
+    return Intl.message(
+      'From Where',
+      name: 'fromWhere',
       desc: '',
       args: [],
     );

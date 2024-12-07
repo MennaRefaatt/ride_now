@@ -79,10 +79,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             child: AnimatedOpacity(
               opacity: _opacity,
               duration: const Duration(seconds: 2),
-              child: AppImage(
+              child: AppImageAsset(
                 path: 'icons/app_icon.png',
-                height: 400.h,
-                width: 400.w,
+                height: 300.h,
+                width: 300.w,
                 fit: BoxFit.cover,
               ),
             ),

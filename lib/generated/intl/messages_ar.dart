@@ -25,10 +25,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "RepeatPassword":
             MessageLookupByLibrary.simpleMessage("اعادة كلمة المرور"),
         "addAddress": MessageLookupByLibrary.simpleMessage("اضافة عنوان"),
+        "addMore": MessageLookupByLibrary.simpleMessage("اضافة المزيد"),
         "addNewAddress":
             MessageLookupByLibrary.simpleMessage("اضافة عنوان جديد"),
         "addToCart": MessageLookupByLibrary.simpleMessage("اضف الى السلة"),
         "address": MessageLookupByLibrary.simpleMessage("العنوان"),
+        "alreadyHaveAnAccount":
+            MessageLookupByLibrary.simpleMessage("لديك حساب بالفعل ؟"),
         "appLanguage": MessageLookupByLibrary.simpleMessage("لغة التطبيق"),
         "arabic": MessageLookupByLibrary.simpleMessage("عربي"),
         "arabicLanguage": MessageLookupByLibrary.simpleMessage("عربي"),
@@ -49,6 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeLanguage": MessageLookupByLibrary.simpleMessage(" تغيير اللغة"),
         "changePassword":
             MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
+        "chats": MessageLookupByLibrary.simpleMessage("المحادثات"),
         "city": MessageLookupByLibrary.simpleMessage("المدينة"),
         "complaints":
             MessageLookupByLibrary.simpleMessage("الشكاوي والاقتراحات"),
@@ -95,6 +99,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
         "forgotPassword":
             MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
+        "fromWhere": MessageLookupByLibrary.simpleMessage("من اين؟"),
         "fullName": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
         "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
         "iAlreadyHaveAnAccount":
@@ -136,6 +141,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "no": MessageLookupByLibrary.simpleMessage("لا"),
         "noOrdersFound":
             MessageLookupByLibrary.simpleMessage("لم يتم العثور على طلبات"),
+        "noRidesFound":
+            MessageLookupByLibrary.simpleMessage("لم يتم العثور على رحلات"),
         "notValid": MessageLookupByLibrary.simpleMessage("غير صالح"),
         "notValidConfirmPassword":
             MessageLookupByLibrary.simpleMessage("غير صالح تأكيد كلمة المرور"),
@@ -157,8 +164,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("كلمة المرور القديمة"),
         "onlinePayment":
             MessageLookupByLibrary.simpleMessage("الدفع عند الاستلام"),
+        "openMap": MessageLookupByLibrary.simpleMessage("فتح الخريطة"),
         "optional": MessageLookupByLibrary.simpleMessage("اختياري"),
         "or": MessageLookupByLibrary.simpleMessage("او"),
+        "order": MessageLookupByLibrary.simpleMessage("طلب"),
         "orderDetails": MessageLookupByLibrary.simpleMessage("تفاصيل الطلب"),
         "orderInfo": MessageLookupByLibrary.simpleMessage("معلومات الطلب"),
         "orderPlaced": MessageLookupByLibrary.simpleMessage("تم تقديم الطلب"),
@@ -174,6 +183,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("كلمة المرور لم تتغير بنجاح"),
         "passwordNotMatch":
             MessageLookupByLibrary.simpleMessage("كلمة المرور غير متطابقة"),
+        "passwordsDontMatch":
+            MessageLookupByLibrary.simpleMessage("كلمات المرور غير متطابقة"),
         "paymentMethod": MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
         "paymentSummary": MessageLookupByLibrary.simpleMessage("ملخص الدفع"),
         "phone": MessageLookupByLibrary.simpleMessage("رقم الهاتف"),
@@ -198,12 +209,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
         "profileInfo": MessageLookupByLibrary.simpleMessage("معلومات الحساب"),
         "quantity": MessageLookupByLibrary.simpleMessage("الكمية: "),
+        "recentRides": MessageLookupByLibrary.simpleMessage("الرحلات الحديثة"),
         "region": MessageLookupByLibrary.simpleMessage("المنطقة"),
         "register": MessageLookupByLibrary.simpleMessage("تسجيل"),
         "registerText": MessageLookupByLibrary.simpleMessage("تسجيل حساب جديد"),
         "required": MessageLookupByLibrary.simpleMessage("مطلوب"),
         "resetPassword":
             MessageLookupByLibrary.simpleMessage("اعادة تعيين كلمة المرور"),
+        "ride": MessageLookupByLibrary.simpleMessage("رحلة"),
+        "rideDate": MessageLookupByLibrary.simpleMessage("تاريخ الرحلة"),
+        "rideDetails": MessageLookupByLibrary.simpleMessage("تفاصيل الرحلة"),
+        "rideDistance": MessageLookupByLibrary.simpleMessage("المسافة الرحلية"),
+        "rideSummary": MessageLookupByLibrary.simpleMessage("ملخص الرحلة"),
+        "rideTime": MessageLookupByLibrary.simpleMessage("وقت الرحلة"),
+        "rideType": MessageLookupByLibrary.simpleMessage("نوع الرحلة"),
         "save": MessageLookupByLibrary.simpleMessage("حفظ"),
         "saveAndContinue": MessageLookupByLibrary.simpleMessage("حفظ والتالي"),
         "savedAddresses":
@@ -216,6 +235,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "signIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
         "signInToEShop":
             MessageLookupByLibrary.simpleMessage("تسجيل الدخول للمتجر"),
+        "signInWithFacebook": MessageLookupByLibrary.simpleMessage(
+            "تسجيل الدخول باستخدام فيسبوك"),
+        "signInWithGoogle":
+            MessageLookupByLibrary.simpleMessage("تسجيل الدخول باستخدام جوجل"),
         "signUp": MessageLookupByLibrary.simpleMessage("تسجيل حساب جديد"),
         "spacialForYou": MessageLookupByLibrary.simpleMessage("مميز لك"),
         "subTotal": MessageLookupByLibrary.simpleMessage("المجموع الفرعي"),
@@ -225,12 +248,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "total": MessageLookupByLibrary.simpleMessage("المجموع"),
         "updateAccount": MessageLookupByLibrary.simpleMessage("تحديث الحساب"),
         "vat": MessageLookupByLibrary.simpleMessage("ضريبة القيمة المضافة"),
+        "whereTo": MessageLookupByLibrary.simpleMessage("اين؟"),
         "writeYourComplaintHere":
             MessageLookupByLibrary.simpleMessage("اكتب رسالتك هنا"),
         "wrongPassword":
             MessageLookupByLibrary.simpleMessage("كلمة المرور خاطئة"),
         "wrongPhone": MessageLookupByLibrary.simpleMessage("رقم الهاتف خاطئ"),
         "yes": MessageLookupByLibrary.simpleMessage("نعم"),
+        "yourBalance": MessageLookupByLibrary.simpleMessage("رصيدك"),
         "yourOrderHasBeenPlacedSuccessfullyProcessedAndIsOnItsWayToYouSoon":
             MessageLookupByLibrary.simpleMessage(
                 "تم تقديم طلبك بنجاح وهو في الطريق لك قريبا")

@@ -25,7 +25,7 @@ class GoogleFacebookButtons extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const AppImage(path: "icons/google.png"),
+                  const AppImageAsset(path: "icons/google.png"),
                   horizontalSpacing(10.w),
                   // Text(S().signInWithGoogle,
                   //     style: TextStyles.font14BlackRegular),
@@ -49,7 +49,7 @@ class GoogleFacebookButtons extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const AppImage(path: "icons/facebook.png"),
+                  const AppImageAsset(path: "icons/facebook.png"),
                   horizontalSpacing(10.w),
                   // Text(S().signInWithFacebook,
                   //     style: TextStyles.font14BlackRegular),

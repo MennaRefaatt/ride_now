@@ -75,7 +75,7 @@ class WhereToBar extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    const AppImage(
+                    const AppImageAsset(
                       path: "images/dot.png",
                       height: 20,
                     ),

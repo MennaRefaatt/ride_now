@@ -39,7 +39,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const AppImage(
+          const AppImageAsset(
             path: "images/green_car.jpg",
             width: double.infinity,
             height: double.infinity,
