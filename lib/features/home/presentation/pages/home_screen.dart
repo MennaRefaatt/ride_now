@@ -13,6 +13,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer:   Drawer(
+        child: Column(
+          children: [
+
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Stack(
           children: [
