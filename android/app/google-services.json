@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "532130613023",
+    "project_id": "project1-8cafd",
+    "storage_bucket": "project1-8cafd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532130613023:android:8b7dc64d13a076e4fd922a",
+        "android_client_info": {
+          "package_name": "com.rideNow.ride_now"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAU2Nw36iQgfj6_rxN82qLzMrT6533yOrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
