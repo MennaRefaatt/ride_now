@@ -1,11 +1,18 @@
-//extbuildscript {
-//    ext.kotlin_version = '2.1.0'
-//    repositories {
-//        google()
-//        mavenCentral()
-//    }
-//
-//}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    ext.kotlin_version = '2.0.0'
+    dependencies {
+        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+        classpath 'com.android.tools.build:gradle:8.2.2'  // Latest Gradle Plugin
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -14,10 +21,9 @@ allprojects {
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(":app")
 }
 
