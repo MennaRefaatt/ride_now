@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
@@ -91,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ])),
             ),
             verticalSpacing(20.h),
-            const GoogleFacebookButtons()
+            ProviderScope(child: const GoogleFacebookButtons())
           ]),
         ),
       ),
