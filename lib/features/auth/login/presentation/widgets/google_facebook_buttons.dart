@@ -1,62 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../core/helpers/spacing.dart';
-import '../../../../../core/utils/app_image.dart';
+import 'package:ride_now/core/components/social_icons.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../manager/riverpod.dart';
 
-class GoogleFacebookButtons extends StatelessWidget {
+class GoogleFacebookButtons extends ConsumerWidget {
   const GoogleFacebookButtons({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final googleState = ref.watch(googleNotifierProvider);
+    ref.listen(googleNotifierProvider, (previous, next) {
+      if (next.user != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushReplacementNamed(context, RoutingEndpoints.home);
+        });
+      }
+    });
+
     return Column(
       children: [
-        InkWell(
-          onTap: () {},
-          child: Container(
-              height: 70.h,
-              width: double.infinity,
-              padding: EdgeInsets.all(10.sp),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-                borderRadius: BorderRadius.circular(30.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const AppImageAsset(path: "icons/google.png"),
-                  horizontalSpacing(10.w),
-                  // Text(S().signInWithGoogle,
-                  //     style: TextStyles.font14BlackRegular),
-                ],
-              )
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SocialIcons(
+              path: "icons/google.png",
+              onTap: () async {
+                await ref
+                    .read(googleNotifierProvider.notifier)
+                    .signInWithGoogle();
+              },
+            ),
+            horizontalSpacing(20.w),
+            SocialIcons(
+              path: "icons/facebook.png",
+              onTap: () {},
+            ),
+          ],
         ),
-        verticalSpacing(20.h),
-        InkWell(
-          onTap: () {},
-          child: Container(
-              height: 70.h,
-              width: double.infinity,
-              padding: EdgeInsets.all(10.sp),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.shade300,
-                ),
-                borderRadius: BorderRadius.circular(30.r),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const AppImageAsset(path: "icons/facebook.png"),
-                  horizontalSpacing(10.w),
-                  // Text(S().signInWithFacebook,
-                  //     style: TextStyles.font14BlackRegular),
-                ],
-              )
-          ),
-        )
+        if (googleState.isLoading) const CircularProgressIndicator(),
+        if (googleState.error != null)
+          Text(googleState.error!, style: const TextStyle(color: Colors.red)),
       ],
     );
   }
