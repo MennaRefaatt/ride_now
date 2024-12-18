@@ -74,6 +74,9 @@ dependencies {
     // Other dependencies
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // Facebook login
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+
 }
 
 flutter {
