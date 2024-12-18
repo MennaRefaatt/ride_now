@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ride_now/features/auth/login/presentation/manager/riverpod_state.dart';
-import '../../domain/repositories/google_repo.dart';
+import '../../../domain/repositories/google_repo.dart';
+import 'google_states.dart';
 
 class GoogleNotifier extends StateNotifier<GoogleState> {
   final GoogleRepository _googleRepository;

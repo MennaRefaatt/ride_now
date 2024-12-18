@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">RideNow</string>
+<string name="facebook_app_id">9275319205853675</string>
+<string name="fb_login_protocol_scheme">fb1c7d88f3c8e54590470fce19b76609ce</string>
+<string name="facebook_client_token">ab1fcc7c11048ebd4bc33396833a4a53</string>
+</resources>
