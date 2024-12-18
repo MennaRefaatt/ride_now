@@ -1,4 +1,4 @@
-import '../../data/models/user.dart';
+import '../../../data/models/user.dart';
 
 class GoogleState {
   final UserModel? user;
