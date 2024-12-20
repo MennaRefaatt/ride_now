@@ -7,6 +7,9 @@ class RoutingEndpoints {
   static const home = '/home';
   static const whereTo = '/whereTo';
   static const openMaps = '/openMaps';
+  static const profile = '/profile';
+  static const settings = '/settings';
+  static const notifications = '/notifications';
 
 
 }
