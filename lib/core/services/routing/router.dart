@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
+import 'package:ride_now/features/auth/login/presentation/pages/otp_screen.dart';
 import 'package:ride_now/features/auth/register/presentation/pages/register_screen.dart';
 import 'package:ride_now/features/home/presentation/pages/home_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
@@ -21,8 +22,7 @@ class RouteServices {
       case RoutingEndpoints.splash:
         return _customFadeRoute(const SplashScreen(), routeSettings.name!);
       case RoutingEndpoints.onBoardingScreen:
-        return _customFadeRoute(
-            const OnBoardingScreen(), routeSettings.name!);
+        return _customFadeRoute(const OnBoardingScreen(), routeSettings.name!);
       case RoutingEndpoints.scanner:
         return _customFadeRoute(
             const LicensePlateScanner(), routeSettings.name!);
@@ -34,9 +34,13 @@ class RouteServices {
         return _customFadeRoute(const HomeScreen(), routeSettings.name!);
       case RoutingEndpoints.whereTo:
         return _customFadeRoute(const WhereToScreen(), routeSettings.name!);
-     case RoutingEndpoints.settings:
+      case RoutingEndpoints.settings:
         return _customFadeRoute(const SettingsScreen(), routeSettings.name!);
-        case RoutingEndpoints.openMaps:
+      case RoutingEndpoints.otp:
+        return _customFadeRoute(
+            OTPScreen(verificationId: ""),
+            routeSettings.name!);
+      case RoutingEndpoints.openMaps:
         return _customFadeRoute(const OpenMapsScreen(), routeSettings.name!);
       default:
         return _errorRoute();
@@ -53,7 +57,8 @@ class RouteServices {
           child: child,
         );
       },
-      transitionDuration: const Duration(milliseconds: 500), // Customize duration
+      transitionDuration:
+          const Duration(milliseconds: 500), // Customize duration
     );
   }
 
