@@ -1,45 +1,73 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ride_now/core/components/app_text_form_field.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:ride_now/core/forms/user_data_form_validators.dart';
-import 'package:ride_now/core/helpers/spacing.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/core/utils/app_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../core/theming/app_colors.dart';
+import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
-import 'package:flutter/cupertino.dart';
+import '../manager/phone/phone_state.dart';
 
-class LoginForms extends StatelessWidget {
+class LoginForms extends ConsumerWidget {
   const LoginForms({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    FocusNode focusNode = FocusNode();
+    bool isLoading = false;
     UserDataFormValidators userDataFormValidators = UserDataFormValidators();
+    final phoneAuthNotifier = ref.watch(phoneAuthNotifierProvider.notifier);
+
     return Column(
       children: [
-        AppTextFormField(
-          keyboardType: TextInputType.emailAddress,
-          textInputAction: TextInputAction.next,
-          controller: userDataFormValidators.emailController,
-          title: S().email,
-          hintText: S().enterYourEmail,
-          withHint: true,
-          withTitle: true,
-          validator: (value) => userDataFormValidators.validateEmail(
-            userDataFormValidators.emailController.text,
+        Text(S().phone, style: TextStyles.font18BlackRegular.copyWith(
+            fontWeight: FontWeight.bold
+        )),
+        IntlPhoneField(
+          focusNode: focusNode,
+          controller: userDataFormValidators.phoneController,
+          validator: (value) => userDataFormValidators.validatePhone(
+            userDataFormValidators.phoneController.text,
           ),
+          decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              )),
+          languageCode: "en",
+          initialCountryCode: "EG",
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+            LengthLimitingTextInputFormatter(10),
+          ],
+          onChanged: (phone) {
+            safePrint(phone.completeNumber);
+          },
+          onCountryChanged: (country) {
+            safePrint('Country changed to: ${country.name}');
+          },
         ),
-        verticalSpacing(20.h),
-        AppTextFormField(
-          keyboardType: TextInputType.visiblePassword,
-          textInputAction: TextInputAction.done,
-          controller: userDataFormValidators.passwordController,
-          title: S().password,
-          hintText: S().enterYourPassword,
-          withHint: true,
-          withTitle: true,
-          validator: (value) => userDataFormValidators.validatePassword(
-            userDataFormValidators.passwordController.text,
-          ),
-        ),
+        isLoading
+            ? const CircularProgressIndicator()
+            : AppButton(
+            text: "S().next",  // Corrected text to actual translation
+            backgroundColor: AppColors.primary,
+            onPressed: () async {
+              final phoneNumber = userDataFormValidators.phoneController.text;
+              if (phoneNumber.isNotEmpty) {
+                await phoneAuthNotifier.sendOtp(phoneNumber);
+              } else {
+                // Handle empty phone number error
+                safePrint("Phone number is required");
+              }
+            },
+            textStyle: TextStyles.font14WhiteRegular),
       ],
     );
   }
