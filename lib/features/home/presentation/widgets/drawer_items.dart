@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
+import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
@@ -11,6 +12,7 @@ class DrawerItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
     return Drawer(
       child: Container(
         margin: EdgeInsets.all(15.sp),
@@ -42,54 +44,82 @@ class DrawerItems extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.navigate_next)
+                const Icon(Icons.navigate_next),
               ],
             ),
             Expanded(
-              child: Column(
+              child: ListView(
                 children: [
-                  drawerItem(title: "City", icon: CupertinoIcons.car_detailed),
-                  drawerItem(title: "Settings", icon: CupertinoIcons.settings),
-                  drawerItem(title: "Help", icon: Icons.help),
                   drawerItem(
-                      title: "Profile", icon: CupertinoIcons.profile_circled),
-                  drawerItem(title: "Payment", icon: Icons.payment),
+                    context: context,
+                    title: "City",
+                    icon: CupertinoIcons.car_detailed,
+                    destination: RoutingEndpoints.home,
+                    isActive: currentRoute == RoutingEndpoints.home,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, RoutingEndpoints.home);
+                    },
+                  ),
                   drawerItem(
-                      title: "Safety", icon: Icons.health_and_safety_outlined),
-                  drawerItem(title: "My Trips", icon: Icons.cable_rounded),
-                  drawerItem(
-                      title: "Notifications", icon: Icons.notifications_on_sharp),
-                  drawerItem(title: "Logout", icon: Icons.logout, color: true),
+                    context: context,
+                    title: "Settings",
+                    icon: CupertinoIcons.settings,
+                    destination: RoutingEndpoints.settings,
+                    isActive: currentRoute == RoutingEndpoints.settings,
+                    onTap: () {
+                      Navigator.pushReplacementNamed(
+                          context, RoutingEndpoints.settings);
+                    },
+                  ),
                 ],
               ),
             ),
-            Divider(),
+            const Divider(),
             AppButton(
-                text: "S().Driver mode",
-                backgroundColor: AppColors.primary,
-                onPressed: () {},
-                borderRadius: 10.r,
-                textStyle: TextStyles.font14BlackRegular),
+              text: "S().Driver mode",
+              backgroundColor: AppColors.primary,
+              onPressed: () {},
+              borderRadius: 10.r,
+              textStyle: TextStyles.font14BlackRegular,
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-Widget drawerItem(
-    {required String title, required IconData icon, bool? color}) {
-  return Container(
-    margin: EdgeInsets.all(15.sp),
-    child: Row(
-      children: [
-        Icon(icon, color: color != null ? Colors.red : AppColors.primary),
-        horizontalSpacing(10.w),
-        Text(
-          title,
-          style: TextStyles.font18BlackRegular,
+  Widget drawerItem({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required String destination,
+    required bool isActive,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: EdgeInsets.all(15.sp),
+        decoration: BoxDecoration(
+          color: isActive ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8.r),
         ),
-      ],
-    ),
-  );
+        child: Row(
+          children: [
+            Icon(icon, color: isActive ? AppColors.primary : Colors.grey),
+            horizontalSpacing(10.w),
+            Text(
+              title,
+              style: isActive
+                  ? TextStyles.font18BlackRegular.copyWith(color: AppColors.primary)
+                  : TextStyles.font18BlackRegular,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

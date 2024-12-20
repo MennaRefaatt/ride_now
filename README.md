@@ -41,5 +41,3 @@ Trip
 - from and to
 - trip status
 ==============================================================
-- import com.facebook.FacebookSdk;
-  import com.facebook.appevents.AppEventsLogger;
