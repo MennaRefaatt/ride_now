@@ -103,13 +103,19 @@ class UserDataFormValidators {
     return null;
   }
   String? validatePhone(String? value) {
-    if (value == null ||
-        value.isEmpty ||
-        !RegExp(r'^01').hasMatch(value)) {
-      return 'Please start with 01';
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    }
+    if (value.startsWith('0')) {
+      return 'Please do not start with 0';
+    }
+    if (!RegExp(r'^[1-9]').hasMatch(value)) {
+      return 'Please start with a valid number';
     }
     return null;
   }
+
+
 
   String? validateConfirmPassword(String? value) {
     if (value == null || value.isEmpty) {
