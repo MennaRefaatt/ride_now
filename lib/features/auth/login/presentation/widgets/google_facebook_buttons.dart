@@ -39,14 +39,18 @@ class GoogleFacebookButtons extends ConsumerWidget {
             SocialIcons(
               path: "icons/google.png",
               onTap: () async {
-                await ref.read(googleNotifierProvider.notifier).signInWithGoogle();
+                await ref
+                    .read(googleNotifierProvider.notifier)
+                    .signInWithGoogle();
               },
             ),
             horizontalSpacing(20.w),
             SocialIcons(
               path: "icons/facebook.png",
               onTap: () async {
-                await ref.read(facebookNotifierProvider.notifier).signInWithFacebook();
+                await ref
+                    .read(facebookNotifierProvider.notifier)
+                    .signInWithFacebook();
               },
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_name.dart';
+import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../core/services/routing/routing_endpoints.dart';
@@ -21,7 +22,20 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
   void initState() {
     super.initState();
     _startAnimation();
+    _checkFirstLaunch();
   }
+
+  void _checkFirstLaunch() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      bool isFirstOpen =  SharedPref.isFirstOpen();
+      if (!isFirstOpen) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
+      } else {
+        await SharedPref.setFirstOpen(false);
+      }
+    });
+  }
+
 
   void _startAnimation() {
     Future.delayed(const Duration(seconds: 1), () {
@@ -58,7 +72,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 verticalSpacing(30.h),
                 Text("Ride now your taxi and ride with ease",
                     style:
-                        TextStyles.font14WhiteRegular.copyWith(fontSize: 20)),
+                    TextStyles.font14WhiteRegular.copyWith(fontSize: 20)),
               ],
             ),
           ),
@@ -80,7 +94,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       horizontalSpacing(10.w),
-                      Text("Get Started", style: TextStyles.font18BlackRegular),
+                      Text("S().Get Started", style: TextStyles.font18BlackRegular),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.w),
                         child: CircleAvatar(

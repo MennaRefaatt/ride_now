@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/otp_screen.dart';
@@ -27,7 +28,7 @@ class RouteServices {
         return _customFadeRoute(
             const LicensePlateScanner(), routeSettings.name!);
       case RoutingEndpoints.login:
-        return _customFadeRoute(const LoginScreen(), routeSettings.name!);
+        return _customFadeRoute(ProviderScope(child: const LoginScreen()), routeSettings.name!);
       case RoutingEndpoints.register:
         return _customFadeRoute(const RegisterScreen(), routeSettings.name!);
       case RoutingEndpoints.home:
@@ -38,8 +39,7 @@ class RouteServices {
         return _customFadeRoute(const SettingsScreen(), routeSettings.name!);
       case RoutingEndpoints.otp:
         return _customFadeRoute(
-            OTPScreen(verificationId: ""),
-            routeSettings.name!);
+            OTPScreen(verificationId: routeSettings.arguments as String), routeSettings.name!);
       case RoutingEndpoints.openMaps:
         return _customFadeRoute(const OpenMapsScreen(), routeSettings.name!);
       default:

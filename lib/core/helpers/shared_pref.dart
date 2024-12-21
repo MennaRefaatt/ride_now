@@ -1,6 +1,4 @@
 
-import 'package:ride_now/core/helpers/secure_storage/secure_keys.dart';
-import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -66,7 +64,7 @@ class SharedPref {
   }
 
   static bool isLoggedIn() {
-    return SecureStorageService.readData(SecureKeys.token,).toString().isNotEmpty;
+    return getString(key: MySharedKeys.userId).toString().isNotEmpty;
   }
 
   static bool isEnglish() => getCurrentLanguage() == "en";
