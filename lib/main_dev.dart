@@ -23,6 +23,8 @@ Future<void> main() async {
   await init();
   await SharedPref.init();
   safePrint(SharedPref.getString(key: MySharedKeys.userId));
+  safePrint(SharedPref.getString(key: MySharedKeys.userName));
+  safePrint(SharedPref.getString(key: MySharedKeys.picture));
   SecureStorageService();
   runApp(
     const AppEntryPoint(),
