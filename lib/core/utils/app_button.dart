@@ -12,7 +12,7 @@ class AppButton extends StatelessWidget {
     this.width,
     this.borderRadius,
   });
-  int? height;
+  double? height;
   double? width;
   final String text;
   final Color backgroundColor;

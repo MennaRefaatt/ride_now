@@ -6,9 +6,10 @@ class RoutingEndpoints {
   static const register = '/register';
   static const home = '/home';
   static const otp = '/otp';
-  static const whereTo = '/whereTo';
   static const openMaps = '/openMaps';
+  static const checkOut = '/checkOut';
   static const profile = '/profile';
+  static const maps = '/maps';
   static const settings = '/settings';
   static const notifications = '/notifications';
 
