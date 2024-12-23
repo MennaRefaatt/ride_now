@@ -93,7 +93,6 @@ class AppTextFormField extends StatelessWidget {
                 ),
               ]),
           child: TextFormField(
-            enabled: enable ?? true,
             focusNode: focusNode ?? FocusNode(),
             keyboardType: keyboardType,
             textInputAction: textInputAction,
@@ -114,15 +113,22 @@ class AppTextFormField extends StatelessWidget {
                   OutlineInputBorder(
                     borderSide: BorderSide(
                       color: borderColor ?? AppColors.hint,
-                      width: 1.3,
+                      width: 0,
                     ),
                     borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
                   ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.transparent,
+                  width: 0,
+                ),
+                borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
+              ),
               enabledBorder: enabledBorder ??
                   OutlineInputBorder(
                     borderSide: BorderSide(
                       color: borderColor ?? Colors.grey.shade300,
-                      width: 1.3,
+                      width: 0,
                     ),
                     borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
                   ),
@@ -133,6 +139,7 @@ class AppTextFormField extends StatelessWidget {
                 ),
                 borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
               ),
+              enabled: enable ?? true,
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
                   color: Colors.red,
