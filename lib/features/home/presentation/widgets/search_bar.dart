@@ -23,7 +23,7 @@ class SearchBarr extends StatelessWidget {
           alignment: Alignment.topRight,
           children: [
             GestureDetector(
-              onTap: () => Navigator.pushNamed(context, RoutingEndpoints.whereTo),
+              onTap: () {},
               child: AppTextFormField(
                 enable: false,
                 withShadow: true,
