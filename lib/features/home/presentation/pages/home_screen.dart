@@ -10,7 +10,7 @@ import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/utils/app_button.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
-import '../widgets/drawer_items.dart';
+import '../../../../core/components/drawer_items.dart';
 import '../widgets/ride_categories.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -23,65 +23,68 @@ class PhoneField extends ConsumerWidget {
     final phoneAuthNotifier = ref.watch(phoneNotifierProvider.notifier);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(S().phone,
             style: TextStyles.font18BlackRegular
                 .copyWith(fontWeight: FontWeight.bold)),
-        IntlPhoneField(
-          focusNode: focusNode,
-          controller: userDataFormValidators.phoneController,
-          validator: (value) => userDataFormValidators.validatePhone(
-            userDataFormValidators.phoneController.text,
+        Form(
+          child: IntlPhoneField(
+            focusNode: focusNode,
+            controller: userDataFormValidators.phoneController,
+            validator: (value) => userDataFormValidators.validatePhone(
+              userDataFormValidators.phoneController.text,
+            ),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+                borderSide: BorderSide(color: AppColors.red),
+              ),
+            ),
+            languageCode: "en",
+            initialCountryCode: "EG",
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              LengthLimitingTextInputFormatter(10),
+            ],
+            onChanged: (phone) {
+              safePrint(phone.completeNumber);
+              userDataFormValidators.phoneController.text = phone.completeNumber;
+            },
+            onCountryChanged: (country) {
+              safePrint('Country changed to: ${country.name}');
+            },
           ),
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.r),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.r),
-              borderSide: BorderSide(color: Colors.grey.shade300),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30.r),
-              borderSide: BorderSide(color: AppColors.red),
-            ),
-          ),
-          languageCode: "en",
-          initialCountryCode: "EG",
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-            LengthLimitingTextInputFormatter(10),
-          ],
-          onChanged: (phone) {
-            safePrint(phone.completeNumber);
-          },
-          onCountryChanged: (country) {
-            safePrint('Country changed to: ${country.name}');
-          },
         ),
         if (phoneState.isLoading)
           CircularProgressIndicator(
             color: AppColors.primary,
           )
         else if (userDataFormValidators.phoneController.text.isEmpty)
-          AppButton(
-              text: "S().next",
-              backgroundColor: AppColors.primary,
-              onPressed: () async {
-                final phoneNumber = userDataFormValidators.phoneController.text;
-                if (phoneNumber.isNotEmpty) {
-                  await phoneAuthNotifier.sendOtp(phoneNumber);
-                  await Navigator.pushNamed(context, RoutingEndpoints.otp);
-                } else {
-                  safePrint("Phone number is required");
-                }
-              },
-              textStyle: TextStyles.font14WhiteRegular),
-        Visibility(
-            visible: userDataFormValidators.phoneController.text.isEmpty,
-            child: Text("Phone number is required",
-                style: TextStyles.font14grayRegular
-                    .copyWith(color: AppColors.red))),
+          Center(
+            child: AppButton(
+                text: "S().next",
+                backgroundColor: AppColors.primary,
+                onPressed: () async {
+                  final phoneNumber =
+                      userDataFormValidators.phoneController.text;
+                  if (phoneNumber.isNotEmpty) {
+                    await phoneAuthNotifier
+                        .sendOtp(phoneNumber)
+                        .then((value) async {
+                      await Navigator.pushNamed(context, RoutingEndpoints.otp);
+                    });
+                  }
+                },
+                textStyle: TextStyles.font14WhiteRegular),
+          ),
         if (phoneState.errorMessage != null)
           Text(
             phoneState.errorMessage!,
