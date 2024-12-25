@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/social_icons.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../../../../../core/theming/app_colors.dart';
 import '../manager/facebook/facebook_notifier.dart';
 import '../manager/google/google_notifier.dart';
 
@@ -36,6 +37,11 @@ class GoogleFacebookButtons extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (googleState.isLoading)
+               CircularProgressIndicator(
+                color: AppColors.primary,
+              )
+            else if (googleState.isLoading ==false)
             SocialIcons(
               path: "icons/google.png",
               onTap: () async {
@@ -45,6 +51,11 @@ class GoogleFacebookButtons extends ConsumerWidget {
               },
             ),
             horizontalSpacing(20.w),
+            if (facebookState.isLoading)
+              const CircularProgressIndicator(
+                color: AppColors.primary,
+              )
+            else if (facebookState.isLoading ==false)
             SocialIcons(
               path: "icons/facebook.png",
               onTap: () async {
@@ -55,8 +66,6 @@ class GoogleFacebookButtons extends ConsumerWidget {
             ),
           ],
         ),
-        if (googleState.isLoading || facebookState.isLoading)
-          const CircularProgressIndicator(),
         if (googleState.error != null)
           Text(googleState.error!, style: const TextStyle(color: Colors.red)),
         if (facebookState.error != null)

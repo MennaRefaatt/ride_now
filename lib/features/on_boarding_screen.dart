@@ -27,15 +27,14 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
 
   void _checkFirstLaunch() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      bool isFirstOpen =  SharedPref.isFirstOpen();
+      bool isFirstOpen = SharedPref.isFirstOpen();
       if (!isFirstOpen) {
         Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
       } else {
-        await SharedPref.setFirstOpen(false);
+        await SharedPref.setFirstOpen(true);
       }
     });
   }
-
 
   void _startAnimation() {
     Future.delayed(const Duration(seconds: 1), () {
@@ -72,7 +71,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 verticalSpacing(30.h),
                 Text("Ride now your taxi and ride with ease",
                     style:
-                    TextStyles.font14WhiteRegular.copyWith(fontSize: 20)),
+                        TextStyles.font14WhiteRegular.copyWith(fontSize: 20)),
               ],
             ),
           ),
@@ -94,7 +93,8 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       horizontalSpacing(10.w),
-                      Text("S().Get Started", style: TextStyles.font18BlackRegular),
+                      Text("S().Get Started",
+                          style: TextStyles.font18BlackRegular),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.w),
                         child: CircleAvatar(

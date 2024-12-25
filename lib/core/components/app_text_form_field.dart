@@ -35,7 +35,8 @@ class AppTextFormField extends StatelessWidget {
   final bool? withHint;
   final TextStyle? titleStyle;
   final bool? withShadow;
-
+  final Color? controllerTextColor;
+  final String? errorText;
   const AppTextFormField({
     super.key,
     this.contentPadding,
@@ -67,6 +68,8 @@ class AppTextFormField extends StatelessWidget {
     this.titleStyle,
     this.prefixIcon,
     this.withShadow = false,
+    this.controllerTextColor,
+    this.errorText,
   });
 
   @override
@@ -102,6 +105,7 @@ class AppTextFormField extends StatelessWidget {
             controller: controller,
             initialValue: initialValue,
             decoration: InputDecoration(
+              errorText: errorText,
               border: OutlineInputBorder(
                 borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
               ),
@@ -155,7 +159,9 @@ class AppTextFormField extends StatelessWidget {
               prefixIcon: prefixIcon,
             ),
             obscureText: isObscureText ?? false,
-            style: TextStyles.font14primaryMedium,
+            style: controllerTextColor != null
+                ? TextStyle(color: controllerTextColor, fontSize: 18.sp)
+                : TextStyles.font18primaryMedium,
             onChanged: onChanged,
             validator: validator,
           ),

@@ -8,9 +8,12 @@ import '../services/routing/router.dart';
 final appNavKey = GlobalKey<NavigatorState>();
 
 class AppEntryPoint extends StatefulWidget {
+  final String initialRoute;
+
   const AppEntryPoint({
-    super.key,
-  });
+    Key? key,
+    required this.initialRoute,
+  }) : super(key: key);
 
   @override
   State<AppEntryPoint> createState() => _AppEntryPointState();
@@ -28,7 +31,7 @@ class _AppEntryPointState extends State<AppEntryPoint> {
             navigatorKey: appNavKey,
             onGenerateRoute: RouteServices.generateRoute,
             title: 'ride_now',
-            initialRoute: '/',
+            initialRoute: widget.initialRoute, // Use the passed initial route
             debugShowCheckedModeBanner: false,
             builder: (context, child) {
               child ??= const SizedBox.shrink();
