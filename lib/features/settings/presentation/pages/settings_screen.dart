@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/core/utils/app_button.dart';
-import 'package:ride_now/features/home/presentation/widgets/drawer_items.dart';
+import 'package:ride_now/core/components/drawer_items.dart';
 import '../../../../core/components/app_bar.dart';
+import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../generated/l10n.dart';
 import '../widgets/bottom_sheet_widget.dart';
@@ -22,22 +24,27 @@ class SettingsScreen extends StatelessWidget {
         margin: EdgeInsets.all(10.sp),
         child: Column(
           children: [
-            SettingsItems(
+            settingsItems(
               text: S().phone,
               onTap: () {},
-              returnedValue: 'S().Missing Phone Number',
+              returnedValue: SharedPref.getString(key: MySharedKeys.phone) == ""
+                  ? 'S().Missing Phone Number'
+                  : SharedPref.getString(key: MySharedKeys.phone),
             ),
-            SettingsItems(
+            settingsItems(
               text: S().email,
               onTap: () {},
+              returnedValue: SharedPref.getString(key: MySharedKeys.email),
             ),
-            SettingsItems(
+            settingsItems(
               text: S().appLanguage,
               onTap: () => _showBottomSheet(context, 'language'),
+              returnedValue: SharedPref.getString(key: MySharedKeys.language),
             ),
-            SettingsItems(
+            settingsItems(
               text: "S().appTheme",
               onTap: () => _showBottomSheet(context, 'theme'),
+              returnedValue: SharedPref.getString(key: MySharedKeys.theme),
             ),
             AppButton(
               text: S().logout,
@@ -52,7 +59,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget SettingsItems({
+  Widget settingsItems({
     required String text,
     required VoidCallback onTap,
     String? returnedValue,
