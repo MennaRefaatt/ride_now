@@ -30,6 +30,16 @@ class ProfileRepoImpl implements ProfileRepoBase {
 
   @override
   Future<void> saveProfile(ProfileModel profile) async {
-    await remoteDS.saveProfile(profile);
+    final userId = SharedPref.getString(key: MySharedKeys.userId)!;
+   final saveProfile = await remoteDS.saveProfile(profile);
+   try {
+     if(profile.uid == userId) {
+       return saveProfile;
+     }
+   }
+   catch (e) {
+     safePrint(e);
+     return Future.error(e);
+   }
   }
 }

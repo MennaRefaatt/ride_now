@@ -6,8 +6,9 @@ class ProfileModel {
   final String uid;
   final String name;
   final String email;
-  final String phoneNumber;
+  late  String phoneNumber;
   final String photoUrl;
+  final String? city;
 
   ProfileModel({
     required this.uid,
@@ -15,6 +16,7 @@ class ProfileModel {
     required this.email,
     required this.phoneNumber,
     required this.photoUrl,
+    required this.city,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) =>
