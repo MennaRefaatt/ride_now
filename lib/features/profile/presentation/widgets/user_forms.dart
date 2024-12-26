@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_text_form_field.dart';
+import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../core/helpers/shared_pref.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
@@ -35,23 +36,28 @@ class _UserFormsState extends State<UserForms> {
   void initState() {
     super.initState();
 
-    final String userName = SharedPref.getString(key: MySharedKeys.userName) ?? '';
-    final String firstName = userName.split(' ').isNotEmpty ? userName.split(' ').first : '';
-    final String lastName = userName.split(' ').length > 1 ? userName.split(' ').last : '';
+    final String userName =
+        SharedPref.getString(key: MySharedKeys.userName) ?? '';
+    final String firstName =
+        userName.split(' ').isNotEmpty ? userName.split(' ').first : '';
+    final String lastName =
+        userName.split(' ').length > 1 ? userName.split(' ').last : '';
 
     widget.firstNameController.text = firstName;
     widget.lastNameController.text = lastName;
-    widget.emailController.text = SharedPref.getString(key: MySharedKeys.email) ?? '';
-    widget.cityController.text = SharedPref.getString(key: MySharedKeys.city) ?? '';
+    widget.emailController.text =
+        SharedPref.getString(key: MySharedKeys.email) ?? '';
+    widget.cityController.text =
+        SharedPref.getString(key: MySharedKeys.city) ?? '';
 
     final phone = SharedPref.getString(key: MySharedKeys.phone) ?? '';
     widget.phoneController.text = phone;
 
-    if (phone.isEmpty || !isValidEgyptianPhone(phone)) {
-      setState(() {
-        missingPhoneMessage = "Invalid or missing phone number!";
-      });
-    }
+    // if (phone.isEmpty || !isValidEgyptianPhone(phone)) {
+    //   setState(() {
+    //     missingPhoneMessage = "Invalid or missing phone number!";
+    //   });
+    // }
 
     widget.firstNameController.addListener(() {
       if (widget.firstNameController.text != firstName) {
@@ -66,15 +72,18 @@ class _UserFormsState extends State<UserForms> {
     });
 
     widget.cityController.addListener(() {
-      if (widget.cityController.text != SharedPref.getString(key: MySharedKeys.city)) {
+      if (widget.cityController.text !=
+          SharedPref.getString(key: MySharedKeys.city)) {
         widget.onFieldChanged();
       }
     });
 
     widget.phoneController.addListener(() {
-      if (widget.phoneController.text != phone) {
-        widget.onFieldChanged();
-      }
+      final isPhoneValid = isValidEgyptianPhone(widget.phoneController.text);
+      setState(() {
+        missingPhoneMessage =
+            isPhoneValid ? null : "Invalid or missing phone number!";
+      });
     });
   }
 
@@ -110,25 +119,34 @@ class _UserFormsState extends State<UserForms> {
             controllerTextColor: Colors.grey,
           ),
           item(
-            context: context,
-            icon: CupertinoIcons.phone,
-            controller: widget.phoneController,
-            errorText: missingPhoneMessage,
-            maxLength: 11,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return "Phone number is required!";
-              }
-              if (!isValidEgyptianPhone(value)) {
-                return "Enter a valid Egyptian phone number!";
-              }
-              return null;
-            },
-          ),
+              context: context,
+              icon: CupertinoIcons.phone,
+              controller: widget.phoneController,
+              errorText: missingPhoneMessage,
+              maxLength: 11,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Phone number is required!";
+                }
+                if (!isValidEgyptianPhone(value)) {
+                  return "Enter a valid Egyptian phone number!";
+                }
+                return null;
+              },
+              controllerTextColor:
+                  widget.phoneController.text == "missing phone number"
+                      ? AppColors.red
+                      : Colors.grey),
           item(
               context: context,
               icon: CupertinoIcons.building_2_fill,
-              controller: widget.cityController),
+              controller: widget.cityController,
+              enable: false,
+              onTap: () => Navigator.pushNamed(context, RoutingEndpoints.city),
+              controllerTextColor:
+              widget.cityController.text == "missing city"
+                  ? AppColors.red
+                  : AppColors.primary),
         ],
       ),
     );
@@ -152,25 +170,31 @@ class _UserFormsState extends State<UserForms> {
     String? errorText,
     String? Function(String?)? validator,
     int? maxLength,
+    void Function()? onTap
   }) {
-    return Row(
-      children: [
-        Icon(icon),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.8,
-          child: AppTextFormField(
-            controller: controller,
-            contentPadding: EdgeInsets.only(left: 10.sp),
-            borderColor: Colors.transparent,
-            enable: enable ?? true,
-            controllerTextColor: controllerTextColor ?? AppColors.primary,
-            errorText: errorText,
-            validator: validator,
-            onChanged: (_) => widget.onFieldChanged(),
-            maxLength: maxLength,
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Icon(icon),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: AppTextFormField(
+              controller: controller,
+              contentPadding: EdgeInsets.only(left: 10.sp),
+              borderColor: Colors.transparent,
+              enable: enable ?? true,
+              controllerTextColor: errorText != null && errorText.isNotEmpty
+                  ? Colors.red
+                  : (controllerTextColor ?? AppColors.primary),
+              errorText: errorText,
+              validator: validator,
+              onChanged: (_) => widget.onFieldChanged(),
+              maxLength: maxLength,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

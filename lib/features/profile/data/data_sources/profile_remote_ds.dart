@@ -32,6 +32,14 @@ class ProfileRemoteDSImpl implements ProfileRemoteDS {
   Future<void> saveProfile(ProfileModel profile) async {
     final userRef =
         FirebaseFirestore.instance.collection('users').doc(profile.uid);
-    await userRef.set(profile.toJson(), SetOptions(merge: true));
+    try {
+      final result =
+          await userRef.set(profile.toJson(), SetOptions(merge: true));
+      safePrint("save profile: $profile");
+      return result;
+    } catch (e) {
+      safePrint("save profile error: $e");
+      return Future.error(e);
+    }
   }
 }
