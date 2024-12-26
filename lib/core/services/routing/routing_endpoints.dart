@@ -11,6 +11,8 @@ class RoutingEndpoints {
   static const settings = '/settings';
   static const city = '/city';
   static const notifications = '/notifications';
+  static const driverOnBoarding = '/driverOnBoarding';
+  static const driverRegistration = '/driverRegistration';
 
 
 }
