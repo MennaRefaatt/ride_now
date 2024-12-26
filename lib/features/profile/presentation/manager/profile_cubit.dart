@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
+import 'package:ride_now/core/helpers/shared_pref.dart';
 
 import '../../../../core/helpers/safe_print.dart';
+import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/models/profile_model.dart';
 import '../../domain/use_cases/get_profile_usecase.dart';
 import '../../domain/use_cases/save_profile_usecase.dart';
@@ -15,20 +17,34 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   ProfileCubit(this.getProfileUseCase, this.saveProfileUseCase)
       : super(ProfileInitial());
+
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+
   String? pictureUrl;
   final formKey = GlobalKey<FormState>();
-
 
   Future<void> loadProfile() async {
     try {
       emit(ProfileLoading());
       final profile = await getProfileUseCase.execute();
       safePrint("profile loaded: ${profile.toJson()}");
+
+      firstNameController.text = profile.name.split(' ').first;
+      lastNameController.text = profile.name.split(' ').last;
+      emailController.text = profile.email;
+      phoneController.text = profile.phoneNumber == "missing phone number"
+          ? ""
+          : profile.phoneNumber;
+      cityController.text = profile.city ?? '';
+
+      /// save profile in shared pref
+      SharedPref.setString(key: MySharedKeys.phone, value: profile.phoneNumber);
+      SharedPref.setString(key: MySharedKeys.city, value: profile.city!);
+      SharedPref.setString(key: MySharedKeys.picture, value: profile.photoUrl);
       emit(ProfileLoaded(profile));
     } catch (e) {
       emit(ProfileError(message: e.toString()));
@@ -39,6 +55,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       emit(ProfileLoading());
       await saveProfileUseCase.execute(profile);
+      safePrint("profile saved: ${profile.toJson()}");
+      SharedPref.setString(key: MySharedKeys.picture, value: profile.photoUrl);
       emit(ProfileSaved());
     } catch (e) {
       emit(ProfileError(message: e.toString()));
