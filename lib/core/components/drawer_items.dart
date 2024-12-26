@@ -10,15 +10,20 @@ import '../theming/app_colors.dart';
 import '../theming/styles.dart';
 import '../../generated/l10n.dart';
 
-class DrawerItems extends StatelessWidget {
+class DrawerItems extends StatefulWidget {
   const DrawerItems({super.key});
 
   @override
+  State<DrawerItems> createState() => _DrawerItemsState();
+}
+
+class _DrawerItemsState extends State<DrawerItems> {
+final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
+final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
+ bool? isDriverMode=false;
+  @override
   Widget build(BuildContext context) {
     final String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
-    final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
-    final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
-
     return Drawer(
       child: Container(
         margin: EdgeInsets.all(15.sp),
@@ -33,7 +38,8 @@ class DrawerItems extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 30.sp,
-                    backgroundImage: pictureUrl.isNotEmpty && Uri.tryParse(pictureUrl)?.hasAbsolutePath == true
+                    backgroundImage: pictureUrl.isNotEmpty &&
+                            Uri.tryParse(pictureUrl)?.hasAbsolutePath == true
                         ? NetworkImage(pictureUrl)
                         : null,
                     child: Visibility(
@@ -90,9 +96,17 @@ class DrawerItems extends StatelessWidget {
             ),
             const Divider(),
             AppButton(
-              text: "S().Driver mode",
+              text: isDriverMode! == true ? "S().passengerMode" : "S().Driver mode",
               backgroundColor: AppColors.primary,
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  isDriverMode = !isDriverMode!;
+                });
+                Navigator.pushReplacementNamed(
+                  context,
+                  RoutingEndpoints.driverOnBoarding,
+                );
+              },
               borderRadius: 10.r,
               textStyle: TextStyles.font14BlackRegular,
             ),

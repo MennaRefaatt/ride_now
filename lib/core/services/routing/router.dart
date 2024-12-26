@@ -4,6 +4,8 @@ import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/otp_screen.dart';
 import 'package:ride_now/features/check_out/presentation/pages/check_out.dart';
+import 'package:ride_now/features/driver/driver_on_boarding.dart';
+import 'package:ride_now/features/driver/driver_registration/presentation/pages/driver_registration.dart';
 import 'package:ride_now/features/home/presentation/pages/home_screen.dart';
 import 'package:ride_now/features/maps/presentation/screen/map_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
@@ -41,6 +43,10 @@ class RouteServices {
         return _customFadeRoute(const CheckOut(), routeSettings.name!);
         case RoutingEndpoints.profile:
         return _customFadeRoute( ProfileScreen(), routeSettings.name!);
+        case RoutingEndpoints.driverOnBoarding:
+        return _customFadeRoute( DriverOnBoarding(), routeSettings.name!);
+        case RoutingEndpoints.driverRegistration:
+        return _customFadeRoute( DriverRegistration(), routeSettings.name!);
       case RoutingEndpoints.otp:
         return _customFadeRoute(
             OTPScreen(verificationId: routeSettings.arguments as String), routeSettings.name!);
