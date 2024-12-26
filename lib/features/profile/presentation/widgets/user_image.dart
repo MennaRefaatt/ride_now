@@ -7,7 +7,6 @@ import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
 import '../../data/models/profile_model.dart';
 import '../manager/profile_cubit.dart';
 
@@ -55,17 +54,15 @@ class _UserImageState extends State<UserImage> {
         widget.isChanged = true;
       });
       context.read<ProfileCubit>().saveProfile(
-        ProfileModel(
-          //firstName: SharedPref.getString(key: MySharedKeys.firstName) ?? "",
-         // lastName: SharedPref.getString(key: MySharedKeys.lastName) ?? "",
-          email: SharedPref.getString(key: MySharedKeys.email) ?? "",
-          //city: SharedPref.getString(key: MySharedKeys.city) ?? "",
-          phoneNumber: SharedPref.getString(key: MySharedKeys.phone) ?? "",
-          photoUrl: _imageFile!.path,
-          name: SharedPref.getString(key: MySharedKeys.userName) ?? "",
-          uid: SharedPref.getString(key: MySharedKeys.userId)!,
-        ),
-      );
+            ProfileModel(
+              email: SharedPref.getString(key: MySharedKeys.email) ?? "",
+              city: SharedPref.getString(key: MySharedKeys.city) ?? "",
+              phoneNumber: SharedPref.getString(key: MySharedKeys.phone) ?? "",
+              photoUrl: _imageFile!.path,
+              name: SharedPref.getString(key: MySharedKeys.userName) ?? "",
+              uid: SharedPref.getString(key: MySharedKeys.userId)!,
+            ),
+          );
     }
   }
 
@@ -89,9 +86,9 @@ class _UserImageState extends State<UserImage> {
               backgroundImage: _imageFile != null
                   ? FileImage(_imageFile!)
                   : (pictureUrl.isNotEmpty &&
-                          Uri.tryParse(pictureUrl)?.hasAbsolutePath == true
-                      ? NetworkImage(pictureUrl)
-                      : null),
+                  Uri.tryParse(pictureUrl)?.hasAbsolutePath == true
+                  ? NetworkImage(pictureUrl)
+                  : NetworkImage('https://img.freepik.com/free-photo/abstract-surface-textures-white-concrete-stone-wall_74190-8189.jpg')),
               child: Visibility(
                 visible: pictureUrl.isEmpty && _imageFile == null,
                 child: Text(
@@ -100,6 +97,7 @@ class _UserImageState extends State<UserImage> {
                 ),
               ),
             ),
+
             horizontalSpacing(20.w),
             Text(
               "S().addProfilePicture",

@@ -7,6 +7,7 @@ import 'package:ride_now/features/check_out/presentation/pages/check_out.dart';
 import 'package:ride_now/features/home/presentation/pages/home_screen.dart';
 import 'package:ride_now/features/maps/presentation/screen/map_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
+import 'package:ride_now/features/profile/presentation/pages/city_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart';
 import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/settings/presentation/pages/settings_screen.dart';
@@ -30,6 +31,8 @@ class RouteServices {
         return _customFadeRoute(ProviderScope(child: const LoginScreen()), routeSettings.name!);
       case RoutingEndpoints.home:
         return _customFadeRoute(const HomeScreen(), routeSettings.name!);
+        case RoutingEndpoints.city:
+        return _customFadeRoute(const CityScreen(), routeSettings.name!);
       case RoutingEndpoints.settings:
         return _customFadeRoute(const SettingsScreen(), routeSettings.name!);
         case RoutingEndpoints.maps:
