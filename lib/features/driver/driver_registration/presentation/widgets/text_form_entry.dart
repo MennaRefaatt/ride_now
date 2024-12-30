@@ -14,6 +14,7 @@ class TextFormEntry extends StatelessWidget {
       this.textInputAction,
       this.keyboardType,
       this.validator,
+      this.enable,
       this.maxLength, this.onChanged});
   final String hintText;
   final TextEditingController controller;
@@ -23,6 +24,7 @@ class TextFormEntry extends StatelessWidget {
   final int? maxLength;
   final FormFieldValidator<String>? validator;
   final  Function(String)? onChanged;
+  final bool? enable;
   @override
   Widget build(BuildContext context) {
     return AppTextFormField(
@@ -31,6 +33,7 @@ class TextFormEntry extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       keyboardType: keyboardType,
+      enable: enable,
       controllerTextColor: AppColors.black,
       textInputAction: textInputAction ?? TextInputAction.next,
       borderRadius: BorderRadius.circular(10.r),
