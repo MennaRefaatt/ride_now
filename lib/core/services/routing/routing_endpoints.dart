@@ -13,6 +13,7 @@ class RoutingEndpoints {
   static const notifications = '/notifications';
   static const driverOnBoarding = '/driverOnBoarding';
   static const driverRegistration = '/driverRegistration';
+  static const driverPendingScreen = '/driverPendingScreen';
 
 
 }

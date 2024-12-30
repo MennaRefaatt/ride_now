@@ -5,11 +5,11 @@ import 'package:ride_now/core/components/app_bar.dart';
 import 'package:ride_now/core/components/drawer_items.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 
-import '../../core/helpers/spacing.dart';
-import '../../core/services/routing/routing_endpoints.dart';
-import '../../core/theming/app_colors.dart';
-import '../../core/theming/styles.dart';
-import '../../generated/l10n.dart';
+import '../../../core/helpers/spacing.dart';
+import '../../../core/services/routing/routing_endpoints.dart';
+import '../../../core/theming/app_colors.dart';
+import '../../../core/theming/styles.dart';
+import '../../../generated/l10n.dart';
 
 class DriverOnBoarding extends StatelessWidget {
   const DriverOnBoarding({super.key});

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,9 +8,14 @@ import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 
 class PickImage extends StatelessWidget {
-  const PickImage({super.key, required this.text, required this.onTap});
+  const PickImage(
+      {super.key,
+      required this.text,
+      required this.onTap,
+      required this.image});
   final String text;
   final Function()? onTap;
+  final String image;
 
   String formatText(String text) {
     final words = text.split(' ');
@@ -39,7 +46,9 @@ class PickImage extends StatelessWidget {
               color: AppColors.semiGrey.withOpacity(0.2),
               borderRadius: BorderRadius.circular(20.r),
             ),
-            child: Icon(CupertinoIcons.plus, size: 40.sp),
+            child: image.isNotEmpty
+                ? Image.file(File(image))
+                : Icon(CupertinoIcons.plus, size: 40.sp),
           ),
           verticalSpacing(10.h),
           Text(
