@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/utils/app_button.dart';
+import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/styles.dart';
@@ -40,30 +41,24 @@ class _DriverRegistration extends State<DriverRegistration>
 
   void _animateProgress(int nextPage) {
     final progressValue = (nextPage + 1) / onboardingData.length;
-    _progressAnimation = Tween<double>(
-      begin: _progressAnimation.value,
-      end: progressValue,
-    ).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
+    _progressAnimation = Tween<double>(begin: _progressAnimation.value, end: progressValue)
+        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
     _animationController.forward(from: 0);
   }
 
   final List<Map<String, String>> onboardingData = [
-    {
-      "title": "Personal Information",
-    },
-    {
-      "title": "Driver License",
-    },
-    {
-      "title": "Personal Documents",
-    },
-    {
-      "title": "Vehicle Information",
-    },
+    {"title": "Personal Information"},
+    {"title": "Driver License"},
+    {"title": "Personal Documents"},
+    {"title": "Vehicle Information"},
   ];
-  final driverCubit = DriverRegistrationCubit();
+
+  final driverCubit = DriverRegistrationCubit(
+    fetchBrandsUseCase: sl(),
+    fetchColorsUseCase: sl(),
+    fetchModelsUseCase: sl(),
+    submitDriverRegistrationUseCase: sl(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +66,7 @@ class _DriverRegistration extends State<DriverRegistration>
       create: (context) => driverCubit,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
-            "S().driverRegistration",
-            style: TextStyles.font18BlackRegular,
-          ),
+          title: Text("S().driverRegistration", style: TextStyles.font18BlackRegular),
           leading: Container(),
           centerTitle: true,
           actions: [
@@ -82,10 +74,7 @@ class _DriverRegistration extends State<DriverRegistration>
               onPressed: () {
                 Navigator.pushNamed(context, RoutingEndpoints.driverOnBoarding);
               },
-              child: Text(
-                "S().close",
-                style: TextStyles.font18BlackRegular,
-              ),
+              child: Text("S().close", style: TextStyles.font18BlackRegular),
             ),
           ],
         ),
@@ -104,13 +93,13 @@ class _DriverRegistration extends State<DriverRegistration>
                 itemBuilder: (context, index) {
                   switch (index) {
                     case 0:
-                      return PersonalInformationPage(cubit: driverCubit,);
+                      return PersonalInformationPage(cubit: driverCubit);
                     case 1:
-                      return DriverLicensePage(cubit: driverCubit,);
+                      return DriverLicensePage(cubit: driverCubit);
                     case 2:
-                      return PersonalDocumentsPage(cubit: driverCubit,);
+                      return PersonalDocumentsPage(cubit: driverCubit);
                     case 3:
-                      return VehicleInformationPage(cubit: driverCubit,);
+                      return VehicleInformationPage(cubit: driverCubit);
                     default:
                       return Container();
                   }
@@ -126,10 +115,7 @@ class _DriverRegistration extends State<DriverRegistration>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${_currentPage + 1} of ${onboardingData.length}",
-                          style: TextStyles.font24BlackBold,
-                        ),
+                        Text("${_currentPage + 1} of ${onboardingData.length}", style: TextStyles.font24BlackBold),
                         verticalSpacing(10.h),
                         AnimatedBuilder(
                           animation: _progressAnimation,
@@ -138,8 +124,7 @@ class _DriverRegistration extends State<DriverRegistration>
                               width: MediaQuery.of(context).size.width * 0.4,
                               child: LinearProgressIndicator(
                                 value: _progressAnimation.value,
-                                backgroundColor:
-                                    AppColors.semiGrey.withOpacity(0.2),
+                                backgroundColor: AppColors.semiGrey.withOpacity(0.2),
                                 color: AppColors.primary,
                                 borderRadius: BorderRadius.circular(10.r),
                                 minHeight: 10.h,
@@ -154,10 +139,7 @@ class _DriverRegistration extends State<DriverRegistration>
                     FloatingActionButton(
                       backgroundColor: AppColors.semiGrey.withOpacity(0.2),
                       onPressed: () {
-                        _pageController.previousPage(
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeIn,
-                        );
+                        _pageController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
                       },
                       elevation: 0,
                       child: Icon(Icons.arrow_back_ios_new_outlined),
@@ -169,20 +151,20 @@ class _DriverRegistration extends State<DriverRegistration>
                       borderRadius: 10.r,
                       width: MediaQuery.of(context).size.width * 0.3,
                       textStyle: TextStyles.font18BlackRegular,
-                      text: _currentPage == onboardingData.length - 1
-                          ? "S().finish"
-                          : "S().next",
-                      onPressed: () {
+                      text: _currentPage == onboardingData.length - 1 ? "S().finish" : "S().next",
+                      onPressed: () async {
                         if (_currentPage < onboardingData.length - 1) {
-                          _pageController.nextPage(
-                            duration: Duration(milliseconds: 300),
-                            curve: Curves.easeIn,
-                          );
-                        } else {
-                          Navigator.pushReplacementNamed(
-                              context, RoutingEndpoints.driverPendingScreen);
+                          //if (driverCubit.formKeys[_currentPage].currentState?.validate() ?? false) {
+                            _currentPage++;
+                            _pageController.nextPage(
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeIn,
+                            );
+                          }
+                       // } else {
+                          await driverCubit.submitRegistration().then((value) => Navigator.pushNamed(context, RoutingEndpoints.driverOnBoarding));
                         }
-                      },
+                     // },
                     ),
                   ),
                 ],

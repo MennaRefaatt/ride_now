@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/text_form_entry.dart';
+import '../../../../../core/di/di.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../manager/driver_registration_cubit.dart';
@@ -25,8 +26,7 @@ class DriverBottomSheet extends StatefulWidget {
 
 class _DriverBottomSheetState extends State<DriverBottomSheet> {
   TextEditingController searchController = TextEditingController();
-  late List<Map<String, dynamic>> filteredItems = [];
-
+  List<Map<String, dynamic>> filteredItems = [];
   @override
   void dispose() {
     searchController.dispose();
@@ -36,7 +36,14 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DriverRegistrationCubit(),
+      create: (context) => DriverRegistrationCubit(
+          fetchColorsUseCase: sl(),
+          fetchBrandsUseCase: sl(),
+          fetchModelsUseCase: sl(),
+          submitDriverRegistrationUseCase: sl())
+        ..fetchModels()
+        ..fetchColors()
+        ..fetchBrands(),
       child: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.all(15.sp),
@@ -44,6 +51,19 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
             builder: (context, state) {
+              if (state is DriverRegistrationBrandsFetched) {
+                if (widget.type == 'brand') {
+                  filteredItems = state.brands;
+                }
+              } else if (state is DriverRegistrationModelsFetched) {
+                if (widget.type == 'model') {
+                  filteredItems = state.models;
+                }
+              } else if (state is DriverRegistrationColorsFetched) {
+                if (widget.type == 'color') {
+                  filteredItems = state.colors;
+                }
+              }
               return Column(
                 children: [
                   Row(
@@ -78,49 +98,29 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
                       });
                     },
                   ),
-                  FutureBuilder<List<Map<String, dynamic>>>(
-                    future: widget.itemsFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator(); // Show loading indicator while fetching data
-                      }
-
-                      if (snapshot.hasError) {
-                        return Text("Error: ${snapshot.error}");
-                      }
-
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Text("No items found.");
-                      }
-
-                      // Once the data is loaded, assign it to filteredItems
-                      filteredItems = snapshot.data!;
-
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: filteredItems.length,
-                        itemBuilder: (context, index) {
-                          final item = filteredItems[index];
-                          return ListTile(
-                            leading: Visibility(
-                              visible: item['color'] != null,
-                              child: CircleAvatar(
-                                radius: 15.r,
-                                backgroundColor: item['color'],
-                              ),
-                            ),
-                            title: Text(
-                              item['name'],
-                              style: TextStyles.font18BlackRegular,
-                            ),
-                            onTap: () {
-                              setState(() {
-                                widget.controller.text = item['name'];
-                              });
-                              Navigator.pop(context);
-                            },
-                          );
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      return ListTile(
+                        leading: Visibility(
+                          visible: item['color'] != null,
+                          child: CircleAvatar(
+                            radius: 15.r,
+                            backgroundColor: item['color'],
+                          ),
+                        ),
+                        title: Text(
+                          item['name'],
+                          style: TextStyles.font18BlackRegular,
+                        ),
+                        onTap: () {
+                          setState(() {
+                            widget.controller.text = item['name'];
+                          });
+                          Navigator.pop(context);
                         },
                       );
                     },

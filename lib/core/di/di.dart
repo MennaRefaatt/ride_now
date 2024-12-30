@@ -1,6 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ride_now/features/driver/driver_registration/data/repositories/d_repo_impl.dart';
+import 'package:ride_now/features/driver/driver_registration/domain/repositories/d_repo_base.dart';
+import 'package:ride_now/features/driver/driver_registration/domain/use_cases/fetch_brands_usecase.dart';
+import '../../features/driver/driver_registration/data/data_sources/d_remote_ds.dart';
+import '../../features/driver/driver_registration/domain/use_cases/d_fetch_colors_usecase.dart';
+import '../../features/driver/driver_registration/domain/use_cases/fetch_models_usecase.dart';
+import '../../features/driver/driver_registration/domain/use_cases/submit_d_usecase.dart';
+import '../../features/driver/driver_registration/presentation/manager/driver_registration_cubit.dart';
 import '../../features/maps/data/data_source/data_source.dart';
 import '../../features/maps/data/repo_impl/repo_impl.dart';
 import '../../features/maps/domain/repo_base/repo_base.dart';
@@ -30,17 +38,16 @@ Future<void> init() async {
   // Register ApiService
   sl.registerLazySingleton(() => ApiService());
 
-
   //maps
   sl.registerLazySingleton(
-          () => GetRealtimeLocationUseCase(sl<LocationRepository>()));
+      () => GetRealtimeLocationUseCase(sl<LocationRepository>()));
   sl.registerLazySingleton(
-          () => GetUserLocationUseCase(sl<LocationRepository>()));
+      () => GetUserLocationUseCase(sl<LocationRepository>()));
   sl.registerLazySingleton(() => SetLocationUseCase(sl<LocationRepository>()));
   sl.registerLazySingleton<LocationRepository>(
-          () => LocationRepositoryImpl(sl()));
+      () => LocationRepositoryImpl(sl()));
   sl.registerLazySingleton<GeolocationDataSource>(
-          () => GeolocationDataSourceImpl());
+      () => GeolocationDataSourceImpl());
 
   // Register Firebase Firestore instance
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
@@ -59,7 +66,6 @@ Future<void> init() async {
   // Register Cubit
   sl.registerFactory(() => ProfileCubit(sl(), sl()));
 
-
   /// City
   // Register City Data Sources
   sl.registerLazySingleton<CityRemoteDS>(() => CityRemoteDSImpl(sl()));
@@ -74,4 +80,19 @@ Future<void> init() async {
   // Register City Cubit
   sl.registerFactory(() => CityCubit(sl(), sl()));
 
+  ///driver registration
+  sl.registerLazySingleton<DriverRegistrationRemoteDataSource>(
+      () => DriverRegistrationRemoteDataSourceImpl());
+  sl.registerLazySingleton<DRepoBase>(() => DRepoImpl(remoteDataSource: sl()));
+  sl.registerLazySingleton(() => FetchBrandsUseCase(sl()));
+  sl.registerLazySingleton(() => FetchModelsUseCase(sl()));
+  sl.registerLazySingleton(() => FetchColorsUseCase(sl()));
+  sl.registerLazySingleton(() => SubmitDriverRegistrationUseCase(sl()));
+
+  sl.registerFactory(() => DriverRegistrationCubit(
+        fetchBrandsUseCase: sl(),
+        fetchColorsUseCase: sl(),
+        fetchModelsUseCase: sl(),
+        submitDriverRegistrationUseCase: sl(),
+      ));
 }
