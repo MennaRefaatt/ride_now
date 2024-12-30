@@ -1,16 +1,33 @@
-import 'dart:ui';
-
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../../../../core/helpers/safe_print.dart';
+import 'package:ride_now/core/helpers/shared_pref.dart';
+import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
+import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../domain/use_cases/d_fetch_colors_usecase.dart';
+import '../../domain/use_cases/fetch_brands_usecase.dart';
+import '../../domain/use_cases/fetch_models_usecase.dart';
+import '../../domain/use_cases/submit_d_usecase.dart';
+import '../widgets/image_type_enum.dart';
 part 'driver_registration_state.dart';
 
 class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
-  DriverRegistrationCubit() : super(DriverRegistrationInitial());
+  DriverRegistrationCubit({
+    required this.fetchColorsUseCase,
+    required this.fetchModelsUseCase,
+    required this.fetchBrandsUseCase,
+    required this.submitDriverRegistrationUseCase,
+  }) : super(DriverRegistrationInitial());
 
+  final FetchColorsUseCase fetchColorsUseCase;
+  final FetchModelsUseCase fetchModelsUseCase;
+  final FetchBrandsUseCase fetchBrandsUseCase;
+  final SubmitDriverRegistrationUseCase submitDriverRegistrationUseCase;
+  final GlobalKey<FormState> personalFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> vehicleFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> licenseFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> documentsFormKey = GlobalKey<FormState>();
+  final List<GlobalKey<FormState>> formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   String? firstName, lastName, dateOfBirth, personalImage;
   String? nationalIdImage, backOfIdImage, criminalStatusImage, idNumber;
   String? licenseNumber,
@@ -29,57 +46,66 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       backOfCertificate;
 
   List<String> images = [];
-  void updatePersonalInfo(
-      String firstName, String lastName, String dob, String personalImage) {
+
+  Future<List<Map<String, dynamic>>> fetchColors() async {
+    emit(DriverRegistrationLoading());
+    try {
+      final colors = await fetchColorsUseCase();
+      emit(DriverRegistrationColorsFetched(colors));
+      return colors;
+    } catch (e) {
+      emit(DriverRegistrationFailure(error: e.toString()));
+    }
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> fetchBrands() async {
+    emit(DriverRegistrationLoading());
+    try {
+      final brands = await fetchBrandsUseCase();
+      emit(DriverRegistrationBrandsFetched(brands));
+    } catch (e) {
+      emit(DriverRegistrationFailure(error: e.toString()));
+    }
+
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> fetchModels() async {
+    emit(DriverRegistrationLoading());
+    try {
+      final models = await fetchModelsUseCase();
+      emit(DriverRegistrationModelsFetched(models));
+    } catch (e) {
+      emit(DriverRegistrationFailure(error: e.toString()));
+    }
+
+    return [];
+  }
+
+  void updatePersonalInfo({
+    required String firstName,
+    required String lastName,
+    required String dob,
+    required String personalImage,
+  }) {
     this.firstName = firstName;
     this.lastName = lastName;
     dateOfBirth = dob;
     this.personalImage = personalImage;
     emit(DriverRegistrationPersonalInfoUpdated());
   }
-  Future<List<Map<String, dynamic>>> fetchColors() async {
-    var querySnapshot =
-    await FirebaseFirestore.instance.collection('colors').get();
-    return querySnapshot.docs.map((doc) {
-      String hexCode = doc['hexCode'];
-      try {
-        return {
-          'name': doc['name'],
-          'color': Color(int.parse(hexCode)),
-        };
-      } catch (e) {
-        safePrint("Error parsing color: $e, using default color");
-        return {
-          'name': doc['name'],
-          'color': Colors.transparent,
-        };
-      }
-    }).toList();
-  }
 
-  Future<List<Map<String, dynamic>>> fetchBrands() async {
-    var querySnapshot =
-    await FirebaseFirestore.instance.collection('brands').get();
-    return querySnapshot.docs
-        .map((doc) => {'name': doc['name'], 'country': doc['country']})
-        .toList();
-  }
-
-  Future<List<Map<String, dynamic>>> fetchModels() async {
-    var querySnapshot =
-    await FirebaseFirestore.instance.collection('models').get();
-    return querySnapshot.docs.map((doc) => {'name': doc['name']}).toList();
-  }
-
-  void updateVehicleInfo(
-      String brand,
-      String model,
-      String color,
-      String productionYear,
-      String plateNumber,
-      String vehicleImage,
-      String? vehicleRegistrationCertificate,
-      String? backOfCertificate) {
+  void updateVehicleInfo({
+    required String brand,
+    required String model,
+    required String color,
+    required String productionYear,
+    required String plateNumber,
+    required String vehicleImage,
+    String? vehicleRegistrationCertificate,
+    String? backOfCertificate,
+  }) {
     vehicleBrand = brand;
     vehicleModel = model;
     vehicleColor = color;
@@ -91,12 +117,13 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
     emit(DriverRegistrationVehicleInfoUpdated());
   }
 
-  void updateLicenseInfo(
-      String licenseNumber,
-      String expiryDate,
-      String driverLicenseImage,
-      String backLicenseImage,
-      String selfieWithLicenseImage) {
+  void updateLicenseInfo({
+    required String licenseNumber,
+    required String expiryDate,
+    required String driverLicenseImage,
+    required String backLicenseImage,
+    required String selfieWithLicenseImage,
+  }) {
     this.licenseNumber = licenseNumber;
     licenseExpiryDate = expiryDate;
     this.driverLicenseImage = driverLicenseImage;
@@ -105,8 +132,12 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
     emit(DriverRegistrationLicenseInfoUpdated());
   }
 
-  void updateDocumentsInfo(String idNumber, String nationalIdImage,
-      String backOfIdImage, String criminalStatusImage) {
+  void updateDocumentsInfo({
+    required String idNumber,
+    required String nationalIdImage,
+    required String backOfIdImage,
+    required String criminalStatusImage,
+  }) {
     this.idNumber = idNumber;
     this.nationalIdImage = nationalIdImage;
     this.backOfIdImage = backOfIdImage;
@@ -116,34 +147,89 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
 
   Future<void> submitRegistration() async {
     try {
+      final driverData = DriverRegistrationModel(
+        driverStatus: "pending",
+        driverId: SharedPref.getString(key: MySharedKeys.userId) ?? '',
+        personalInfo: PersonalRegistrationModel(
+          firstName: firstName ?? '',
+          lastName: lastName ?? '',
+          dateOfBirth: dateOfBirth ?? '',
+          personalImage: personalImage ?? '',
+        ),
+        vehicleInfo: VehicleRegistrationModel(
+          vehicleBrand: vehicleBrand ?? '',
+          vehicleModel: vehicleModel ?? '',
+          vehicleColor: vehicleColor ?? '',
+          productionYear: productionYear ?? '',
+          plateNumber: plateNumber ?? '',
+          vehicleImage: vehicleImage ?? '',
+          registrationCertificate: registrationCertificate ?? '',
+          backOfCertificate: backOfCertificate ?? '',
+        ),
+        driverInfo: DriverLicenseModel(
+          licenseNumber: licenseNumber ?? '',
+          driverLicenseImage: driverLicenseImage ?? '',
+          backLicenseImage: backLicenseImage ?? '',
+          selfieWithLicenseImage: selfieWithLicenseImage ?? '',
+          licenseExpiryDate: licenseExpiryDate ?? '',
+        ),
+        personalDocument: PersonalDocumentModel(
+          nationalId: idNumber ?? '',
+          nationalIdImage: nationalIdImage ?? '',
+          backOfIdImage: backOfIdImage ?? '',
+          criminalStatusImage: criminalStatusImage ?? '',
+        ),
+      );
+
       emit(DriverRegistrationLoading());
-      await FirebaseFirestore.instance.collection('drivers').add({
-        'firstName': firstName,
-        'lastName': lastName,
-        'dateOfBirth': dateOfBirth,
-        'vehicleBrand': vehicleBrand,
-        'vehicleModel': vehicleModel,
-        'vehicleColor': vehicleColor,
-        'productionYear': productionYear,
-        'plateNumber': plateNumber,
-        'licenseNumber': licenseNumber,
-        'licenseExpiryDate': licenseExpiryDate,
-        'idNumber': idNumber,
-        'registrationStatus': 'pending',
-        'images': images,
-      });
+      await submitDriverRegistrationUseCase(driverData);
       emit(DriverRegistrationSuccess());
     } catch (e) {
       emit(DriverRegistrationFailure(error: e.toString()));
     }
   }
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(ImageType type) async {
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.camera);
+    final image = await picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       emit(DriverRegistrationLoading());
-      images.add(image.path);
+
+      switch (type) {
+        case ImageType.driverLicense:
+          driverLicenseImage = image.path;
+          break;
+        case ImageType.backLicense:
+          backLicenseImage = image.path;
+          break;
+        case ImageType.selfieWithLicense:
+          selfieWithLicenseImage = image.path;
+          break;
+        case ImageType.nationalIdImage:
+          nationalIdImage = image.path;
+          break;
+        case ImageType.backOfIdImage:
+          backOfIdImage = image.path;
+          break;
+        case ImageType.criminalStatusImage:
+          criminalStatusImage = image.path;
+          break;
+        case ImageType.personalImage:
+          personalImage = image.path;
+          break;
+        case ImageType.vehicleImage:
+          vehicleImage = image.path;
+          break;
+        case ImageType.vehicleRegistrationCertificate:
+          registrationCertificate = image.path;
+          break;
+        case ImageType.backOfCertificate:
+          backOfCertificate = image.path;
+          break;
+        default:
+          break;
+      }
+
       emit(DriverRegistrationDocumentsUpdated());
     } else {
       emit(DriverRegistrationFailure(error: 'No image selected'));

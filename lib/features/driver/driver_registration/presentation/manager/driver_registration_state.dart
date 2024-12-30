@@ -21,3 +21,18 @@ class DriverRegistrationFailure extends DriverRegistrationState {
   final String error;
   DriverRegistrationFailure({required this.error});
 }
+
+class DriverRegistrationColorsFetched extends DriverRegistrationState {
+  final List<Map<String, dynamic>> colors;
+  DriverRegistrationColorsFetched(this.colors);
+}
+
+class DriverRegistrationBrandsFetched extends DriverRegistrationState {
+  final List<Map<String, dynamic>> brands;
+  DriverRegistrationBrandsFetched(this.brands);
+}
+
+class DriverRegistrationModelsFetched extends DriverRegistrationState {
+  final List<Map<String, dynamic>> models;
+  DriverRegistrationModelsFetched(this.models);
+}

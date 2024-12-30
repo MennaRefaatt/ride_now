@@ -38,18 +38,23 @@ class PickImage extends StatelessWidget {
       highlightColor: Colors.transparent,
       child: Column(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.15,
-            width: MediaQuery.of(context).size.height * 0.15,
-            padding: EdgeInsets.all(20.sp),
-            decoration: BoxDecoration(
-              color: AppColors.semiGrey.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: image.isNotEmpty
-                ? Image.file(File(image))
-                : Icon(CupertinoIcons.plus, size: 40.sp),
-          ),
+          image.isNotEmpty
+              ? SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20.r),
+                      child: Image.file(File(image))),
+                )
+              : Container(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.height * 0.15,
+                  padding: EdgeInsets.all(20.sp),
+                  decoration: BoxDecoration(
+                    color: AppColors.semiGrey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Icon(CupertinoIcons.plus, size: 40.sp),
+                ),
           verticalSpacing(10.h),
           Text(
             formatText(text),
