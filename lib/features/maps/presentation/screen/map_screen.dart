@@ -31,18 +31,20 @@ class _MapScreenState extends State<MapScreen> {
       child: Scaffold(
         body: BlocBuilder<LocationCubit, LocationState>(
           builder: (context, state) {
-            if (state is LocationLoading) {
-              return const Center(
-                  child: CircularProgressIndicator(
-                color: AppColors.primary,
-              ));
-            } else if (state is LocationLoaded || state is LocationMarkerSet) {
+            if (state is LocationLoaded || state is LocationMarkerSet) {
               final position = state is LocationLoaded
                   ? LatLng(state.position.latitude, state.position.longitude)
                   : (state as LocationMarkerSet).location;
               final address = state is LocationLoaded
                   ? state.address
                   : (state as LocationMarkerSet).location;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (_mapController != null && position != _selectedLocation) {
+                  _animateToLocation(position);
+                  _selectedLocation = position; // Update selected location
+                }
+              });
+
               return Stack(
                 children: [
                   Column(
@@ -54,10 +56,11 @@ class _MapScreenState extends State<MapScreen> {
                             GoogleMap(
                               initialCameraPosition: CameraPosition(
                                 target: position,
-                                zoom: 14,
+                                zoom: 15,
                               ),
                               onMapCreated: (controller) {
                                 _mapController = controller;
+                                _animateToLocation(position);
                               },
                               markers: _selectedLocation != null
                                   ? {
@@ -124,13 +127,39 @@ class _MapScreenState extends State<MapScreen> {
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).padding.bottom + 20.sp,
                           right: 20.sp),
-                      child: AppIcon(
-                          icon: CupertinoIcons.location,
-                          backgroundColor: Colors.white,
-                          iconColor: Colors.black,
-                          navigation: () =>
-                              context.read<LocationCubit>().fetchUserLocation(),
-                          withShadow: false),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AppIcon(
+                            icon: Icons.zoom_in,
+                            backgroundColor: Colors.white,
+                            iconColor: Colors.black,
+                            navigation: _zoomIn,
+                            withShadow: false,
+                          ),
+                          SizedBox(height: 10.sp),
+                          AppIcon(
+                            icon: CupertinoIcons.location,
+                            backgroundColor: Colors.white,
+                            iconColor: Colors.black,
+                            navigation: () async {
+                              final locationState =
+                                  context.read<LocationCubit>().state;
+                              if (locationState is LocationLoaded) {
+                                final position = LatLng(
+                                    locationState.position.latitude,
+                                    locationState.position.longitude);
+                                _animateToLocation(position);
+                              } else {
+                                await context
+                                    .read<LocationCubit>()
+                                    .fetchUserLocation();
+                              }
+                            },
+                            withShadow: false,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -138,11 +167,44 @@ class _MapScreenState extends State<MapScreen> {
             } else if (state is LocationError) {
               return Center(child: Text(state.message));
             }
-            return const Center(
-                child: Text("Press the button to get location"));
+            return GoogleMap(
+                initialCameraPosition:
+                    CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 10));
           },
         ),
       ),
     );
+  }
+
+  void _animateToLocation(LatLng position) {
+    if (_mapController != null) {
+      _mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: position,
+            zoom: 18,
+            tilt: 50,
+            bearing: 0,
+          ),
+        ),
+      );
+
+      _mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: position,
+            zoom: 18,
+          ),
+        ),
+      );
+    }
+  }
+
+  void _zoomIn() {
+    if (_mapController != null) {
+      _mapController.animateCamera(
+        CameraUpdate.zoomIn(),
+      );
+    }
   }
 }

@@ -38,6 +38,7 @@ class AppTextFormField extends StatelessWidget {
   final bool? withShadow;
   final Color? controllerTextColor;
   final String? errorText;
+  final  List<TextInputFormatter>? inputFormatters;
   const AppTextFormField({
     super.key,
     this.contentPadding,
@@ -70,7 +71,7 @@ class AppTextFormField extends StatelessWidget {
     this.prefixIcon,
     this.withShadow = false,
     this.controllerTextColor,
-    this.errorText,
+    this.errorText, this.inputFormatters,
   });
 
   @override
@@ -103,6 +104,7 @@ class AppTextFormField extends StatelessWidget {
             minLines: minLines,
             maxLines: maxLines,
             maxLength: maxLength,
+            inputFormatters: inputFormatters,
             controller: controller,
             initialValue: initialValue,
             decoration: InputDecoration(

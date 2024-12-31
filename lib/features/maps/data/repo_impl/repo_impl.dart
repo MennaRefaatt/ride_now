@@ -14,6 +14,7 @@ class LocationRepositoryImpl implements LocationRepository {
     final position = await dataSource.getCurrentLocation();
     try {
       safePrint(position.toString());
+
      return position;
     } catch (e) {
       return Future.error(e);
