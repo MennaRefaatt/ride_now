@@ -6,6 +6,6 @@ class SubmitDriverRegistrationUseCase {
 
   SubmitDriverRegistrationUseCase(this.repository);
 
-  Future<void> call(DriverRegistrationModel driverData) =>
+  Future<bool> call(DriverRegistrationModel driverData) =>
       repository.registerDriver(driverData);
 }

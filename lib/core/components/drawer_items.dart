@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/enums/user_type.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_button.dart';
+import '../../features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
 import '../../generated/l10n.dart';
@@ -18,9 +20,23 @@ class DrawerItems extends StatefulWidget {
 }
 
 class _DrawerItemsState extends State<DrawerItems> {
-final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
-final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
- bool? isDriverMode=false;
+  final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
+  final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
+  bool? isDriverMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserMode();
+  }
+
+  void _loadUserMode() {
+    String? mode = SharedPref.getString(key: MySharedKeys.type);
+    setState(() {
+      isDriverMode = mode == UserType.driver.name;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
@@ -96,12 +112,15 @@ final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
             ),
             const Divider(),
             AppButton(
-              text: isDriverMode! == true ? "S().passengerMode" : "S().Driver mode",
+              text: isDriverMode! ? "Passenger Mode" : "Driver Mode",
               backgroundColor: AppColors.primary,
               onPressed: () {
                 setState(() {
                   isDriverMode = !isDriverMode!;
                 });
+                saveModeToFirestore(isDriverMode!
+                    ? UserType.driver.name
+                    : UserType.passenger.name);
                 Navigator.pushReplacementNamed(
                   context,
                   RoutingEndpoints.driverOnBoarding,
@@ -114,6 +133,11 @@ final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
         ),
       ),
     );
+  }
+
+  void saveModeToFirestore(String mode) {
+    FirestoreService().saveUserModeToFirestore(mode);
+    SharedPref.setString(key: MySharedKeys.type, value: mode);
   }
 
   Widget drawerItem({

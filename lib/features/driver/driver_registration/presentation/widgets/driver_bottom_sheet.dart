@@ -11,13 +11,13 @@ import '../manager/driver_registration_cubit.dart';
 class DriverBottomSheet extends StatefulWidget {
   final String type;
   final TextEditingController controller;
-  final Future<List<Map<String, dynamic>>> itemsFuture; // Accept Future here
+  final Future<void> itemsFuture;
 
   const DriverBottomSheet({
     super.key,
     required this.type,
     required this.controller,
-    required this.itemsFuture, // Accept Future here
+    required this.itemsFuture,
   });
 
   @override
@@ -51,19 +51,17 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
             builder: (context, state) {
-              if (state is DriverRegistrationBrandsFetched) {
-                if (widget.type == 'brand') {
-                  filteredItems = state.brands;
-                }
-              } else if (state is DriverRegistrationModelsFetched) {
-                if (widget.type == 'model') {
-                  filteredItems = state.models;
-                }
-              } else if (state is DriverRegistrationColorsFetched) {
-                if (widget.type == 'color') {
-                  filteredItems = state.colors;
-                }
+              if (state is DriverRegistrationBrandsFetched &&
+                  widget.type == 'brand') {
+                filteredItems = state.brands;
+              } else if (state is DriverRegistrationModelsFetched &&
+                  widget.type == 'model') {
+                filteredItems = state.models;
+              } else if (state is DriverRegistrationColorsFetched &&
+                  widget.type == 'color') {
+                filteredItems = state.colors;
               }
+
               return Column(
                 children: [
                   Row(
@@ -97,6 +95,18 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
                             .toList();
                       });
                     },
+                    suffixIcon: InkWell(
+                        onTap: () {
+                          setState(() {
+                            filteredItems = filteredItems
+                                .where((item) => item['name']
+                                    .toLowerCase()
+                                    .contains(
+                                        searchController.text.toLowerCase()))
+                                .toList();
+                          });
+                        },
+                        child: Icon(CupertinoIcons.search, size: 20.sp)),
                   ),
                   ListView.builder(
                     shrinkWrap: true,

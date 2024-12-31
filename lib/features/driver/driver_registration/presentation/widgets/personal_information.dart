@@ -37,84 +37,81 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
     return Padding(
       padding: EdgeInsets.all(20.sp),
       child: SingleChildScrollView(
-        child: Form(
-          key: widget.cubit.personalFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Personal Information', style: TextStyles.font24BlackBold),
-              verticalSpacing(20.h),
-              PickImage(
-                text: "Pick your personal picture",
-                image: widget.cubit.personalImage ?? '',
-                onTap: () async {
-                  await widget.cubit.pickImage(ImageType.personalImage);
-                  setState(() {});
-                },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Personal Information', style: TextStyles.font24BlackBold),
+            verticalSpacing(20.h),
+            PickImage(
+              text: "Pick your personal picture",
+              image: widget.cubit.personalImage ?? '',
+              onTap: () async {
+                await widget.cubit.pickImage(ImageType.personalImage);
+                setState(() {});
+              },
+            ),
+            verticalSpacing(20.h),
+            TextFormEntry(
+              hintText: "First Name",
+              controller: firstNameController,
+              textInputAction: TextInputAction.next,
+              onChanged: (value) => widget.cubit.updatePersonalInfo(
+                firstName: value,
+                lastName: lastNameController.text,
+                dob: dateOfBirthController.text,
+                personalImage: widget.cubit.personalImage ?? '',
               ),
-              verticalSpacing(20.h),
-              TextFormEntry(
-                hintText: "First Name",
-                controller: firstNameController,
-                textInputAction: TextInputAction.next,
-                onChanged: (value) => widget.cubit.updatePersonalInfo(
-                  firstName: value,
-                  lastName: lastNameController.text,
-                  dob: dateOfBirthController.text,
-                  personalImage: widget.cubit.personalImage ?? '',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your first name';
-                  }
-                  return null;
-                },
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
-                ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your first name';
+                }
+                return null;
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+              ],
+            ),
+            verticalSpacing(10.h),
+            TextFormEntry(
+              hintText: "Last Name",
+              textInputAction: TextInputAction.next,
+              controller: lastNameController,
+              onChanged: (value) => widget.cubit.updatePersonalInfo(
+                firstName: firstNameController.text,
+                lastName: value,
+                dob: dateOfBirthController.text,
+                personalImage: widget.cubit.personalImage ?? '',
               ),
-              verticalSpacing(10.h),
-              TextFormEntry(
-                hintText: "Last Name",
-                textInputAction: TextInputAction.next,
-                controller: lastNameController,
-                onChanged: (value) => widget.cubit.updatePersonalInfo(
-                  firstName: firstNameController.text,
-                  lastName: value,
-                  dob: dateOfBirthController.text,
-                  personalImage: widget.cubit.personalImage ?? '',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your last name';
-                  }
-                  return null;
-                },
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
-                ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your last name';
+                }
+                return null;
+              },
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+              ],
+            ),
+            verticalSpacing(10.h),
+            TextFormEntry(
+              hintText: "Date of Birth",
+              textInputAction: TextInputAction.done,
+              controller: dateOfBirthController,
+              keyboardType: TextInputType.datetime,
+              maxLength: 10,
+              validator: DateValidator.validateDate,
+              onChanged: (value) => widget.cubit.updatePersonalInfo(
+                firstName: firstNameController.text,
+                lastName: lastNameController.text,
+                dob: value,
+                personalImage: widget.cubit.personalImage ?? '',
               ),
-              verticalSpacing(10.h),
-              TextFormEntry(
-                hintText: "Date of Birth",
-                textInputAction: TextInputAction.done,
-                controller: dateOfBirthController,
-                keyboardType: TextInputType.datetime,
-                maxLength: 10,
-                validator: DateValidator.validateDate,
-                onChanged: (value) => widget.cubit.updatePersonalInfo(
-                  firstName: firstNameController.text,
-                  lastName: lastNameController.text,
-                  dob: value,
-                  personalImage: widget.cubit.personalImage ?? '',
-                ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  RealDateInputFormatter(),
-                ],
-              ),
-            ],
-          ),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                RealDateInputFormatter(),
+              ],
+            ),
+          ],
         ),
       ),
     );

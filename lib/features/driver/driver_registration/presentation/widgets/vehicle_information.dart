@@ -37,7 +37,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
     required BuildContext context,
     required String type,
     required TextEditingController controller,
-    required Future<List<Map<String, dynamic>>> itemsFuture,
+    required Future<void> itemsFuture,
   }) {
     showModalBottomSheet(
       context: context,
@@ -58,170 +58,183 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
     return Padding(
       padding: EdgeInsets.all(15.sp),
       child: SingleChildScrollView(
-        child: Form(
-          key: widget.cubit.vehicleFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('S().vehicleInformation', style: TextStyles.font24BlackBold),
-              verticalSpacing(20.h),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    PickImage(
-                        text: "S().vehicle Picture",
-                        image: widget.cubit.vehicleImage ?? '',
-                        onTap: () async {
-                          await widget.cubit.pickImage(ImageType.vehicleImage);
-                          setState(() {});
-                        }),
-                    PickImage(
-                      text: "S().vehicle Registration Certificate",
-                      image: widget.cubit.registrationCertificate ?? '',
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('S().vehicleInformation', style: TextStyles.font24BlackBold),
+            verticalSpacing(20.h),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  PickImage(
+                      text: "S().vehicle Picture",
+                      image: widget.cubit.vehicleImage ?? '',
                       onTap: () async {
-                        await widget.cubit.pickImage(
-                            ImageType.vehicleRegistrationCertificate);
+                        await widget.cubit.pickImage(ImageType.vehicleImage);
                         setState(() {});
-                      },
-                    ),
-                    PickImage(
-                      text: "S().backSide Of Certificate",
-                      image: widget.cubit.backOfCertificate ?? '',
-                      onTap: () async {
-                        await widget.cubit
-                            .pickImage(ImageType.backOfCertificate);
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
+                      }),
+                  PickImage(
+                    text: "S().vehicle Registration Certificate",
+                    image: widget.cubit.registrationCertificate ?? '',
+                    onTap: () async {
+                      await widget.cubit
+                          .pickImage(ImageType.vehicleRegistrationCertificate);
+                      setState(() {});
+                    },
+                  ),
+                  PickImage(
+                    text: "S().backSide Of Certificate",
+                    image: widget.cubit.backOfCertificate ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.backOfCertificate);
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
-              InkWell(
-                onTap: () => _showBottomSheet(
-                  context: context,
-                  type: "brand",
-                  controller: _brandController,
-                  itemsFuture: widget.cubit.fetchBrands(),
-                ),
-                child: TextFormEntry(
-                    hintText: "S().vehicleBrand",
-                    controller: _brandController,
-                    enable: false,
-                    onChanged: (value) => widget.cubit.updateVehicleInfo(
-                          brand: value,
-                          model: _modelController.text,
-                          color: _colorController.text,
-                          productionYear: _productionYearController.text,
-                          plateNumber: _plateNumberController.text,
-                          vehicleImage: widget.cubit.vehicleImage ?? '',
-                          vehicleRegistrationCertificate:
-                              widget.cubit.registrationCertificate ?? '',
-                          backOfCertificate:
-                              widget.cubit.backOfCertificate ?? '',
-                        )),
+            ),
+            InkWell(
+              onTap: () => _showBottomSheet(
+                context: context,
+                type: "brand",
+                controller: _brandController,
+                itemsFuture: widget.cubit.fetchBrands(),
               ),
-              verticalSpacing(10.h),
-              InkWell(
-                onTap: () => _showBottomSheet(
-                  context: context,
-                  type: "model",
-                  controller: _modelController,
-                  itemsFuture: widget.cubit.fetchModels(),
-                ),
-                child: TextFormEntry(
-                    hintText: "S().vehicleModel",
-                    controller: _modelController,
-                    enable: false,
-                    onChanged: (value) => widget.cubit.updateVehicleInfo(
-                          brand: _brandController.text,
-                          model: value,
-                          color: _colorController.text,
-                          productionYear: _productionYearController.text,
-                          plateNumber: _plateNumberController.text,
-                          vehicleImage: widget.cubit.vehicleImage ?? '',
-                          vehicleRegistrationCertificate:
-                              widget.cubit.registrationCertificate ?? '',
-                          backOfCertificate:
-                              widget.cubit.backOfCertificate ?? '',
-                        )),
-              ),
-              verticalSpacing(10.h),
-              InkWell(
-                  onTap: () => _showBottomSheet(
-                        context: context,
-                        type: "color",
-                        controller: _colorController,
-                        itemsFuture: widget.cubit.fetchColors(),
-                      ),
-                  child: TextFormEntry(
-                    hintText: "S().vehicleColor",
-                    enable: false,
-                    controller: _colorController,
-                    onChanged: (value) => widget.cubit.updateVehicleInfo(
-                      brand: _brandController.text,
-                      model: _modelController.text,
-                      color: value,
-                      productionYear: _productionYearController.text,
-                      plateNumber: _plateNumberController.text,
-                      vehicleImage: widget.cubit.vehicleImage ?? '',
-                      vehicleRegistrationCertificate:
-                          widget.cubit.registrationCertificate ?? '',
-                      backOfCertificate: widget.cubit.backOfCertificate ?? '',
-                    ),
-                  )),
-              verticalSpacing(10.h),
-              TextFormEntry(
-                hintText: "S().productionYear",
-                controller: _productionYearController,
+              child: TextFormEntry(
+                hintText: "S().vehicleBrand",
+                controller: _brandController,
+                enable: false,
                 onChanged: (value) => widget.cubit.updateVehicleInfo(
-                  brand: _brandController.text,
+                  brand: value,
                   model: _modelController.text,
                   color: _colorController.text,
-                  productionYear: value,
+                  productionYear: _productionYearController.text,
                   plateNumber: _plateNumberController.text,
                   vehicleImage: widget.cubit.vehicleImage ?? '',
                   vehicleRegistrationCertificate:
                       widget.cubit.registrationCertificate ?? '',
                   backOfCertificate: widget.cubit.backOfCertificate ?? '',
                 ),
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  YearInputFormatter(),
-                ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a valid year';
-                  }
-                  final year = int.tryParse(value);
-                  if (year == null ||
-                      year < 1900 ||
-                      year > DateTime.now().year) {
-                    return 'Enter a year between 1900 and ${DateTime.now().year}';
+                    return "S().requiredField";
                   }
                   return null;
                 },
-                maxLength: 4,
-                keyboardType: TextInputType.number,
               ),
-              verticalSpacing(10.h),
-              TextFormEntry(
-                  hintText: "S().plateNumber",
-                  controller: _plateNumberController,
+            ),
+            verticalSpacing(10.h),
+            InkWell(
+              onTap: () => _showBottomSheet(
+                context: context,
+                type: "model",
+                controller: _modelController,
+                itemsFuture: widget.cubit.fetchModels(),
+              ),
+              child: TextFormEntry(
+                hintText: "S().vehicleModel",
+                controller: _modelController,
+                enable: false,
+                onChanged: (value) => widget.cubit.updateVehicleInfo(
+                  brand: _brandController.text,
+                  model: value,
+                  color: _colorController.text,
+                  productionYear: _productionYearController.text,
+                  plateNumber: _plateNumberController.text,
+                  vehicleImage: widget.cubit.vehicleImage ?? '',
+                  vehicleRegistrationCertificate:
+                      widget.cubit.registrationCertificate ?? '',
+                  backOfCertificate: widget.cubit.backOfCertificate ?? '',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "S().requiredField";
+                  }
+                  return null;
+                },
+              ),
+            ),
+            verticalSpacing(10.h),
+            InkWell(
+                onTap: () => _showBottomSheet(
+                      context: context,
+                      type: "color",
+                      controller: _colorController,
+                      itemsFuture: widget.cubit.fetchColors(),
+                    ),
+                child: TextFormEntry(
+                  hintText: "S().vehicleColor",
+                  enable: false,
+                  controller: _colorController,
                   onChanged: (value) => widget.cubit.updateVehicleInfo(
-                        brand: _brandController.text,
-                        model: _modelController.text,
-                        color: _colorController.text,
-                        productionYear: _productionYearController.text,
-                        plateNumber: value,
-                        vehicleImage: widget.cubit.vehicleImage ?? '',
-                        vehicleRegistrationCertificate:
-                            widget.cubit.registrationCertificate ?? '',
-                        backOfCertificate: widget.cubit.backOfCertificate ?? '',
-                      )),
-            ],
-          ),
+                    brand: _brandController.text,
+                    model: _modelController.text,
+                    color: value,
+                    productionYear: _productionYearController.text,
+                    plateNumber: _plateNumberController.text,
+                    vehicleImage: widget.cubit.vehicleImage ?? '',
+                    vehicleRegistrationCertificate:
+                        widget.cubit.registrationCertificate ?? '',
+                    backOfCertificate: widget.cubit.backOfCertificate ?? '',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "S().requiredField";
+                    }
+                    return null;
+                  },
+                )),
+            verticalSpacing(10.h),
+            TextFormEntry(
+              hintText: "S().productionYear",
+              controller: _productionYearController,
+              onChanged: (value) => widget.cubit.updateVehicleInfo(
+                brand: _brandController.text,
+                model: _modelController.text,
+                color: _colorController.text,
+                productionYear: value,
+                plateNumber: _plateNumberController.text,
+                vehicleImage: widget.cubit.vehicleImage ?? '',
+                vehicleRegistrationCertificate:
+                    widget.cubit.registrationCertificate ?? '',
+                backOfCertificate: widget.cubit.backOfCertificate ?? '',
+              ),
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                YearInputFormatter(),
+              ],
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a valid year';
+                }
+                final year = int.tryParse(value);
+                if (year == null || year < 1900 || year > DateTime.now().year) {
+                  return 'Enter a year between 1900 and ${DateTime.now().year}';
+                }
+                return null;
+              },
+              maxLength: 4,
+              keyboardType: TextInputType.number,
+            ),
+            verticalSpacing(10.h),
+            TextFormEntry(
+                hintText: "S().plateNumber",
+                controller: _plateNumberController,
+                onChanged: (value) => widget.cubit.updateVehicleInfo(
+                      brand: _brandController.text,
+                      model: _modelController.text,
+                      color: _colorController.text,
+                      productionYear: _productionYearController.text,
+                      plateNumber: value,
+                      vehicleImage: widget.cubit.vehicleImage ?? '',
+                      vehicleRegistrationCertificate:
+                          widget.cubit.registrationCertificate ?? '',
+                      backOfCertificate: widget.cubit.backOfCertificate ?? '',
+                    ),
+                validator: VehiclePlateValidator.validatePlateNumber),
+          ],
         ),
       ),
     );

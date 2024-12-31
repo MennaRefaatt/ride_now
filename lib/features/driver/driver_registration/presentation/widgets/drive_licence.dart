@@ -32,94 +32,84 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
     return Padding(
       padding: EdgeInsets.all(10.sp),
       child: SingleChildScrollView(
-        child: Form(
-          key: widget.cubit.licenseFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Driver License',
-                style: TextStyles.font24BlackBold,
-              ),
-              verticalSpacing(20.h),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PickImage(
-                      text: "Driver License",
-                      image: widget.cubit.driverLicenseImage ?? '',
-                      onTap: () async {
-                        await widget.cubit.pickImage(ImageType.driverLicense);
-                        setState(() {});
-                      },
-                    ),
-                    PickImage(
-                      text: "Back Side Of License",
-                      image: widget.cubit.backLicenseImage ?? '',
-                      onTap: () async {
-                        await widget.cubit.pickImage(ImageType.backLicense);
-                        setState(() {});
-                      },
-                    ),
-                    PickImage(
-                      text: "Selfie With License",
-                      image: widget.cubit.selfieWithLicenseImage ?? '',
-                      onTap: () async {
-                        await widget.cubit
-                            .pickImage(ImageType.selfieWithLicense);
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              verticalSpacing(20.h),
-              TextFormEntry(
-                onChanged: (value) => widget.cubit.updateLicenseInfo(
-                  licenseNumber: value,
-                  expiryDate: _expiryDateController.text,
-                  driverLicenseImage: widget.cubit.driverLicenseImage ?? "",
-                  backLicenseImage: widget.cubit.backLicenseImage ?? "",
-                  selfieWithLicenseImage:
-                      widget.cubit.selfieWithLicenseImage ?? "",
-                ),
-                maxLength: 7,
-                hintText: "License Number",
-                controller: _licenseNumberController,
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your license number';
-                  }
-                  return null;
-                },
-              ),
-              verticalSpacing(10.h),
-              TextFormEntry(
-                hintText: "Expiry Date",
-                onChanged: (value) => widget.cubit.updateLicenseInfo(
-                  licenseNumber: _licenseNumberController.text,
-                  expiryDate: value,
-                  driverLicenseImage: widget.cubit.driverLicenseImage ?? "",
-                  backLicenseImage: widget.cubit.backLicenseImage ?? "",
-                  selfieWithLicenseImage:
-                      widget.cubit.selfieWithLicenseImage ?? "",
-                ),
-                controller: _expiryDateController,
-                maxLength: 10,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.datetime,
-                validator: ExpiryDateValidator.validateExpiryDate,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  ExpiryDateInputFormatter(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Driver License',
+              style: TextStyles.font24BlackBold,
+            ),
+            verticalSpacing(20.h),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  PickImage(
+                    text: "Driver License",
+                    image: widget.cubit.driverLicenseImage ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.driverLicense);
+                      setState(() {});
+                    },
+                  ),
+                  PickImage(
+                    text: "Back Side Of License",
+                    image: widget.cubit.backLicenseImage ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.backLicense);
+                      setState(() {});
+                    },
+                  ),
+                  PickImage(
+                    text: "Selfie With License",
+                    image: widget.cubit.selfieWithLicenseImage ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.selfieWithLicense);
+                      setState(() {});
+                    },
+                  ),
                 ],
               ),
-            ],
-          ),
+            ),
+            verticalSpacing(20.h),
+            TextFormEntry(
+              onChanged: (value) => widget.cubit.updateLicenseInfo(
+                licenseNumber: value,
+                expiryDate: _expiryDateController.text,
+                driverLicenseImage: widget.cubit.driverLicenseImage ?? "",
+                backLicenseImage: widget.cubit.backLicenseImage ?? "",
+                selfieWithLicenseImage:
+                    widget.cubit.selfieWithLicenseImage ?? "",
+              ),
+              maxLength: 14,
+              hintText: "License Number",
+              controller: _licenseNumberController,
+              textInputAction: TextInputAction.next,
+              validator:LicenseNumberValidator.validateLicenseNumber,
+            ),
+            verticalSpacing(10.h),
+            TextFormEntry(
+              hintText: "Expiry Date",
+              onChanged: (value) => widget.cubit.updateLicenseInfo(
+                licenseNumber: _licenseNumberController.text,
+                expiryDate: value,
+                driverLicenseImage: widget.cubit.driverLicenseImage ?? "",
+                backLicenseImage: widget.cubit.backLicenseImage ?? "",
+                selfieWithLicenseImage:
+                    widget.cubit.selfieWithLicenseImage ?? "",
+              ),
+              controller: _expiryDateController,
+              maxLength: 10,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.datetime,
+              validator: ExpiryDateValidator.validateExpiryDate,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                ExpiryDateInputFormatter(),
+              ],
+            ),
+          ],
         ),
       ),
     );
