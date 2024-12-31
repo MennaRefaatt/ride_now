@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
@@ -23,11 +24,6 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
   final FetchModelsUseCase fetchModelsUseCase;
   final FetchBrandsUseCase fetchBrandsUseCase;
   final SubmitDriverRegistrationUseCase submitDriverRegistrationUseCase;
-  final GlobalKey<FormState> personalFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> vehicleFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> licenseFormKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> documentsFormKey = GlobalKey<FormState>();
-  final List<GlobalKey<FormState>> formKeys = List.generate(4, (index) => GlobalKey<FormState>());
   String? firstName, lastName, dateOfBirth, personalImage;
   String? nationalIdImage, backOfIdImage, criminalStatusImage, idNumber;
   String? licenseNumber,
@@ -47,19 +43,17 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
 
   List<String> images = [];
 
-  Future<List<Map<String, dynamic>>> fetchColors() async {
+  Future<void> fetchColors() async {
     emit(DriverRegistrationLoading());
     try {
       final colors = await fetchColorsUseCase();
       emit(DriverRegistrationColorsFetched(colors));
-      return colors;
     } catch (e) {
       emit(DriverRegistrationFailure(error: e.toString()));
     }
-    return [];
   }
 
-  Future<List<Map<String, dynamic>>> fetchBrands() async {
+  Future<void> fetchBrands() async {
     emit(DriverRegistrationLoading());
     try {
       final brands = await fetchBrandsUseCase();
@@ -67,11 +61,9 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
     } catch (e) {
       emit(DriverRegistrationFailure(error: e.toString()));
     }
-
-    return [];
   }
 
-  Future<List<Map<String, dynamic>>> fetchModels() async {
+  Future<void> fetchModels() async {
     emit(DriverRegistrationLoading());
     try {
       final models = await fetchModelsUseCase();
@@ -79,8 +71,23 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
     } catch (e) {
       emit(DriverRegistrationFailure(error: e.toString()));
     }
+  }
 
-    return [];
+  Future<void> fetchItemsForType(String type) async {
+    emit(DriverRegistrationLoading());
+    try {
+      if (type == 'color') {
+        await fetchColors();
+      } else if (type == 'brand') {
+        await fetchBrands();
+      } else if (type == 'model') {
+        await fetchModels();
+      } else {
+        throw Exception('Invalid type');
+      }
+    } catch (e) {
+      emit(DriverRegistrationFailure(error: e.toString()));
+    }
   }
 
   void updatePersonalInfo({
@@ -145,7 +152,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
     emit(DriverRegistrationDocumentsUpdated());
   }
 
-  Future<void> submitRegistration() async {
+  Future<bool> submitRegistration() async {
     try {
       final driverData = DriverRegistrationModel(
         driverStatus: "pending",
@@ -182,12 +189,23 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       );
 
       emit(DriverRegistrationLoading());
-      await submitDriverRegistrationUseCase(driverData);
-      emit(DriverRegistrationSuccess());
+
+      final isSuccess = await submitDriverRegistrationUseCase(driverData);
+
+      if (isSuccess) {
+        emit(DriverRegistrationSuccess());
+        safePrint("Driver Registration Successful");
+        return true; // تأكيد الإرجاع
+      } else {
+        emit(DriverRegistrationFailure(error: "Registration failed"));
+        return false; // تأكيد الإرجاع
+      }
     } catch (e) {
       emit(DriverRegistrationFailure(error: e.toString()));
+      return false; // إرجاع قيمة في حالة حدوث خطأ
     }
   }
+
 
   Future<void> pickImage(ImageType type) async {
     final ImagePicker picker = ImagePicker();

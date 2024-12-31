@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/manager/driver_registration_cubit.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/pick_image.dart';
@@ -28,69 +29,63 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
     return Padding(
       padding: EdgeInsets.all(15.sp),
       child: SingleChildScrollView(
-        child: Form(
-          key: widget.cubit.documentsFormKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Personal Documents',
-                style: TextStyles.font24BlackBold,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Personal Documents',
+              style: TextStyles.font24BlackBold,
+            ),
+            verticalSpacing(20.h),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  PickImage(
+                    text: "National ID",
+                    image: widget.cubit.nationalIdImage ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.nationalIdImage);
+                      setState(() {});
+                    },
+                  ),
+                  PickImage(
+                    text: "Back Side Of ID",
+                    image: widget.cubit.backOfIdImage ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.backOfIdImage);
+                      setState(() {});
+                    },
+                  ),
+                  PickImage(
+                    text: "Criminal Status Record",
+                    image: widget.cubit.criminalStatusImage ?? '',
+                    onTap: () async {
+                      await widget.cubit
+                          .pickImage(ImageType.criminalStatusImage);
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
-              verticalSpacing(20.h),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    PickImage(
-                      text: "National ID",
-                      image: widget.cubit.nationalIdImage ?? '',
-                      onTap: () async {
-                        await widget.cubit.pickImage(ImageType.nationalIdImage);
-                        setState(() {});
-                      },
-                    ),
-                    PickImage(
-                      text: "Back Side Of ID",
-                      image: widget.cubit.backOfIdImage ?? '',
-                      onTap: () async {
-                        await widget.cubit.pickImage(ImageType.backOfIdImage);
-                        setState(() {});
-                      },
-                    ),
-                    PickImage(
-                      text: "Criminal Status Record",
-                      image: widget.cubit.criminalStatusImage ?? '',
-                      onTap: () async {
-                        await widget.cubit
-                            .pickImage(ImageType.criminalStatusImage);
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
+            ),
+            verticalSpacing(20.h),
+            TextFormEntry(
+              onChanged: (value) => widget.cubit.updateDocumentsInfo(
+                idNumber: value,
+                nationalIdImage: widget.cubit.nationalIdImage ?? '',
+                backOfIdImage: widget.cubit.backOfIdImage ?? '',
+                criminalStatusImage: widget.cubit.criminalStatusImage ?? '',
               ),
-              verticalSpacing(20.h),
-              TextFormEntry(
-                onChanged: (value) => widget.cubit.updateDocumentsInfo(
-                  idNumber: value,
-                  nationalIdImage: widget.cubit.nationalIdImage ?? '',
-                  backOfIdImage: widget.cubit.backOfIdImage ?? '',
-                  criminalStatusImage: widget.cubit.criminalStatusImage ?? '',
-                ),
-                hintText: "ID Number",
-                maxLength: 15,
-                controller: _idNumberController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your ID number';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
+              hintText: "ID Number",
+              maxLength: 14,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              controller: _idNumberController,
+              validator: NationalIdValidator.validateNationalId,
+            ),
+          ],
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/features/home/presentation/manager/home_cubit.dart';
 import 'package:ride_now/features/home/presentation/widgets/where_to_bar.dart';
 import '../../../../core/components/app_icon.dart';
 import '../../../../core/di/di.dart';
@@ -39,14 +40,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _updateCameraPosition(LatLng position) {
     _mapController.animateCamera(
-      CameraUpdate.newLatLng(position),
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: position,
+          zoom: 15,
+        ),
+      ),
+    );
+
+    _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: position,
+          zoom: 18,
+        ),
+      ),
     );
   }
 
+  final homeCubit = HomeCubit(categoriesRepo: sl());
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LocationCubit(sl(), sl(), sl())..fetchUserLocation(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              LocationCubit(sl(), sl(), sl())..fetchUserLocation(),
+        ),
+        BlocProvider(
+          create: (context) => homeCubit..getCategories(),
+        ),
+      ],
       child: Scaffold(
         key: _scaffoldKey,
         drawer: const DrawerItems(),
@@ -56,15 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, state) {
                 if (state is LocationLoaded || state is LocationMarkerSet) {
                   final position = state is LocationLoaded
-                      ? LatLng(state.position.latitude, state.position.longitude)
+                      ? LatLng(
+                          state.position.latitude, state.position.longitude)
                       : (state as LocationMarkerSet).location;
                   final address = state is LocationLoaded
                       ? state.address
                       : (state as LocationMarkerSet).location;
+
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     _updateCameraPosition(position);
                   });
-
                   return GestureDetector(
                     onPanUpdate: (details) {
                       if (details.delta.dy < 0 || details.delta.dx != 0) {
@@ -79,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: GoogleMap(
                         initialCameraPosition: CameraPosition(
                           target: position,
-                          zoom: 14,
+                          zoom: 18,
                         ),
                         onMapCreated: (controller) {
                           _mapController = controller;
@@ -95,19 +121,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         },
                         onTap: (LatLng tappedLocation) {
-                          context.read<LocationCubit>().setMarker(tappedLocation);
+                          context
+                              .read<LocationCubit>()
+                              .setMarker(tappedLocation);
                         },
                       ),
                     ),
                   );
                 }
-                return const SafeArea(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.primary,
-                    ),
-                  ),
-                );
+                return GoogleMap(
+                    initialCameraPosition:
+                        CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 10),);
               },
             ),
             AnimatedPositioned(

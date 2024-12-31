@@ -5,11 +5,22 @@ import '../../domain/repositories/d_repo_base.dart';
 import '../models/driver_registration_model.dart';
 
 class DRepoImpl implements DRepoBase {
-final DriverRegistrationRemoteDataSource remoteDataSource;
+  final DriverRegistrationRemoteDataSource remoteDataSource;
   DRepoImpl({required this.remoteDataSource});
   @override
-  Future<void> registerDriver(DriverRegistrationModel model) async {
-    await remoteDataSource.registerDriver(model);
+  Future<bool> registerDriver(DriverRegistrationModel model) async {
+    final result = await remoteDataSource.registerDriver(model);
+    try {
+      if (result) {
+        return result;
+      }
+      safePrint("Driver registered with ID");
+      safePrint(result);
+      return result;
+    } catch (e) {
+      safePrint("Error registering driver: $e");
+      return false;
+    }
   }
 
   @override
@@ -32,5 +43,4 @@ final DriverRegistrationRemoteDataSource remoteDataSource;
     safePrint("Fetched Models: $result");
     return result;
   }
-
 }

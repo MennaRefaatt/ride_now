@@ -10,11 +10,16 @@ class UserModel {
   final String email;
   final String photoUrl;
   final String phoneNumber;
+  final String? city;
+  final String? type;
 
-  UserModel( {required this.phoneNumber,
+  UserModel({
+    required this.phoneNumber,
     required this.uid,
     required this.name,
     required this.email,
+    required this.city,
+    required this.type,
     required this.photoUrl,
   });
 
@@ -24,5 +29,6 @@ class UserModel {
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }

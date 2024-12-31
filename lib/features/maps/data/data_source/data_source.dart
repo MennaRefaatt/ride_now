@@ -12,15 +12,26 @@ abstract class GeolocationDataSource {
 class GeolocationDataSourceImpl implements GeolocationDataSource {
   @override
   Future<Position> getCurrentLocation() async {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
-      permission = await Geolocator.requestPermission();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception("Location services are disabled.");
     }
 
-    if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
-      return await Geolocator.getCurrentPosition();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        throw Exception("Location permission denied.");
+      }
     }
-    throw Exception("Location permission denied");
+
+    try {
+      return await Geolocator.getCurrentPosition();
+    } catch (e) {
+      throw Exception("Failed to get location: $e");
+    }
   }
 
   @override
@@ -31,9 +42,11 @@ class GeolocationDataSourceImpl implements GeolocationDataSource {
     }
     return;
   }
+
   @override
   Stream<Position> getRealTimeLocationUpdates() {
     final positionStream = Geolocator.getPositionStream();
     return positionStream;
   }
+
 }

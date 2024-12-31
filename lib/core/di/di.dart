@@ -4,11 +4,15 @@ import 'package:get_it/get_it.dart';
 import 'package:ride_now/features/driver/driver_registration/data/repositories/d_repo_impl.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/repositories/d_repo_base.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/use_cases/fetch_brands_usecase.dart';
+import 'package:ride_now/features/home/data/data_sources/category_remote_ds.dart';
+import 'package:ride_now/features/home/data/repositories/categories_repo_impl.dart';
+import 'package:ride_now/features/home/presentation/manager/home_cubit.dart';
 import '../../features/driver/driver_registration/data/data_sources/d_remote_ds.dart';
 import '../../features/driver/driver_registration/domain/use_cases/d_fetch_colors_usecase.dart';
 import '../../features/driver/driver_registration/domain/use_cases/fetch_models_usecase.dart';
 import '../../features/driver/driver_registration/domain/use_cases/submit_d_usecase.dart';
 import '../../features/driver/driver_registration/presentation/manager/driver_registration_cubit.dart';
+import '../../features/home/domain/repositories/category_repo_base.dart';
 import '../../features/maps/data/data_source/data_source.dart';
 import '../../features/maps/data/repo_impl/repo_impl.dart';
 import '../../features/maps/domain/repo_base/repo_base.dart';
@@ -95,4 +99,15 @@ Future<void> init() async {
         fetchModelsUseCase: sl(),
         submitDriverRegistrationUseCase: sl(),
       ));
+
+  ///home
+  // Register Data Sources
+  sl.registerLazySingleton<CategoriesRemoteDS>(() => CategoriesRemoteDSImpl());
+
+  // Register Repositories
+  sl.registerLazySingleton<CategoriesRepoBase>(() => CategoriesRepoImpl(categoriesRemoteDS: sl()));
+
+  // Register Cubit
+  sl.registerFactory(() => HomeCubit(categoriesRepo: sl()));
+
 }

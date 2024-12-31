@@ -27,6 +27,11 @@ class _DriverRegistration extends State<DriverRegistration>
   late AnimationController _animationController;
   late Animation<double> _progressAnimation;
 
+  final List<GlobalKey<FormState>> _formKeys = List.generate(
+    4,
+    (index) => GlobalKey<FormState>(),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -41,8 +46,10 @@ class _DriverRegistration extends State<DriverRegistration>
 
   void _animateProgress(int nextPage) {
     final progressValue = (nextPage + 1) / onboardingData.length;
-    _progressAnimation = Tween<double>(begin: _progressAnimation.value, end: progressValue)
-        .animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _progressAnimation =
+        Tween<double>(begin: _progressAnimation.value, end: progressValue)
+            .animate(CurvedAnimation(
+                parent: _animationController, curve: Curves.easeInOut));
     _animationController.forward(from: 0);
   }
 
@@ -66,7 +73,8 @@ class _DriverRegistration extends State<DriverRegistration>
       create: (context) => driverCubit,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("S().driverRegistration", style: TextStyles.font18BlackRegular),
+          title: Text("S().driverRegistration",
+              style: TextStyles.font18BlackRegular),
           leading: Container(),
           centerTitle: true,
           actions: [
@@ -93,13 +101,25 @@ class _DriverRegistration extends State<DriverRegistration>
                 itemBuilder: (context, index) {
                   switch (index) {
                     case 0:
-                      return PersonalInformationPage(cubit: driverCubit);
+                      return Form(
+                        key: _formKeys[0],
+                        child: PersonalInformationPage(cubit: driverCubit),
+                      );
                     case 1:
-                      return DriverLicensePage(cubit: driverCubit);
+                      return Form(
+                        key: _formKeys[1],
+                        child: DriverLicensePage(cubit: driverCubit),
+                      );
                     case 2:
-                      return PersonalDocumentsPage(cubit: driverCubit);
+                      return Form(
+                        key: _formKeys[2],
+                        child: PersonalDocumentsPage(cubit: driverCubit),
+                      );
                     case 3:
-                      return VehicleInformationPage(cubit: driverCubit);
+                      return Form(
+                        key: _formKeys[3],
+                        child: VehicleInformationPage(cubit: driverCubit),
+                      );
                     default:
                       return Container();
                   }
@@ -115,7 +135,8 @@ class _DriverRegistration extends State<DriverRegistration>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${_currentPage + 1} of ${onboardingData.length}", style: TextStyles.font24BlackBold),
+                        Text("${_currentPage + 1} of ${onboardingData.length}",
+                            style: TextStyles.font24BlackBold),
                         verticalSpacing(10.h),
                         AnimatedBuilder(
                           animation: _progressAnimation,
@@ -124,7 +145,8 @@ class _DriverRegistration extends State<DriverRegistration>
                               width: MediaQuery.of(context).size.width * 0.4,
                               child: LinearProgressIndicator(
                                 value: _progressAnimation.value,
-                                backgroundColor: AppColors.semiGrey.withOpacity(0.2),
+                                backgroundColor:
+                                    AppColors.semiGrey.withOpacity(0.2),
                                 color: AppColors.primary,
                                 borderRadius: BorderRadius.circular(10.r),
                                 minHeight: 10.h,
@@ -139,7 +161,9 @@ class _DriverRegistration extends State<DriverRegistration>
                     FloatingActionButton(
                       backgroundColor: AppColors.semiGrey.withOpacity(0.2),
                       onPressed: () {
-                        _pageController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                        _pageController.previousPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeIn);
                       },
                       elevation: 0,
                       child: Icon(Icons.arrow_back_ios_new_outlined),
@@ -151,20 +175,43 @@ class _DriverRegistration extends State<DriverRegistration>
                       borderRadius: 10.r,
                       width: MediaQuery.of(context).size.width * 0.3,
                       textStyle: TextStyles.font18BlackRegular,
-                      text: _currentPage == onboardingData.length - 1 ? "S().finish" : "S().next",
+                      text: _currentPage == onboardingData.length - 1
+                          ? "S().finish"
+                          : "S().next",
                       onPressed: () async {
-                        if (_currentPage < onboardingData.length - 1) {
-                          //if (driverCubit.formKeys[_currentPage].currentState?.validate() ?? false) {
+                        if (_formKeys[_currentPage].currentState?.validate() ??
+                            false) {
+                          if (_currentPage < onboardingData.length - 1) {
                             _currentPage++;
                             _pageController.nextPage(
-                              duration: Duration(milliseconds: 300),
+                              duration: const Duration(milliseconds: 300),
                               curve: Curves.easeIn,
                             );
+                          } else {
+                            final success =
+                                await driverCubit.submitRegistration();
+                            if (success) {
+                              Navigator.pushNamed(
+                                  context, RoutingEndpoints.driverPendingScreen);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content:
+                                      Text("Driver Registered Successfully"),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      "Registration Failed. Please try again."),
+                                ),
+                              );
+                            }
                           }
-                       // } else {
-                          await driverCubit.submitRegistration().then((value) => Navigator.pushNamed(context, RoutingEndpoints.driverOnBoarding));
                         }
-                     // },
+                      },
                     ),
                   ),
                 ],

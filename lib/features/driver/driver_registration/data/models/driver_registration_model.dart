@@ -19,7 +19,14 @@ class DriverRegistrationModel{
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DriverRegistrationModelToJson(this);
+  Map<String, dynamic> toJson() => {
+    'driverStatus': driverStatus,
+    'driverId': driverId,
+    'personalInfo': personalInfo.toJson(),
+    'vehicleInfo': vehicleInfo.toJson(),
+    'driverInfo': driverInfo.toJson(),
+    'personalDocument': personalDocument.toJson(),
+  };
 }
 @JsonSerializable()
 class VehicleRegistrationModel{
