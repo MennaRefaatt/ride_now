@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import '../../../../core/helpers/safe_print.dart';
 import '../../../../core/theming/app_colors.dart';
@@ -38,9 +39,9 @@ class BottomSheetWidget extends StatelessWidget {
                     : "S().selectTheme",
             style: TextStyles.font24BlackBold,
           ),
-          SizedBox(height: 10.h),
+          verticalSpacing(10.h),
           Divider(color: AppColors.semiGrey),
-          SizedBox(height: 10.h),
+          verticalSpacing(10.h),
           Expanded(
             child: ListView(
               children: isLanguage

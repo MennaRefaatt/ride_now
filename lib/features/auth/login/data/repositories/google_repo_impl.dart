@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../core/helpers/enums/user_type.dart';
 import '../../domain/repositories/google_repo_base.dart';
+import '../data_sources/firestore_service/firestore_param.dart';
 import '../data_sources/firestore_service/firestore_service.dart';
 import '../data_sources/google_sign_in/google_sign_in.dart';
-import '../data_sources/remote_data_source/remote_data_source.dart';
+import '../data_sources/remote_data_source/local_data_source.dart';
 import '../models/user.dart';
 
 class GoogleRepositoryImpl implements GoogleRepositoryBase {
@@ -23,14 +25,21 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
         phone = await _promptForPhoneNumber();
       }
 
-      await _firestoreService.saveUserToFirestore(user, phone);
+      final param = FirestoreParam(
+        phoneNumber: phone,
+        city: "missing to pick the location",
+        type: UserType.passenger.name,
+      );
+      await _firestoreService.saveUserToFirestore(user,param);
 
       final userModel = UserModel(
+        city: param.city ?? '',
+        type: param.type ?? '',
         uid: user.uid,
         name: user.displayName ?? '',
         email: user.email ?? '',
         photoUrl: user.photoURL ?? '',
-        phoneNumber: phone,
+        phoneNumber: param.phoneNumber ?? '',
       );
 
       await _dsAuthLocal.saveDataToLocal(userModel);

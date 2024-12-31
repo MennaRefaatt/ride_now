@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ride_now/features/auth/login/data/data_sources/facebook_sign_in/facebook_sign_in.dart';
-import 'package:ride_now/features/auth/login/data/data_sources/remote_data_source/remote_data_source.dart';
+import 'package:ride_now/features/auth/login/data/data_sources/firestore_service/firestore_param.dart';
+import 'package:ride_now/features/auth/login/data/data_sources/remote_data_source/local_data_source.dart';
+import '../../../../../core/helpers/enums/user_type.dart';
 import '../../domain/repositories/facebook_repo_base.dart';
 import '../data_sources/firestore_service/firestore_service.dart';
 import '../models/user.dart';
@@ -18,20 +20,26 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
   @override
   Future<UserModel?> signInWithFacebook() async {
     final user = await _dsFacebookSignIn.signInWithFacebook();
-
     if (user != null) {
       String phone = user.phoneNumber ?? '';
       if (phone.isEmpty) {
         phone = await _promptForPhoneNumber();
       }
-      await _firestoreService.saveUserToFirestore(user, phone);
+      final param = FirestoreParam(
+        phoneNumber: phone,
+        city: "missing to pick the location",
+        type: UserType.passenger.name,
+      );
+      await _firestoreService.saveUserToFirestore(user,param);
 
       final userModel = UserModel(
+        city: param.city ?? '',
+        type: param.type ?? '',
         uid: user.uid,
         name: user.displayName ?? '',
         email: user.email ?? '',
         photoUrl: user.photoURL ?? '',
-        phoneNumber: phone,
+        phoneNumber: param.phoneNumber ?? '',
       );
 
       await _dsAuthLocal

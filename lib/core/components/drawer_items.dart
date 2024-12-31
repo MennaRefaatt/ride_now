@@ -1,24 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/enums/user_type.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_button.dart';
+import '../../features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
 import '../../generated/l10n.dart';
 
-class DrawerItems extends StatelessWidget {
+class DrawerItems extends StatefulWidget {
   const DrawerItems({super.key});
+
+  @override
+  State<DrawerItems> createState() => _DrawerItemsState();
+}
+
+class _DrawerItemsState extends State<DrawerItems> {
+  final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
+  final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
+  bool? isDriverMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserMode();
+  }
+
+  void _loadUserMode() {
+    String? mode = SharedPref.getString(key: MySharedKeys.type);
+    setState(() {
+      isDriverMode = mode == UserType.driver.name;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final String currentRoute = ModalRoute.of(context)?.settings.name ?? '';
-    final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
-    final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
-
     return Drawer(
       child: Container(
         margin: EdgeInsets.all(15.sp),
@@ -33,7 +54,8 @@ class DrawerItems extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 30.sp,
-                    backgroundImage: pictureUrl.isNotEmpty && Uri.tryParse(pictureUrl)?.hasAbsolutePath == true
+                    backgroundImage: pictureUrl.isNotEmpty &&
+                            Uri.tryParse(pictureUrl)?.hasAbsolutePath == true
                         ? NetworkImage(pictureUrl)
                         : null,
                     child: Visibility(
@@ -90,9 +112,20 @@ class DrawerItems extends StatelessWidget {
             ),
             const Divider(),
             AppButton(
-              text: "S().Driver mode",
+              text: isDriverMode! ? "Passenger Mode" : "Driver Mode",
               backgroundColor: AppColors.primary,
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  isDriverMode = !isDriverMode!;
+                });
+                saveModeToFirestore(isDriverMode!
+                    ? UserType.driver.name
+                    : UserType.passenger.name);
+                Navigator.pushReplacementNamed(
+                  context,
+                  RoutingEndpoints.driverOnBoarding,
+                );
+              },
               borderRadius: 10.r,
               textStyle: TextStyles.font14BlackRegular,
             ),
@@ -100,6 +133,11 @@ class DrawerItems extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void saveModeToFirestore(String mode) {
+    FirestoreService().saveUserModeToFirestore(mode);
+    SharedPref.setString(key: MySharedKeys.type, value: mode);
   }
 
   Widget drawerItem({

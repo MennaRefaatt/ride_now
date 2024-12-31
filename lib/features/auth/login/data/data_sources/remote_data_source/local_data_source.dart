@@ -15,11 +15,17 @@ class DSAuthLocalImpl implements DSAuthLocal {
     SharedPref.setString(key: MySharedKeys.email, value: user.email);
     SharedPref.setString(key: MySharedKeys.userId, value: user.uid);
     SharedPref.setString(key: MySharedKeys.userName, value: user.name);
+    SharedPref.setString(key: MySharedKeys.phone, value: user.phoneNumber);
+    SharedPref.setString(key: MySharedKeys.picture, value: user.photoUrl);
+    SharedPref.setString(key: MySharedKeys.city, value: user.city!);
+    SharedPref.setString(key: MySharedKeys.type, value: user.type!);
   }
 
   @override
   Future<UserModel> getDataFromLocal() async {
     UserModel user = UserModel(
+      city: SharedPref.getString(key: MySharedKeys.city) ?? "",
+      type: SharedPref.getString(key: MySharedKeys.type) ?? "",
       email: SharedPref.getString(key: MySharedKeys.email) ?? "",
       uid: SharedPref.getString(key: MySharedKeys.userId) ?? "",
       name: SharedPref.getString(key: MySharedKeys.userName) ?? "",
