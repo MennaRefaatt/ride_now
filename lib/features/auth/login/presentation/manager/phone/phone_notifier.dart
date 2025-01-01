@@ -31,7 +31,7 @@ class PhoneAuthNotifier extends StateNotifier<PhoneAuthState> {
       }
       await _phoneAuthRepository.verifyOtp(state.verificationId!, otp);
       state = state.copyWith(isLoading: false);
-      Navigator.pushReplacementNamed(context, RoutingEndpoints.home); // Navigate to Home
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome); // Navigate to Home
     } catch (e) {
       state = state.copyWith(errorMessage: e.toString(), isLoading: false);
     }

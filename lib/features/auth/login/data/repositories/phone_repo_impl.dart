@@ -53,6 +53,7 @@ class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {
         email: user.email ?? '',
         photoUrl: user.photoURL ?? '',
         phoneNumber: param.phoneNumber ?? '',
+        currentTripId: param.currentTripId ?? '',
       );
       await _dsAuthLocal.saveDataToLocal(userModel);
 

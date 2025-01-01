@@ -39,6 +39,7 @@ class AppTextFormField extends StatelessWidget {
   final Color? controllerTextColor;
   final String? errorText;
   final  List<TextInputFormatter>? inputFormatters;
+  final void Function(String)? onFieldSubmitted;
   const AppTextFormField({
     super.key,
     this.contentPadding,
@@ -72,6 +73,7 @@ class AppTextFormField extends StatelessWidget {
     this.withShadow = false,
     this.controllerTextColor,
     this.errorText, this.inputFormatters,
+    this.onFieldSubmitted
   });
 
   @override
@@ -167,6 +169,7 @@ class AppTextFormField extends StatelessWidget {
                 : TextStyles.font18primaryMedium,
             onChanged: onChanged,
             validator: validator,
+            onFieldSubmitted: onFieldSubmitted,
           ),
         ),
       ],

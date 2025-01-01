@@ -3,11 +3,13 @@ part 'driver_registration_model.g.dart';
 @JsonSerializable()
 class DriverRegistrationModel{
   final String driverStatus;
+  final String driverTripStatus;
   final String driverId;
   final PersonalRegistrationModel personalInfo;
   final VehicleRegistrationModel vehicleInfo;
   final DriverLicenseModel driverInfo;
   final PersonalDocumentModel personalDocument;
+
   DriverRegistrationModel({
     required this.driverId,
     required this.driverStatus,
@@ -15,6 +17,7 @@ class DriverRegistrationModel{
     required this.vehicleInfo,
     required this.driverInfo,
     required this.personalDocument,
+    required this.driverTripStatus
   });
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
@@ -22,6 +25,7 @@ class DriverRegistrationModel{
   Map<String, dynamic> toJson() => {
     'driverStatus': driverStatus,
     'driverId': driverId,
+    'driverTripStatus': driverTripStatus,
     'personalInfo': personalInfo.toJson(),
     'vehicleInfo': vehicleInfo.toJson(),
     'driverInfo': driverInfo.toJson(),

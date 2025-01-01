@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/otp_screen.dart';
-import 'package:ride_now/features/check_out/presentation/pages/check_out.dart';
 import 'package:ride_now/features/driver/d_pending/d_pending_screen.dart';
+import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_home.dart';
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/pages/driver_registration.dart';
-import 'package:ride_now/features/home/presentation/pages/home_screen.dart';
 import 'package:ride_now/features/maps/presentation/screen/map_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/city_screen.dart';
@@ -15,6 +14,9 @@ import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart
 import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/settings/presentation/pages/settings_screen.dart';
 import 'package:ride_now/features/splash.dart';
+import '../../../features/passenger/check_out/presentation/check_out_args.dart';
+import '../../../features/passenger/check_out/presentation/pages/check_out.dart';
+import '../../../features/passenger/home/presentation/pages/home_screen.dart';
 import '../../helpers/safe_print.dart';
 
 class RouteServices {
@@ -33,8 +35,10 @@ class RouteServices {
       case RoutingEndpoints.login:
         return _customFadeRoute(
             ProviderScope(child: const LoginScreen()), routeSettings.name!);
-      case RoutingEndpoints.home:
-        return _customFadeRoute(const HomeScreen(), routeSettings.name!);
+      case RoutingEndpoints.passengerHome:
+        return _customFadeRoute(const PassengerHome(), routeSettings.name!);
+      case RoutingEndpoints.driverHome:
+        return _customFadeRoute(const DriverHome(), routeSettings.name!);
       case RoutingEndpoints.city:
         return _customFadeRoute(const CityScreen(), routeSettings.name!);
       case RoutingEndpoints.settings:
@@ -44,7 +48,8 @@ class RouteServices {
       case RoutingEndpoints.maps:
         return _customFadeRoute(const MapScreen(), routeSettings.name!);
       case RoutingEndpoints.checkOut:
-        return _customFadeRoute(const CheckOut(), routeSettings.name!);
+        final args = routeSettings.arguments as CheckOutArgs;
+        return _customFadeRoute(CheckOut(args: args), routeSettings.name!);
       case RoutingEndpoints.profile:
         return _customFadeRoute(ProfileScreen(), routeSettings.name!);
       case RoutingEndpoints.driverOnBoarding:
