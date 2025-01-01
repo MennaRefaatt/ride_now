@@ -93,10 +93,14 @@ class _DrawerItemsState extends State<DrawerItems> {
                     context: context,
                     title: S().city,
                     icon: CupertinoIcons.car_detailed,
-                    destination: RoutingEndpoints.home,
-                    isActive: currentRoute == RoutingEndpoints.home,
-                    onTap: () => Navigator.pushReplacementNamed(
-                        context, RoutingEndpoints.home),
+                    destination: RoutingEndpoints.passengerHome,
+                    isActive: currentRoute == RoutingEndpoints.passengerHome,
+                    onTap: () => SharedPref.getString(key: MySharedKeys.type) ==
+                            UserType.driver.name
+                        ? Navigator.pushReplacementNamed(
+                            context, RoutingEndpoints.driverHome)
+                        : Navigator.pushReplacementNamed(
+                            context, RoutingEndpoints.passengerHome),
                   ),
                   drawerItem(
                     context: context,

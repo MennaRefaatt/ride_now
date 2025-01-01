@@ -40,6 +40,7 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
         email: user.email ?? '',
         photoUrl: user.photoURL ?? '',
         phoneNumber: param.phoneNumber ?? '',
+        currentTripId: param.currentTripId ?? '',
       );
 
       await _dsAuthLocal.saveDataToLocal(userModel);

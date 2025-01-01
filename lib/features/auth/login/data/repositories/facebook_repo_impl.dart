@@ -40,6 +40,7 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
         email: user.email ?? '',
         photoUrl: user.photoURL ?? '',
         phoneNumber: param.phoneNumber ?? '',
+        currentTripId: param.currentTripId ?? '',
       );
 
       await _dsAuthLocal

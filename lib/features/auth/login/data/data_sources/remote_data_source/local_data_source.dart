@@ -19,6 +19,7 @@ class DSAuthLocalImpl implements DSAuthLocal {
     SharedPref.setString(key: MySharedKeys.picture, value: user.photoUrl);
     SharedPref.setString(key: MySharedKeys.city, value: user.city!);
     SharedPref.setString(key: MySharedKeys.type, value: user.type!);
+    SharedPref.setString(key: MySharedKeys.currentTripId, value: user.currentTripId!);
   }
 
   @override
@@ -31,6 +32,7 @@ class DSAuthLocalImpl implements DSAuthLocal {
       name: SharedPref.getString(key: MySharedKeys.userName) ?? "",
       phoneNumber: SharedPref.getString(key: MySharedKeys.phone) ?? "",
       photoUrl: SharedPref.getString(key: MySharedKeys.picture) ?? "",
+      currentTripId: SharedPref.getString(key: MySharedKeys.currentTripId) ?? "",
     );
     return user;
   }

@@ -21,6 +21,6 @@ class LocationError extends LocationState {
 
 class LocationMarkerSet extends LocationState {
   final LatLng location;
-
-  LocationMarkerSet(this.location);
+  final String address;
+  LocationMarkerSet(this.location, this.address);
 }

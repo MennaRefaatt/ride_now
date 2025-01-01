@@ -17,6 +17,7 @@ class FirestoreService {
         photoUrl: user.photoURL ?? '',
         city: param.city ?? '',
         type: param.type ?? '',
+        currentTripId: param.currentTripId ?? '',
       );
       await _db.collection('users').doc(user.uid).set(appUser.toJson());
     } catch (e) {

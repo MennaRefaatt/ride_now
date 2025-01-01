@@ -19,12 +19,14 @@ DriverRegistrationModel _$DriverRegistrationModelFromJson(
           json['driverInfo'] as Map<String, dynamic>),
       personalDocument: PersonalDocumentModel.fromJson(
           json['personalDocument'] as Map<String, dynamic>),
+      driverTripStatus: json['driverTripStatus'] as String,
     );
 
 Map<String, dynamic> _$DriverRegistrationModelToJson(
         DriverRegistrationModel instance) =>
     <String, dynamic>{
       'driverStatus': instance.driverStatus,
+      'driverTripStatus': instance.driverTripStatus,
       'driverId': instance.driverId,
       'personalInfo': instance.personalInfo,
       'vehicleInfo': instance.vehicleInfo,

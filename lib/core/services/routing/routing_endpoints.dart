@@ -3,7 +3,8 @@ class RoutingEndpoints {
   static const onBoardingScreen = '/onBoardingScreen';
   static const scanner = '/scanner';
   static const login = '/login';
-  static const home = '/home';
+  static const passengerHome = '/passengerHome';
+  static const driverHome = '/driverHome';
   static const otp = '/otp';
   static const checkOut = '/checkOut';
   static const profile = '/profile';
