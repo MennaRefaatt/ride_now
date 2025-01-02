@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class TripModel {
   late final String tripId;
   final String passengerId;
@@ -5,7 +7,7 @@ class TripModel {
   final String from;
   final String to;
   final String status;
-  final DateTime dateTime;
+  final Timestamp dateTime;
   final String price;
   final String passengerName;
   final String distance;

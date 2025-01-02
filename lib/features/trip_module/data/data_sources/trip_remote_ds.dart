@@ -5,6 +5,7 @@ import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/safe_print.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../models/trip_model.dart';
+import 'distance_helper/distance_helper.dart';
 
 abstract class TripRemoteDS {
   Future<List<TripModel>> getTrips(String userId);
@@ -18,6 +19,9 @@ class TripRemoteDSImpl implements TripRemoteDS {
     try {
       final getTrips = await FirebaseFirestore.instance
           .collection('trips')
+          .where("status", isEqualTo: TripStatus.pending.name)
+          .orderBy('dateTime', descending: true)
+          .limit(10)
           .get();
       return getTrips.docs.map((doc) {
         final data = doc.data();
@@ -32,6 +36,12 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<void> createTrip(TripModel tripModel) async {
     try {
+      TripHelper tripHelper = TripHelper();
+      String distance = await tripHelper
+          .calculateDistance(tripModel.from, tripModel.to, unit: 'km');
+      double distanceInKm = double.parse(distance.split(" ")[0]); // Parse the number part before "km"
+      double tripCost = tripHelper.calculateCost(distanceInKm);
+
       final availableDriversSnapshot = await FirebaseFirestore.instance
           .collection('drivers')
           .where("driverTripStatus", whereIn: [
@@ -50,11 +60,11 @@ class TripRemoteDSImpl implements TripRemoteDS {
           passengerId: tripModel.passengerId,
           from: tripModel.from,
           to: tripModel.to,
-          dateTime: DateTime.now(),
-          price: tripModel.price,
+          dateTime: tripModel.dateTime,
+          price: tripCost.toString(),
           status: TripStatus.pending.name,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
-          distance: tripModel.distance
+          distance: distance,
         );
         final tripRef = await FirebaseFirestore.instance
             .collection('trips')

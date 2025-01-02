@@ -33,11 +33,15 @@ class CheckOut extends StatelessWidget {
             text: "S().CheckOut",
             withDivider: false,
             backgroundColor: Colors.white,
+            leading: true,
+            onPressed: () => Navigator.pop(context, args.toAddress),
           ),
         ),
         body: Column(
           children: [
-            RecommendedCost(costText: "200",),
+            RecommendedCost(
+              costText: tripCubit.cost.toString(),
+            ),
             verticalSpacing(10.h),
             Container(
               padding: EdgeInsets.all(15.sp),

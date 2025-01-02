@@ -31,10 +31,13 @@ class EnterYourRoute extends StatefulWidget {
 }
 
 class _EnterYourRouteState extends State<EnterYourRoute> {
+
+  late String toAddress;
   @override
   void initState() {
     super.initState();
     widget.cubit.fromController = TextEditingController(text: widget.fromText);
+    toAddress = widget.cubit.toController.text;
     widget.cubit.toController = TextEditingController();
     if (widget.cubit.toController.text.isEmpty) {
       Future.delayed(Duration.zero, () {
@@ -62,7 +65,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
 
   void _navigateToCheckout(BuildContext context) {
     final fromAddress = widget.cubit.fromController.text.trim();
-    final toAddress = widget.cubit.toController.text.trim();
+    var toAddress = widget.cubit.toController.text.trim();
 
     if (fromAddress.isEmpty || toAddress.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -78,7 +81,14 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
         fromAddress: fromAddress,
         toAddress: toAddress,
       ),
-    );
+    ).then((result) {
+      if (result != null && result is String) {
+        setState(() {
+          this.toAddress = result;
+          widget.cubit.toController.text = result;
+        });
+      }
+    });
   }
 
   void _navigateToMaps(BuildContext context, TextEditingController controller) {
