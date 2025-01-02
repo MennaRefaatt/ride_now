@@ -12,6 +12,7 @@ import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../core/utils/app_button.dart';
 import '../../../../maps/presentation/manager/location_cubit.dart';
+import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 import '../manager/home_cubit.dart';
 import '../widgets/ride_categories.dart';
 import '../widgets/where_to_bar.dart';
@@ -75,6 +76,8 @@ class _PassengerHomeState extends State<PassengerHome> {
         homeCubit.toFocusNode, fromText, backgroundColor, homeCubit);
   }
 
+  final tripCubit = TripCubit(
+      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -84,6 +87,9 @@ class _PassengerHomeState extends State<PassengerHome> {
         ),
         BlocProvider(
           create: (context) => homeCubit..getCategories(),
+        ),
+        BlocProvider(
+          create: (context) => tripCubit..getTrips(),
         ),
       ],
       child: Scaffold(
@@ -187,8 +193,23 @@ class _PassengerHomeState extends State<PassengerHome> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const RideCategories(),
-                    WhereToBar(
-                      cubit: homeCubit,
+                    BlocBuilder<TripCubit, TripState>(
+                      builder: (context, state) {
+                        if (state is TripsLoading) {
+                          return const CircularProgressIndicator(
+                            color: AppColors.primary,
+                          );
+                        } else if (state is TripsLoaded) {
+                          return WhereToBar(
+                            cubit: homeCubit,
+                            lastTrips: state.trips,
+                          );
+                        } else if (state is TripsError) {
+                          safePrint('Error loading trips: ${state.message}');
+                          return Text('Error: ${state.message}');
+                        }
+                        return const SizedBox();
+                      },
                     ),
                     AppButton(
                       text: "S().Order",
@@ -196,14 +217,14 @@ class _PassengerHomeState extends State<PassengerHome> {
                       onPressed: () {
                         if (homeCubit.fromController.text.isEmpty ||
                             homeCubit.toController.text.isEmpty) {
-                          //_openEnterYourRouteFromOrderButton(context);
+                          _openEnterYourRouteFromOrderButton(context);
                         }
                         Navigator.pushNamed(context, RoutingEndpoints.checkOut,
                             arguments: CheckOutArgs(
                                 fromAddress: homeCubit.fromController.text,
                                 toAddress: homeCubit.toController.text));
                         safePrint(homeCubit.toController.text);
-                        },
+                      },
                       backgroundColor: AppColors.primary,
                       width: double.infinity,
                     )

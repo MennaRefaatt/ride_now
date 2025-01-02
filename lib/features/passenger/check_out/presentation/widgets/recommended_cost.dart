@@ -47,7 +47,7 @@ final String costText;
               Text("Recommended fare:",
                   style: TextStyles.font18BlackRegular
                       .copyWith(fontWeight: FontWeight.bold)),
-              Text(" EGP 100",
+              Text("EGP $costText",
                   style: TextStyles.font18BlackRegular
                       .copyWith(fontWeight: FontWeight.bold)),
             ],

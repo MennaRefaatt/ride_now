@@ -6,12 +6,13 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 
 import '../../../../../core/helpers/safe_print.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 import 'more_options.dart';
 
-class AddressSummarize extends StatelessWidget {
+class AddressSummarize extends StatefulWidget {
   const AddressSummarize({
     super.key,
     required this.fromAddress,
@@ -21,6 +22,30 @@ class AddressSummarize extends StatelessWidget {
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
+
+  @override
+  State<AddressSummarize> createState() => _AddressSummarizeState();
+}
+
+class _AddressSummarizeState extends State<AddressSummarize> {
+  late String toAddress;
+
+  @override
+  void initState() {
+    super.initState();
+    toAddress = widget.toAddress;
+  }
+
+  void _pickDestinationAddress(
+      BuildContext context,) {
+    Navigator.pushNamed(context, RoutingEndpoints.maps).then((result) {
+      if (result != null && result is String) {
+        setState(() {
+          toAddress = result;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +70,7 @@ class AddressSummarize extends StatelessWidget {
                 horizontalSpacing(10.w),
                 Expanded(
                   child: Text(
-                    fromAddress,
+                    widget.fromAddress,
                     style: TextStyles.font18BlackRegular.copyWith(
                       fontWeight: FontWeight.bold,
                       overflow: TextOverflow.ellipsis,
@@ -68,7 +93,7 @@ class AddressSummarize extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () => _pickDestinationAddress(context,),
                   icon: Icon(CupertinoIcons.add),
                 ),
               ],
@@ -92,8 +117,8 @@ class AddressSummarize extends StatelessWidget {
                           text: "S().done",
                           textStyle: TextStyles.font14BlackRegular,
                           onPressed: () async {
-                            await tripCubit.createTrip(
-                              fromAddress,
+                            await widget.tripCubit.createTrip(
+                              widget.fromAddress,
                               toAddress,
                             );
                             safePrint("Order button pressed");
