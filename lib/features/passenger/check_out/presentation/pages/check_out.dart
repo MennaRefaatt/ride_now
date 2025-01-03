@@ -20,7 +20,7 @@ class CheckOut extends StatelessWidget {
   });
   final CheckOutArgs args;
   final tripCubit = TripCubit(
-      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl());
+      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl(),getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

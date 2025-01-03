@@ -23,9 +23,23 @@ class TripRepoImpl implements TripRepoBase {
   }
 
   @override
-  Future<List<TripModel>> getTrips(String userId) async{
-    final getTrips =await tripRemoteDS.getTrips(userId);
+  Future<List<TripModel>> getTrips(String userId) async {
+    final getTrips = await tripRemoteDS.getTrips(userId);
     safePrint("getTrips: $getTrips");
     return getTrips;
+  }
+
+  @override
+  Future<TripModel> getTripDetails() async {
+    final getTrips = await tripRemoteDS.getTripDetails();
+    safePrint("getTripDetails: $getTrips");
+    return getTrips;
+  }
+
+  @override
+  Future<bool> cancelTripRequest(String tripId) async {
+    final tripRef = await tripRemoteDS.cancelTripRequest(tripId);
+    safePrint(tripRef);
+    return tripRef;
   }
 }
