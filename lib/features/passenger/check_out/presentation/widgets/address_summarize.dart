@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
+import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
@@ -37,7 +38,8 @@ class _AddressSummarizeState extends State<AddressSummarize> {
   }
 
   void _pickDestinationAddress(
-      BuildContext context,) {
+    BuildContext context,
+  ) {
     Navigator.pushNamed(context, RoutingEndpoints.maps).then((result) {
       if (result != null && result is String) {
         setState(() {
@@ -93,7 +95,9 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => _pickDestinationAddress(context,),
+                  onPressed: () => _pickDestinationAddress(
+                    context,
+                  ),
                   icon: Icon(CupertinoIcons.add),
                 ),
               ],
@@ -117,10 +121,18 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                           text: "S().done",
                           textStyle: TextStyles.font14BlackRegular,
                           onPressed: () async {
-                            await widget.tripCubit.createTrip(
+                            await widget.tripCubit
+                                .createTrip(
                               widget.fromAddress,
                               toAddress,
-                            );
+                            )
+                                .then((value) {
+                              Navigator.pushReplacementNamed(
+                                  context, RoutingEndpoints.tripTracking,
+                                  arguments: TripTrackingArgs(
+                                      fromAddress: widget.fromAddress,
+                                      toAddress: toAddress));
+                            });
                             safePrint("Order button pressed");
                           },
                           backgroundColor: AppColors.primary,

@@ -77,7 +77,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   }
 
   final tripCubit = TripCubit(
-      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl());
+      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl(),getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -150,6 +150,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                   );
                 }
                 return GoogleMap(
+                  mapType: MapType.satellite,
                   initialCameraPosition: CameraPosition(
                       target: LatLng(30.0444, 31.2357), zoom: 10),
                 );

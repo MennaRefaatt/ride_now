@@ -17,6 +17,29 @@ final class TripsError extends TripState {
   TripsError(this.message);
 }
 
+final class GetTripDetailsLoading extends TripState {}
+
+final class GetTripDetailsLoaded extends TripState {
+  final TripModel trip;
+  GetTripDetailsLoaded(this.trip);
+}
+
+final class GetTripDetailsError extends TripState {
+  final String message;
+  GetTripDetailsError(this.message);
+}
+final class CancelTripLoading extends TripState {}
+
+final class CancelTripSuccess extends TripState {
+  final String message;
+  CancelTripSuccess(this.message);
+}
+
+final class CancelTripError extends TripState {
+  final String message;
+  CancelTripError(this.message);
+}
+
 final class CreateTripLoading extends TripState {}
 
 final class CreateTripLoaded extends TripState {}
@@ -30,7 +53,8 @@ final class AcceptTripLoading extends TripState {}
 
 final class AcceptTripLoaded extends TripState {
   final String message;
-  AcceptTripLoaded(this.message);
+  final TripModel trip;
+  AcceptTripLoaded(this.message, this.trip);
 }
 
 final class AcceptTripError extends TripState {

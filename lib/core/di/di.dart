@@ -5,7 +5,9 @@ import 'package:ride_now/features/driver/driver_registration/data/repositories/d
 import 'package:ride_now/features/driver/driver_registration/domain/repositories/d_repo_base.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/use_cases/fetch_brands_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
+import 'package:ride_now/features/trip_module/domain/use_cases/cancel_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
+import 'package:ride_now/features/trip_module/domain/use_cases/get_trip_details_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
 import '../../features/driver/driver_registration/data/data_sources/d_remote_ds.dart';
 import '../../features/driver/driver_registration/domain/use_cases/d_fetch_colors_usecase.dart';
@@ -124,10 +126,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CreateTripUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => AcceptTripUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => GetTripsUseCase(tripRepoBase: sl()));
+  sl.registerLazySingleton(() => GetTripDetailsUseCase(tripRepoBase: sl()));
+  sl.registerLazySingleton(() => CancelTripUseCase(sl()));
 
-  sl.registerFactory(() => TripCubit(
+  sl.registerFactory(
+    () => TripCubit(
         createTripUseCase: sl(),
         acceptTripUseCase: sl(),
         getTripsUseCase: sl(),
-      ));
+        getTripDetailsUseCase: sl(),
+        cancelTripUseCase: sl()),
+  );
 }

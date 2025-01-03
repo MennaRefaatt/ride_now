@@ -14,6 +14,8 @@ import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart
 import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/settings/presentation/pages/settings_screen.dart';
 import 'package:ride_now/features/splash.dart';
+import 'package:ride_now/features/trip_module/presentation/pages/trip_screen.dart';
+import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import '../../../features/passenger/check_out/presentation/check_out_args.dart';
 import '../../../features/passenger/check_out/presentation/pages/check_out.dart';
 import '../../../features/passenger/home/presentation/pages/home_screen.dart';
@@ -47,6 +49,9 @@ class RouteServices {
         return _customFadeRoute(const DPendingScreen(), routeSettings.name!);
       case RoutingEndpoints.maps:
         return _customFadeRoute(const MapScreen(), routeSettings.name!);
+        case RoutingEndpoints.tripTracking:
+          final args = routeSettings.arguments as TripTrackingArgs;
+          return _customFadeRoute( TripScreen(args: args), routeSettings.name!);
       case RoutingEndpoints.checkOut:
         final args = routeSettings.arguments as CheckOutArgs;
         return _customFadeRoute(CheckOut(args: args), routeSettings.name!);

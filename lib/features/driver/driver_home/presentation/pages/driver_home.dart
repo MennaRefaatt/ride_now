@@ -17,10 +17,10 @@ class DriverHome extends StatefulWidget {
 
 class _DriverHomeState extends State<DriverHome> {
   final tripCubit = TripCubit(
-    acceptTripUseCase: sl(),
-    createTripUseCase: sl(),
-    getTripsUseCase: sl(),
-  );
+      acceptTripUseCase: sl(),
+      createTripUseCase: sl(),
+      getTripsUseCase: sl(),
+      getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

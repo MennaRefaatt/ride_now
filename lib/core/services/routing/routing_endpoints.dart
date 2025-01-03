@@ -9,6 +9,7 @@ class RoutingEndpoints {
   static const checkOut = '/checkOut';
   static const profile = '/profile';
   static const maps = '/maps';
+  static const tripTracking = '/tripTracking';
   static const settings = '/settings';
   static const city = '/city';
   static const notifications = '/notifications';
