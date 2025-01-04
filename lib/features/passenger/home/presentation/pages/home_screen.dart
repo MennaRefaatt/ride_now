@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
+import 'package:ride_now/features/connection_lost.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
 import '../../../../../core/components/app_icon.dart';
 import '../../../../../core/components/drawer_items.dart';
@@ -27,7 +28,7 @@ class PassengerHome extends StatefulWidget {
 class _PassengerHomeState extends State<PassengerHome> {
   bool _isHidden = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late GoogleMapController _mapController;
+  late final GoogleMapController mapController;
 
   void _onMapSwipe() {
     setState(() {
@@ -42,7 +43,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   }
 
   void _updateCameraPosition(LatLng position) {
-    _mapController.animateCamera(
+    mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: position,
@@ -51,7 +52,7 @@ class _PassengerHomeState extends State<PassengerHome> {
       ),
     );
 
-    _mapController.animateCamera(
+    mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
           target: position,
@@ -77,7 +78,11 @@ class _PassengerHomeState extends State<PassengerHome> {
   }
 
   final tripCubit = TripCubit(
-      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl(),getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
+      acceptTripUseCase: sl(),
+      getTripsUseCase: sl(),
+      createTripUseCase: sl(),
+      getTripDetailsUseCase: sl(),
+      cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -128,7 +133,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                           zoom: 18,
                         ),
                         onMapCreated: (controller) {
-                          _mapController = controller;
+                          mapController = controller;
                         },
                         markers: {
                           Marker(
@@ -233,6 +238,10 @@ class _PassengerHomeState extends State<PassengerHome> {
                 ),
               ),
             ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConnectionAwareWidget(),
+            )
           ],
         ),
       ),

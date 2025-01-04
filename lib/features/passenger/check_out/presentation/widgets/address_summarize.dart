@@ -30,6 +30,7 @@ class AddressSummarize extends StatefulWidget {
 
 class _AddressSummarizeState extends State<AddressSummarize> {
   late String toAddress;
+  String? tripId;
 
   @override
   void initState() {
@@ -117,21 +118,44 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                             ),
                           );
                         }
+                        if (state is CreateTripLoaded) {
+                          tripId = state.trip.tripId;
+                        }
                         return AppButton(
                           text: "S().done",
                           textStyle: TextStyles.font14BlackRegular,
                           onPressed: () async {
                             await widget.tripCubit
-                                .createTrip(
-                              widget.fromAddress,
-                              toAddress,
-                            )
+                                .createTrip(widget.fromAddress, toAddress)
                                 .then((value) {
-                              Navigator.pushReplacementNamed(
-                                  context, RoutingEndpoints.tripTracking,
+                              if (tripId != null && tripId!.isNotEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          "Trip created successfully: $tripId")),
+                                );
+                                Navigator.pushReplacementNamed(
+                                  context,
+                                  RoutingEndpoints.tripTracking,
                                   arguments: TripTrackingArgs(
-                                      fromAddress: widget.fromAddress,
-                                      toAddress: toAddress));
+                                    fromAddress: widget.fromAddress,
+                                    toAddress: toAddress,
+                                    tripId: tripId!,
+                                  ),
+                                );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text("Error: Trip ID is missing")),
+                                );
+                              }
+                            }).catchError((error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text("Error creating trip: $error")),
+                              );
                             });
                             safePrint("Order button pressed");
                           },
@@ -151,4 +175,44 @@ class _AddressSummarizeState extends State<AddressSummarize> {
       ),
     );
   }
+  // void _onCreateTripOrGetExistingTrip(BuildContext context) async {
+  //   try {
+  //     final tripCubit = widget.tripCubit;
+  //     final fromAddress = widget.fromAddress;
+  //     final toAddress = widget.toAddress;
+  //
+  //     final tripDetails = await tripCubit.getTripDetails(tripId);
+  //
+  //     if (tripDetails != null) {
+  //       // If a trip already exists, show it in the trip details screen
+  //       Navigator.pushReplacementNamed(
+  //         context,
+  //         RoutingEndpoints.tripTracking,
+  //         arguments: TripTrackingArgs(
+  //           fromAddress: fromAddress,
+  //           toAddress: toAddress,
+  //           tripId: tripId,
+  //         ),
+  //       );
+  //     } else {
+  //       // Step 2: Create a new trip if no existing trip is found
+  //       await tripCubit.createTrip(fromAddress, toAddress);
+  //
+  //       // Step 3: Navigate to the trip details screen after trip creation
+  //       Navigator.pushReplacementNamed(
+  //         context,
+  //         RoutingEndpoints.tripTracking,
+  //         arguments: TripTrackingArgs(
+  //           fromAddress: fromAddress,
+  //           toAddress: toAddress,
+  //           tripId: tripId,
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     // Handle any errors here
+  //     safePrint("Error: $e");
+  //     // You can show an error message if needed
+  //   }
+  // }
 }

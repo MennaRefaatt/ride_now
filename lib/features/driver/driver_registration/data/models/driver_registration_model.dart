@@ -5,6 +5,7 @@ class DriverRegistrationModel{
   final String driverStatus;
   final String driverTripStatus;
   final String driverId;
+  final String currentTripId;
   final PersonalRegistrationModel personalInfo;
   final VehicleRegistrationModel vehicleInfo;
   final DriverLicenseModel driverInfo;
@@ -17,7 +18,8 @@ class DriverRegistrationModel{
     required this.vehicleInfo,
     required this.driverInfo,
     required this.personalDocument,
-    required this.driverTripStatus
+    required this.driverTripStatus,
+    required this.currentTripId
   });
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
@@ -25,6 +27,7 @@ class DriverRegistrationModel{
   Map<String, dynamic> toJson() => {
     'driverStatus': driverStatus,
     'driverId': driverId,
+    'currentTripId': currentTripId,
     'driverTripStatus': driverTripStatus,
     'personalInfo': personalInfo.toJson(),
     'vehicleInfo': vehicleInfo.toJson(),

@@ -5,8 +5,8 @@ class GetTripDetailsUseCase {
   final TripRepoBase tripRepoBase;
   GetTripDetailsUseCase({required this.tripRepoBase});
 
-  Future<TripModel> call() async {
-    final trip = await tripRepoBase.getTripDetails();
+  Future<TripModel> call(String tripId) async {
+    final trip = await tripRepoBase.getTripDetails(tripId);
     return trip;
   }
 }

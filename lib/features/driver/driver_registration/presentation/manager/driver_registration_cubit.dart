@@ -160,6 +160,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
         driverTripStatus: DriverTripStatus.available.name,
         driverStatus: DriverStatus.pending.name,
         driverId: SharedPref.getString(key: MySharedKeys.userId) ?? '',
+        currentTripId: 'none',
         personalInfo: PersonalRegistrationModel(
           firstName: firstName ?? '',
           lastName: lastName ?? '',

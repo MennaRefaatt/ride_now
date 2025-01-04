@@ -9,9 +9,9 @@ class TripRepoImpl implements TripRepoBase {
   TripRepoImpl(this.tripRemoteDS);
 
   @override
-  Future<bool> acceptTrip(TripModel tripModel) async {
-    final tripRef = await tripRemoteDS.acceptTrip(tripModel);
-    safePrint(tripRef);
+  Future<void> acceptTrip(TripModel tripModel,DriverData driverData) async {
+    final tripRef = await tripRemoteDS.acceptTrip(tripModel,driverData);
+    safePrint(driverData);
     return tripRef;
   }
 
@@ -30,8 +30,8 @@ class TripRepoImpl implements TripRepoBase {
   }
 
   @override
-  Future<TripModel> getTripDetails() async {
-    final getTrips = await tripRemoteDS.getTripDetails();
+  Future<TripModel> getTripDetails(String tripId) async {
+    final getTrips = await tripRemoteDS.getTripDetails(tripId);
     safePrint("getTripDetails: $getTrips");
     return getTrips;
   }

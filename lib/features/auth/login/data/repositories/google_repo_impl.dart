@@ -29,6 +29,7 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
         phoneNumber: phone,
         city: "missing to pick the location",
         type: UserType.passenger.name,
+        currentTripId: "none",
       );
       await _firestoreService.saveUserToFirestore(user,param);
 

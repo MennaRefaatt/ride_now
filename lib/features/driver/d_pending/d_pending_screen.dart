@@ -2,10 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/utils/app_button.dart';
-import 'package:flutter/animation.dart'; // Import for animation
-
 import '../../../core/helpers/spacing.dart';
-import '../../../core/services/routing/routing_endpoints.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/styles.dart';
 import '../../../generated/l10n.dart';
@@ -14,7 +11,7 @@ class DPendingScreen extends StatefulWidget {
   const DPendingScreen({super.key});
 
   @override
-  _DPendingScreenState createState() => _DPendingScreenState();
+  State<DPendingScreen> createState() => _DPendingScreenState();
 }
 
 class _DPendingScreenState extends State<DPendingScreen>
@@ -77,8 +74,7 @@ class _DPendingScreenState extends State<DPendingScreen>
                 text: S().done,
                 backgroundColor: AppColors.primary,
                 borderRadius: 10.r,
-                onPressed: () => Navigator.pushReplacementNamed(
-                    context, RoutingEndpoints.driverOnBoarding),
+                onPressed: () => Navigator.pop(context),
                 textStyle: TextStyles.font18BlackRegular,
               ),
             ],
