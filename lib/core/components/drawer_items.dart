@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/enums/driver_status.dart';
 import 'package:ride_now/core/helpers/enums/user_type.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
@@ -8,6 +10,8 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import '../../features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
+import '../../features/driver/driver_registration/data/models/driver_registration_model.dart';
+import '../helpers/safe_print.dart';
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
 import '../../generated/l10n.dart';
@@ -125,14 +129,19 @@ class _DrawerItemsState extends State<DrawerItems> {
                 saveModeToFirestore(isDriverMode!
                     ? UserType.driver.name
                     : UserType.passenger.name);
-                Navigator.pushReplacementNamed(
-                  context,
-                  RoutingEndpoints.driverOnBoarding,
-                );
+
+                if (isDriverMode!) {
+                  navigateBasedOnDriverStatus();
+                } else {
+                  Navigator.pushReplacementNamed(
+                    context,
+                    RoutingEndpoints.passengerHome,
+                  );
+                }
               },
               borderRadius: 10.r,
               textStyle: TextStyles.font14BlackRegular,
-            ),
+            )
           ],
         ),
       ),
@@ -179,5 +188,40 @@ class _DrawerItemsState extends State<DrawerItems> {
         ),
       ),
     );
+  }
+
+  void navigateBasedOnDriverStatus() async {
+    String? userId = SharedPref.getString(key: MySharedKeys.userId);
+    if (userId == null) {
+      safePrint("User ID not found in SharedPreferences.");
+      return;
+    }
+
+    try {
+      DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
+          .collection("drivers")
+          .doc(userId)
+          .get();
+
+      if (driverSnapshot.exists) {
+        DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
+          driverSnapshot.data() as Map<String, dynamic>,
+        );
+
+        if (driver.driverStatus == DriverStatus.pending.name) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverPendingScreen);
+        } else if (driver.driverStatus == DriverStatus.accepted.name) {
+          Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
+        } else if (driver.driverStatus == DriverStatus.rejected.name) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverOnBoarding);
+        }
+      } else {
+        safePrint("Driver not found in Firestore.");
+      }
+    } catch (e) {
+      safePrint("Error fetching driver status: $e");
+    }
   }
 }

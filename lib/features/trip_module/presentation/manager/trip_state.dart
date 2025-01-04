@@ -42,7 +42,10 @@ final class CancelTripError extends TripState {
 
 final class CreateTripLoading extends TripState {}
 
-final class CreateTripLoaded extends TripState {}
+final class CreateTripLoaded extends TripState {
+  final TripModel trip;
+  CreateTripLoaded(this.trip);
+}
 
 final class CreateTripError extends TripState {
   final String message;

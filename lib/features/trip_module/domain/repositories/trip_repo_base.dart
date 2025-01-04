@@ -5,9 +5,9 @@ abstract class TripRepoBase {
 
   Future<void> createTrip(TripModel tripModel);
 
-  Future<bool> acceptTrip(TripModel tripModel);
+  Future<void> acceptTrip(TripModel tripModel,DriverData driverData);
 
-  Future<TripModel> getTripDetails();
+  Future<TripModel> getTripDetails(String tripId);
 
   Future<bool> cancelTripRequest(String tripId);
 }

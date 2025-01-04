@@ -7,15 +7,15 @@ import '../manager/trip_cubit.dart';
 
 class TripDetails extends StatelessWidget {
   const TripDetails({super.key, required this.args, required this.state});
+
   final TripTrackingArgs args;
-final AcceptTripLoaded state;
+  final AcceptTripLoaded state;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        TripTracking(
-          args: args,
-        ),
+        TripTracking(args: args),
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -35,7 +35,7 @@ final AcceptTripLoaded state;
                   'Destination: ${state.trip.to}',
                   style: TextStyles.font24BlackBold,
                 ),
-
+                // Add more trip details here
               ],
             ),
           ),

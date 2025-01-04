@@ -6,9 +6,9 @@ class AcceptTripUseCase {
   final TripRepoBase tripRepoBase;
   AcceptTripUseCase({required this.tripRepoBase});
 
-  Future<bool> call(TripModel tripModel) async {
-    final tripRef = await tripRepoBase.acceptTrip(tripModel);
-    safePrint(tripRef);
+  Future<void> call(TripModel tripModel,DriverData driverData) async {
+    final tripRef = await tripRepoBase.acceptTrip(tripModel,driverData);
+    safePrint(driverData);
     return tripRef;
   }
 }

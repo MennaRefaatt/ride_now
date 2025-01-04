@@ -39,7 +39,7 @@ class _DriverHomeState extends State<DriverHome> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                TripRequestsDialogue(),
+                TripRequestsDialogue(tripCubit: tripCubit,),
               ],
             ),
           ),
