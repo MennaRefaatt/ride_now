@@ -9,14 +9,10 @@ class DefaultAppBar extends StatelessWidget {
     required this.text,
     this.withDivider = true,
     this.backgroundColor,
-    this.leading = true,
-    this.onPressed,
   });
   final String text;
   bool? withDivider;
   Color? backgroundColor;
-  bool? leading;
-  void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -25,10 +21,6 @@ class DefaultAppBar extends StatelessWidget {
               fontSize: 20.sp,
             )),
         backgroundColor: backgroundColor,
-        leading: leading == true
-            ? IconButton(
-                onPressed: onPressed, icon: const Icon(Icons.arrow_back_ios))
-            : Container(),
         centerTitle: true,
         bottom: withDivider == true
             ? PreferredSize(

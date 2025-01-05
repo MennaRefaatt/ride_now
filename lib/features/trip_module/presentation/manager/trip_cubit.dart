@@ -44,6 +44,19 @@ class TripCubit extends Cubit<TripState> {
         .snapshots();
   }
 
+  Stream<List<TripModel>> listenToTrips() {
+    return FirebaseFirestore.instance
+        .collection('trips')
+        .where('status', isEqualTo: TripStatus.pending.name)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs
+          .map((doc) => TripModel.fromJson(doc.data()))
+          .toList();
+    });
+  }
+
+
   Future<void> getTrips() async {
     emit(TripsLoading());
     final userId = SharedPref.getString(key: MySharedKeys.userId)!;
@@ -79,6 +92,9 @@ class TripCubit extends Cubit<TripState> {
         driverPhone: "",
         driverImage: "",
         driverLocation: "",
+        carColor: "",
+        carModel: "",
+        carNumber: "",
       );
 
       PassengerData passengerData = PassengerData(

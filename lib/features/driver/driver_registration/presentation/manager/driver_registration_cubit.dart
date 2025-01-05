@@ -166,7 +166,9 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
           lastName: lastName ?? '',
           dateOfBirth: dateOfBirth ?? '',
           personalImage: personalImage ?? '',
+          phone: "",
         ),
+        location: DriverLocation(latitude: 0.0, longitude: 0.0),
         vehicleInfo: VehicleRegistrationModel(
           vehicleBrand: vehicleBrand ?? '',
           vehicleModel: vehicleModel ?? '',

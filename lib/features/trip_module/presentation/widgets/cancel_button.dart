@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/theming/styles.dart';
-import 'package:ride_now/core/utils/app_button.dart';
 import '../../../../../core/theming/app_colors.dart';
-
 import '../manager/trip_cubit.dart';
 
 class CancelButton extends StatelessWidget {
@@ -30,14 +29,24 @@ class CancelButton extends StatelessWidget {
           tripId = state.trip.tripId;
         }
         return Visibility(
-          child: AppButton(
-            text: 'Cancel the trip',
-            backgroundColor: AppColors.semiGrey,
-            onPressed: () {
+          child: GestureDetector(
+            onTap: () {
               context.read<TripCubit>().cancelTrip(tripId!);
             },
-            textStyle:
-                TextStyles.font18WhiteBold.copyWith(color: AppColors.red),
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.all(10.sp),
+                width: MediaQuery.of(context).size.width * 0.6,
+                decoration: BoxDecoration(
+                  color: AppColors.semiGrey.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child:Text("Cancel",style: TextStyles.font18WhiteBold.copyWith(
+                  color: AppColors.red
+                ),
+                textAlign: TextAlign.center,),
+              ),
+            ),
           ),
         );
       },
