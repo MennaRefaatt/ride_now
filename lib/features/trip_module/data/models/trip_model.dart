@@ -59,13 +59,18 @@ class DriverData {
   final String driverPhone;
   final String driverImage;
   final String driverLocation;
-
+  final String carColor;
+  final String carModel;
+  final String carNumber;
   DriverData({
     required this.driverId,
     required this.driverName,
     required this.driverPhone,
     required this.driverImage,
     required this.driverLocation,
+    required this.carColor,
+    required this.carModel,
+    required this.carNumber,
   });
 
   factory DriverData.fromJson(Map<String, dynamic> json) {
@@ -75,6 +80,9 @@ class DriverData {
       driverPhone: json['driverPhone'],
       driverImage: json['driverImage'],
       driverLocation: json['driverLocation'],
+      carColor: json['carColor'],
+      carModel: json['carModel'],
+      carNumber: json['carNumber'],
     );
   }
 
@@ -84,6 +92,9 @@ class DriverData {
     'driverPhone': driverPhone,
     'driverImage': driverImage,
     'driverLocation': driverLocation,
+    'carColor': carColor,
+    'carModel': carModel,
+    'carNumber': carNumber,
   };
 }
 

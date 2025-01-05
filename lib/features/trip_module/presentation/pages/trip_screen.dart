@@ -70,10 +70,7 @@ class _TripScreenState extends State<TripScreen> {
                       }
                       return TripDetails(
                         args: widget.args,
-                        state: AcceptTripLoaded(
-                            "accepted",
-                            state
-                                .trip),
+                        state: AcceptTripLoaded("accepted", state.trip),
                       );
                     }
                   }

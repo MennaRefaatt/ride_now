@@ -5,8 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
-import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
-import '../../../../../core/services/routing/routing_endpoints.dart';
+import 'package:ride_now/features/passenger/home/presentation/widgets/last_trips_list_view.dart';
 import '../../../../maps/presentation/manager/location_cubit.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 import '../manager/home_cubit.dart';
@@ -104,51 +103,10 @@ class _WhereToBarState extends State<WhereToBar> {
                     ),
                   ),
                 ),
-                Visibility(
-                  visible: !disappear,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: ListView.builder(
-                      itemCount: widget.lastTrips.length,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () {
-                          widget.cubit.toController.text =
-                              widget.lastTrips[index].to;
-                          if (widget.cubit.toController.text ==
-                              widget.lastTrips[index].to) {
-                            setState(() {
-                              disappear = true;
-                            });
-                            Navigator.pushNamed(
-                                context, RoutingEndpoints.checkOut,
-                                arguments: CheckOutArgs(
-                                    fromAddress:
-                                        widget.cubit.fromController.text,
-                                    toAddress: widget.cubit.toController.text));
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(5.sp),
-                          margin: EdgeInsets.all(1.sp),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25.r),
-                            color: AppColors.primary.withOpacity(0.5),
-                          ),
-                          width: widget.lastTrips[index].to.length > 15
-                              ? MediaQuery.of(context).size.width * 0.5
-                              : MediaQuery.of(context).size.width * 0.25,
-                          child: Text(
-                            widget.lastTrips[index].to,
-                            style: TextStyles.font18BlackRegular,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                LastTripsListView(
+                  lastTrips: widget.lastTrips,
+                  cubit: widget.cubit,
+                  disappear: disappear,
                 )
               ],
             ),

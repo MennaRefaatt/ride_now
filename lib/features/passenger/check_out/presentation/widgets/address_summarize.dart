@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 
 import '../../../../../core/helpers/safe_print.dart';
+import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
@@ -30,7 +32,7 @@ class AddressSummarize extends StatefulWidget {
 
 class _AddressSummarizeState extends State<AddressSummarize> {
   late String toAddress;
-  String? tripId;
+  late String tripId;
 
   @override
   void initState() {
@@ -118,45 +120,50 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                             ),
                           );
                         }
-                        if (state is CreateTripLoaded) {
-                          tripId = state.trip.tripId;
-                        }
+                        // if (state is CreateTripLoaded) {
+                        //   tripId = state.trip.tripId;
+                        // }
                         return AppButton(
                           text: "S().done",
                           textStyle: TextStyles.font14BlackRegular,
                           onPressed: () async {
-                            await widget.tripCubit
-                                .createTrip(widget.fromAddress, toAddress)
-                                .then((value) {
-                              if (tripId != null && tripId!.isNotEmpty) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(
-                                          "Trip created successfully: $tripId")),
-                                );
-                                Navigator.pushReplacementNamed(
-                                  context,
-                                  RoutingEndpoints.tripTracking,
-                                  arguments: TripTrackingArgs(
-                                    fromAddress: widget.fromAddress,
-                                    toAddress: toAddress,
-                                    tripId: tripId!,
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content:
-                                          Text("Error: Trip ID is missing")),
-                                );
-                              }
-                            }).catchError((error) {
+                            try {
+                              await widget.tripCubit
+                                  .createTrip(widget.fromAddress, toAddress)
+                                  .then((_) {
+                                tripId = SharedPref.getString(
+                                        key: MySharedKeys.currentTripId) ??
+                                    "";
+                                if (tripId.isNotEmpty) {
+                                  safePrint(
+                                      "Trip created successfully: $tripId");
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "Trip created successfully: $tripId")),
+                                  );
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    RoutingEndpoints.tripTracking,
+                                    arguments: TripTrackingArgs(
+                                      fromAddress: widget.fromAddress,
+                                      toAddress: toAddress,
+                                      tripId: tripId,
+                                    ),
+                                  );
+                                } else {
+                                  throw Exception(
+                                      "Trip ID is missing after creation");
+                                }
+                              });
+                            } catch (error) {
+                              safePrint("Error creating trip: $error");
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                     content:
                                         Text("Error creating trip: $error")),
                               );
-                            });
+                            }
                             safePrint("Order button pressed");
                           },
                           backgroundColor: AppColors.primary,
@@ -175,44 +182,4 @@ class _AddressSummarizeState extends State<AddressSummarize> {
       ),
     );
   }
-  // void _onCreateTripOrGetExistingTrip(BuildContext context) async {
-  //   try {
-  //     final tripCubit = widget.tripCubit;
-  //     final fromAddress = widget.fromAddress;
-  //     final toAddress = widget.toAddress;
-  //
-  //     final tripDetails = await tripCubit.getTripDetails(tripId);
-  //
-  //     if (tripDetails != null) {
-  //       // If a trip already exists, show it in the trip details screen
-  //       Navigator.pushReplacementNamed(
-  //         context,
-  //         RoutingEndpoints.tripTracking,
-  //         arguments: TripTrackingArgs(
-  //           fromAddress: fromAddress,
-  //           toAddress: toAddress,
-  //           tripId: tripId,
-  //         ),
-  //       );
-  //     } else {
-  //       // Step 2: Create a new trip if no existing trip is found
-  //       await tripCubit.createTrip(fromAddress, toAddress);
-  //
-  //       // Step 3: Navigate to the trip details screen after trip creation
-  //       Navigator.pushReplacementNamed(
-  //         context,
-  //         RoutingEndpoints.tripTracking,
-  //         arguments: TripTrackingArgs(
-  //           fromAddress: fromAddress,
-  //           toAddress: toAddress,
-  //           tripId: tripId,
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     // Handle any errors here
-  //     safePrint("Error: $e");
-  //     // You can show an error message if needed
-  //   }
-  // }
 }

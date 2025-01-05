@@ -10,6 +10,7 @@ class DriverRegistrationModel{
   final VehicleRegistrationModel vehicleInfo;
   final DriverLicenseModel driverInfo;
   final PersonalDocumentModel personalDocument;
+  final DriverLocation location;
 
   DriverRegistrationModel({
     required this.driverId,
@@ -19,7 +20,8 @@ class DriverRegistrationModel{
     required this.driverInfo,
     required this.personalDocument,
     required this.driverTripStatus,
-    required this.currentTripId
+    required this.currentTripId,
+    required this.location
   });
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
@@ -29,11 +31,25 @@ class DriverRegistrationModel{
     'driverId': driverId,
     'currentTripId': currentTripId,
     'driverTripStatus': driverTripStatus,
+    'location': location.toJson(),
     'personalInfo': personalInfo.toJson(),
     'vehicleInfo': vehicleInfo.toJson(),
     'driverInfo': driverInfo.toJson(),
     'personalDocument': personalDocument.toJson(),
   };
+}
+@JsonSerializable()
+class DriverLocation{
+  final double latitude;
+  final double longitude;
+  DriverLocation({
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory DriverLocation.fromJson(Map<String, dynamic> json) => _$DriverLocationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DriverLocationToJson(this);
 }
 @JsonSerializable()
 class VehicleRegistrationModel{
@@ -67,11 +83,13 @@ class PersonalRegistrationModel{
   final String lastName;
   final String dateOfBirth;
   final String personalImage;
+  final String phone;
   PersonalRegistrationModel({
     required this.firstName,
     required this.lastName,
     required this.dateOfBirth,
     required this.personalImage,
+    required this.phone,
   });
 
   factory PersonalRegistrationModel.fromJson(Map<String, dynamic> json) => _$PersonalRegistrationModelFromJson(json);

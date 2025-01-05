@@ -33,8 +33,6 @@ class CheckOut extends StatelessWidget {
             text: "S().CheckOut",
             withDivider: false,
             backgroundColor: Colors.white,
-            leading: true,
-            onPressed: () => Navigator.pop(context, args.toAddress),
           ),
         ),
         body: Column(

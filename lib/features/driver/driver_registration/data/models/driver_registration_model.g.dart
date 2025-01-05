@@ -21,6 +21,8 @@ DriverRegistrationModel _$DriverRegistrationModelFromJson(
           json['personalDocument'] as Map<String, dynamic>),
       driverTripStatus: json['driverTripStatus'] as String,
       currentTripId: json['currentTripId'] as String,
+      location:
+          DriverLocation.fromJson(json['location'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$DriverRegistrationModelToJson(
@@ -34,6 +36,19 @@ Map<String, dynamic> _$DriverRegistrationModelToJson(
       'vehicleInfo': instance.vehicleInfo,
       'driverInfo': instance.driverInfo,
       'personalDocument': instance.personalDocument,
+      'location': instance.location,
+    };
+
+DriverLocation _$DriverLocationFromJson(Map<String, dynamic> json) =>
+    DriverLocation(
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+    );
+
+Map<String, dynamic> _$DriverLocationToJson(DriverLocation instance) =>
+    <String, dynamic>{
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
     };
 
 VehicleRegistrationModel _$VehicleRegistrationModelFromJson(
@@ -69,6 +84,7 @@ PersonalRegistrationModel _$PersonalRegistrationModelFromJson(
       lastName: json['lastName'] as String,
       dateOfBirth: json['dateOfBirth'] as String,
       personalImage: json['personalImage'] as String,
+      phone: json['phone'] as String,
     );
 
 Map<String, dynamic> _$PersonalRegistrationModelToJson(
@@ -78,6 +94,7 @@ Map<String, dynamic> _$PersonalRegistrationModelToJson(
       'lastName': instance.lastName,
       'dateOfBirth': instance.dateOfBirth,
       'personalImage': instance.personalImage,
+      'phone': instance.phone,
     };
 
 DriverLicenseModel _$DriverLicenseModelFromJson(Map<String, dynamic> json) =>

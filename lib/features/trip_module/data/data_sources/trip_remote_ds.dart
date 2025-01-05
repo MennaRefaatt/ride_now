@@ -21,25 +21,19 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<TripModel> getTripDetails(String tripId) async {
     try {
-      final userId = SharedPref.getString(key: MySharedKeys.userId);
-      safePrint("Fetching trips for passengerId: $userId");
-
       final getTheTrip = await FirebaseFirestore.instance
           .collection('trips')
-          .where("passengerId", isEqualTo: userId)
-          //.where("tripId", isEqualTo: tripId)
+          .doc(tripId)
           .get();
 
-      safePrint("Query result: ${getTheTrip.docs.length} documents found.");
-      if (getTheTrip.docs.isNotEmpty) {
-        final rawData = getTheTrip.docs.last.data();
+      if (getTheTrip.exists) {
+        final rawData = getTheTrip.data();
         safePrint("Document data: $rawData");
-        TripModel tripModel = TripModel.fromJson(rawData);
+        TripModel tripModel = TripModel.fromJson(rawData!);
         safePrint("tripModel: $tripModel");
         return tripModel;
       } else {
-        safePrint(
-            "No trip found for passengerId: ${SharedPref.getString(key: MySharedKeys.userId)}");
+        safePrint("No trip found for tripId: $tripId");
         throw Exception("No trip found");
       }
     } catch (e) {
@@ -69,18 +63,23 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<void> createTrip(TripModel tripModel) async {
     try {
-      final userRef = FirebaseFirestore.instance.collection('users').doc(tripModel.passengerData.passengerId);
+      final userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(tripModel.passengerData.passengerId);
       final userDoc = await userRef.get();
 
       if (userDoc.exists) {
         final currentTripId = userDoc.data()?['currentTripId'];
         if (currentTripId != "none") {
-          final tripRef = FirebaseFirestore.instance.collection('trips').doc(currentTripId);
+          final tripRef =
+              FirebaseFirestore.instance.collection('trips').doc(currentTripId);
           final tripDoc = await tripRef.get();
           if (tripDoc.exists) {
             final tripStatus = tripDoc.data()?['status'];
-            if (tripStatus == TripStatus.accepted.name || tripStatus == TripStatus.pending.name) {
-              throw Exception("You already have an active trip. Please wait for it to finish or cancel it before creating a new one.");
+            if (tripStatus == TripStatus.accepted.name ||
+                tripStatus == TripStatus.pending.name) {
+              throw Exception(
+                  "You already have an active trip. Please wait for it to finish or cancel it before creating a new one.");
             } else {
               userRef.update({'currentTripId': 'none'});
               tripRef.update({'status': TripStatus.pending.name});
@@ -94,15 +93,23 @@ class TripRemoteDSImpl implements TripRemoteDS {
         throw Exception("User not found.");
       }
 
-      // Calculate distance and cost
       TripHelper tripHelper = TripHelper();
-      String distance = await tripHelper.calculateDistance(tripModel.from, tripModel.to, unit: 'km');
+      String distance = await tripHelper
+          .calculateDistance(tripModel.from, tripModel.to, unit: 'km');
       double distanceInKm = double.parse(distance.split(" ")[0]);
       double tripCost = tripHelper.calculateCost(distanceInKm);
 
-      // Create the trip model with the new tripId
       final model = TripModel(
-        driverData: DriverData(driverId: "", driverName: "", driverPhone: "", driverImage: "", driverLocation: ""),
+        driverData: DriverData(
+          driverId: "",
+          driverName: "",
+          driverPhone: "",
+          driverImage: "",
+          driverLocation: "",
+          carColor: "",
+          carModel: "",
+          carNumber: "",
+        ),
         passengerData: PassengerData(
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
@@ -118,12 +125,13 @@ class TripRemoteDSImpl implements TripRemoteDS {
       );
 
       // Add the trip to Firestore and update tripId
-      final tripRef = await FirebaseFirestore.instance.collection('trips').add(model.toJson());
+      final tripRef = await FirebaseFirestore.instance
+          .collection('trips')
+          .add(model.toJson());
 
-      // Once the trip document is created, update the tripId
       await tripRef.update({'tripId': tripRef.id});
-
-      // Update the user's currentTripId with the new tripId
+      await SharedPref.setString(
+          key: MySharedKeys.currentTripId, value: tripRef.id);
       await userRef.update({'currentTripId': tripRef.id});
       safePrint("Trip created successfully.");
     } catch (e) {
@@ -149,15 +157,22 @@ class TripRemoteDSImpl implements TripRemoteDS {
         final driverName = driver['personalInfo']['firstName'] +
             " " +
             driver['personalInfo']['lastName'];
-        //final driverPhone = driver['personalInfo']['phone'];
+        final driverPhone = driver['personalInfo']['phone'];
+        final driverLocation = driver['personalInfo']['location'];
         final driverImage = driver['personalInfo']['personalImage'];
+        final carColor = driver['vehicleInfo']['vehicleColor'];
+        final carModel = driver['vehicleInfo']['vehicleModel'];
+        final carNumber = driver['vehicleInfo']['plateNumber'];
         if (driverId != tripModel.driverData.driverId) {
           driverData = DriverData(
             driverId: driverId,
             driverName: driverName,
-            driverPhone: "",
+            driverPhone: driverPhone,
             driverImage: driverImage,
-            driverLocation: "",
+            driverLocation: driverLocation,
+            carColor: carColor,
+            carModel: carModel,
+            carNumber: carNumber,
           );
           break;
         }
@@ -166,7 +181,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           FirebaseFirestore.instance.collection('trips').doc(tripModel.tripId);
       await tripRef.update({
         'status': TripStatus.accepted.name,
-        'driverId': driverData.driverId
+        "driverData": driverData.toJson(),
       });
       await _firestore.collection('drivers').doc(driverData.driverId).update({
         'currentTripId': tripModel.tripId,
@@ -203,6 +218,13 @@ class TripRemoteDSImpl implements TripRemoteDS {
           FirebaseFirestore.instance.collection('users').doc(userId);
       await userRef.update({
         'currentTripId': 'none',
+      });
+      final driverRef = FirebaseFirestore.instance
+          .collection('drivers')
+          .doc(tripDoc.data()!['driverData']['driverId']);
+      await driverRef.update({
+        "driverTripStatus": DriverTripStatus.available.name,
+        "currentTripId": "none",
       });
 
       safePrint("Trip $tripId successfully cancelled.");
