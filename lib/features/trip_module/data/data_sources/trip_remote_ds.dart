@@ -53,6 +53,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
       return getTrips.docs.map((doc) {
         final data = doc.data();
         safePrint("data: $data");
+        safePrint("driverData: ${data['driverData']}");
+        safePrint("passengerData: ${data['passengerData']}");
         return TripModel.fromJson(doc.data());
       }).toList();
     } catch (e) {
@@ -101,14 +103,17 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
       final model = TripModel(
         driverData: DriverData(
-          driverId: "",
-          driverName: "",
-          driverPhone: "",
-          driverImage: "",
-          driverLocation: "",
-          carColor: "",
-          carModel: "",
-          carNumber: "",
+            driverId: "",
+            driverName: "",
+            driverPhone: "",
+            driverImage: "",
+            carColor: "",
+            carModel: "",
+            carNumber: "",
+            driverLocation: DriverLocation(
+              latitude: 0.0,
+              longitude: 0.0,
+            ),
         ),
         passengerData: PassengerData(
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
@@ -142,12 +147,13 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<void> acceptTrip(TripModel tripModel, DriverData driverData) async {
     try {
+      final tripRef =
+          FirebaseFirestore.instance.collection('trips').doc(tripModel.tripId);
+
       final availableDriversSnapshot = await FirebaseFirestore.instance
           .collection('drivers')
-          .where("driverTripStatus", whereIn: [
-        DriverTripStatus.available.name,
-        DriverTripStatus.online.name
-      ]).get();
+          .where("driverTripStatus",
+              whereIn: [DriverTripStatus.available.name]).get();
       final availableDrivers = availableDriversSnapshot.docs.map((doc) {
         return doc.data();
       }).toList();
@@ -155,10 +161,11 @@ class TripRemoteDSImpl implements TripRemoteDS {
       for (var driver in availableDrivers) {
         final driverId = driver['driverId'];
         final driverName = driver['personalInfo']['firstName'] +
-            " " +
+            "" +
             driver['personalInfo']['lastName'];
         final driverPhone = driver['personalInfo']['phone'];
-        final driverLocation = driver['personalInfo']['location'];
+        final diverLat = driver['location']['latitude'];
+        final diverLong = driver['location']['longitude'];
         final driverImage = driver['personalInfo']['personalImage'];
         final carColor = driver['vehicleInfo']['vehicleColor'];
         final carModel = driver['vehicleInfo']['vehicleModel'];
@@ -169,7 +176,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
             driverName: driverName,
             driverPhone: driverPhone,
             driverImage: driverImage,
-            driverLocation: driverLocation,
+            driverLocation:
+                DriverLocation(latitude: diverLat, longitude: diverLong),
             carColor: carColor,
             carModel: carModel,
             carNumber: carNumber,
@@ -177,8 +185,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           break;
         }
       }
-      final tripRef =
-          FirebaseFirestore.instance.collection('trips').doc(tripModel.tripId);
+      safePrint("Driver data: $driverData");
       await tripRef.update({
         'status': TripStatus.accepted.name,
         "driverData": driverData.toJson(),

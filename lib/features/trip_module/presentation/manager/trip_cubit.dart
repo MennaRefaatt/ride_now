@@ -56,7 +56,6 @@ class TripCubit extends Cubit<TripState> {
     });
   }
 
-
   Future<void> getTrips() async {
     emit(TripsLoading());
     final userId = SharedPref.getString(key: MySharedKeys.userId)!;
@@ -87,15 +86,18 @@ class TripCubit extends Cubit<TripState> {
       double distanceInKm = double.parse(distance.split(" ")[0]);
       double tripCost = tripHelper.calculateCost(distanceInKm);
       DriverData driverData = DriverData(
-        driverId: "",
-        driverName: "",
-        driverPhone: "",
-        driverImage: "",
-        driverLocation: "",
-        carColor: "",
-        carModel: "",
-        carNumber: "",
-      );
+          driverId: "",
+          driverName: "",
+          driverPhone: "",
+          driverImage: "",
+          carColor: "",
+          carModel: "",
+          carNumber: "",
+          driverLocation: DriverLocation(
+            latitude: 0.0,
+            longitude: 0.0,
+          )
+          );
 
       PassengerData passengerData = PassengerData(
         passengerId: SharedPref.getString(key: MySharedKeys.userId)!,

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,52 +18,36 @@ class TripRequestsDialogue extends StatefulWidget {
   @override
   State<TripRequestsDialogue> createState() => _TripRequestsDialogueState();
 }
+
 class _TripRequestsDialogueState extends State<TripRequestsDialogue>
     with TickerProviderStateMixin {
-  late List<double> progressValues;
-  late List<Timer> timers;
   late List<AnimationController> animationControllers;
   late List<Animation<Offset>> slideAnimations;
 
   @override
   void initState() {
     super.initState();
-    // Initialize progress values to 1.0, as the timer will count down from 1
-    progressValues = List.generate(5, (index) => 1.0);
-    timers = List.generate(5, (index) => _createTimer(index));
     animationControllers = List.generate(
       5,
-          (index) => AnimationController(
-        duration: const Duration(milliseconds: 500),
+      (index) => AnimationController(
+        duration: const Duration(seconds: 30),
         vsync: this,
       ),
     );
     slideAnimations = animationControllers
-        .map((controller) => Tween<Offset>(begin: Offset.zero, end: const Offset(-1.5, 0))
-        .animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut)))
+        .map((controller) => Tween<Offset>(
+                begin: Offset.zero, end: const Offset(-1.5, 0))
+            .animate(
+                CurvedAnimation(parent: controller, curve: Curves.easeInOut)))
         .toList();
-
-    widget.tripCubit.getTrips(); // Start fetching trips
-  }
-
-  Timer _createTimer(int index) {
-    return Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (progressValues[index] > 0) {
-          progressValues[index] -= 1 / 30; // Decrement progress over 30 seconds
-        } else {
-          timer.cancel(); // Stop the timer when progress reaches 0
-          animationControllers[index].forward(); // Trigger animation
-        }
-      });
-    });
+    for (var controller in animationControllers) {
+      controller.forward();
+    }
+    widget.tripCubit.getTrips();
   }
 
   @override
   void dispose() {
-    for (var timer in timers) {
-      timer.cancel();
-    }
     for (var controller in animationControllers) {
       controller.dispose();
     }
@@ -74,7 +57,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<TripModel>>(
-      stream: widget.tripCubit.listenToTrips(), // Listen to trips stream from cubit
+      stream: widget.tripCubit.listenToTrips(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -82,6 +65,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
           );
         }
         if (snapshot.hasError) {
+          safePrint(snapshot.error);
           return Center(
             child: Text('Error: ${snapshot.error}'),
           );
@@ -116,7 +100,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                 child: Column(
                   children: [
                     LinearProgressIndicator(
-                      value: progressValues[index],
+                      value: 1.0 - animationControllers[index].value,
                       backgroundColor: Colors.grey.shade200,
                       color: AppColors.primary,
                       minHeight: 6.h,
@@ -179,7 +163,6 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                 text: "Accept",
                                 backgroundColor: AppColors.primary,
                                 onPressed: () {
-                                  final driver = trips[index].driverData.driverId;
                                   final driverId = SharedPref.getString(
                                       key: MySharedKeys.driverId)!;
                                   final driverName = SharedPref.getString(
@@ -188,15 +171,17 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       key: MySharedKeys.driverPhone)!;
                                   final driverImage = SharedPref.getString(
                                       key: MySharedKeys.driverPicture)!;
-                                  final driverLocation = SharedPref.getString(
-                                      key: MySharedKeys.driverCity)!;
+                                  final driverLat = SharedPref.getDouble(
+                                      key: MySharedKeys.driverLatitude)!;
+                                  final driverLong = SharedPref.getDouble(
+                                      key: MySharedKeys.driverLongitude)!;
                                   final carModel = SharedPref.getString(
                                       key: MySharedKeys.carModel)!;
                                   final carNumber = SharedPref.getString(
                                       key: MySharedKeys.carNumber)!;
                                   final carColor = SharedPref.getString(
                                       key: MySharedKeys.carColor)!;
-                                  safePrint("driverId: $driver");
+                                  safePrint("driverId: $driverId");
                                   widget.tripCubit.acceptTrip(
                                       trips[index],
                                       DriverData(
@@ -204,10 +189,14 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                           driverName: driverName,
                                           driverPhone: driverPhone,
                                           driverImage: driverImage,
-                                          driverLocation: driverLocation,
                                           carModel: carModel,
                                           carColor: carColor,
-                                          carNumber: carNumber));
+                                          carNumber: carNumber,
+                                          driverLocation: DriverLocation(
+                                            latitude: driverLat,
+                                            longitude: driverLong,
+                                          ),
+                                      ));
                                 },
                                 textStyle: TextStyles.font18BlackRegular,
                                 borderRadius: 10.r,

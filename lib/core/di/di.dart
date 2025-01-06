@@ -20,9 +20,9 @@ import '../../features/maps/domain/repo_base/repo_base.dart';
 import '../../features/maps/domain/use_case/get_location_use_case.dart';
 import '../../features/maps/domain/use_case/get_realtime_location_use_case.dart';
 import '../../features/maps/domain/use_case/set_location_use_case.dart';
-import '../../features/passenger/home/data/data_sources/category_remote_ds.dart';
-import '../../features/passenger/home/data/repositories/categories_repo_impl.dart';
-import '../../features/passenger/home/domain/repositories/category_repo_base.dart';
+import '../../features/passenger/home/data/data_sources/home_remote_ds.dart';
+import '../../features/passenger/home/data/repositories/home_repo_impl.dart';
+import '../../features/passenger/home/domain/repositories/home_repo_base.dart';
 import '../../features/passenger/home/presentation/manager/home_cubit.dart';
 import '../../features/profile/data/data_sources/city_remote_ds.dart';
 import '../../features/profile/data/data_sources/profile_remote_ds.dart';
@@ -111,14 +111,14 @@ Future<void> init() async {
 
   ///home
   // Register Data Sources
-  sl.registerLazySingleton<CategoriesRemoteDS>(() => CategoriesRemoteDSImpl());
+  sl.registerLazySingleton<HomeRemoteDS>(() => HomeRemoteDSImpl());
 
   // Register Repositories
-  sl.registerLazySingleton<CategoriesRepoBase>(
-      () => CategoriesRepoImpl(categoriesRemoteDS: sl()));
+  sl.registerLazySingleton<HomeRepoBase>(
+      () => HomeRepoImpl(homeRemoteDS: sl()));
 
   // Register Cubit
-  sl.registerFactory(() => HomeCubit(categoriesRepo: sl()));
+  sl.registerFactory(() => HomeCubit(homeRepoBase: sl()));
 
   ///trip
   sl.registerLazySingleton<TripRemoteDS>(() => TripRemoteDSImpl());

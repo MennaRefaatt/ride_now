@@ -4,13 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
-class RecentRide extends StatelessWidget {
-  const RecentRide({super.key});
+import '../../../../trip_module/data/models/trip_model.dart';
 
+class RecentRide extends StatelessWidget {
+  const RecentRide({super.key, required this.trips});
+  final List<TripModel> trips;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 2,
+        itemCount: trips.length,
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
@@ -33,7 +35,7 @@ class RecentRide extends StatelessWidget {
                         Text("Home",
                             style: TextStyles.font18BlackRegular
                                 .copyWith(fontWeight: FontWeight.bold)),
-                        const Text("Cairo"),
+                        Text(trips[index].to),
                       ],
                     ),
                   ),
@@ -41,9 +43,9 @@ class RecentRide extends StatelessWidget {
               ),
             ),
             if (index != 1)
-            Divider(
-              color: Colors.grey.shade300,
-            )
+              Divider(
+                color: Colors.grey.shade300,
+              )
           ]);
         });
   }

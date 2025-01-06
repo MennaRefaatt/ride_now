@@ -219,6 +219,8 @@ class _DrawerItemsState extends State<DrawerItems> {
         }
       } else {
         safePrint("Driver not found in Firestore.");
+        Navigator.pushReplacementNamed(
+            context, RoutingEndpoints.driverOnBoarding);
       }
     } catch (e) {
       safePrint("Error fetching driver status: $e");

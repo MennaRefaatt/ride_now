@@ -29,7 +29,7 @@ class _LastTripsListViewState extends State<LastTripsListView> {
         width: MediaQuery.of(context).size.width * 0.6,
         child: widget.lastTrips.length == 1
             ? Row(
-                mainAxisAlignment: MainAxisAlignment.end, // Align to the right
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
                     onTap: () {

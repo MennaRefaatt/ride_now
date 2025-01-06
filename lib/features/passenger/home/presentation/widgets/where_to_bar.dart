@@ -45,7 +45,9 @@ class _WhereToBarState extends State<WhereToBar> {
                     widget.cubit.toFocusNode,
                     fromText,
                     backgroundColor,
-                    widget.cubit);
+                    widget.cubit,
+                  widget.lastTrips
+                );
                 widget.cubit.fromFocusNode.requestFocus();
               },
               child: AppTextFormField(
@@ -79,7 +81,8 @@ class _WhereToBarState extends State<WhereToBar> {
                         widget.cubit.toFocusNode,
                         fromText,
                         backgroundColor,
-                        widget.cubit);
+                        widget.cubit,
+                      widget.lastTrips);
                     widget.cubit.toFocusNode.requestFocus();
                   },
                   child: AppTextFormField(
