@@ -8,6 +8,7 @@ import 'package:ride_now/features/passenger/home/presentation/widgets/recent_rid
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../trip_module/data/models/trip_model.dart';
 import '../../../check_out/presentation/check_out_args.dart';
 
 class EnterYourRoute extends StatefulWidget {
@@ -16,7 +17,7 @@ class EnterYourRoute extends StatefulWidget {
   final String fromText;
   final Color backgroundColor;
   final HomeCubit cubit;
-
+final List<TripModel> trips;
   const EnterYourRoute({
     super.key,
     required this.fromFocusNode,
@@ -24,6 +25,7 @@ class EnterYourRoute extends StatefulWidget {
     required this.fromText,
     required this.backgroundColor,
     required this.cubit,
+    required this.trips,
   });
 
   @override
@@ -214,7 +216,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
               ),
             ),
             verticalSpacing(10.h),
-            RecentRide(),
+            RecentRide(trips: widget.trips),
           ],
         ),
       ),

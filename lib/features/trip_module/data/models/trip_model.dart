@@ -31,8 +31,12 @@ class TripModel {
       dateTime: json['dateTime'],
       price: json['price'],
       distance: json['distance'],
-      driverData: DriverData.fromJson(json['driverData']),
-      passengerData: PassengerData.fromJson(json['passengerData']),
+      driverData: json['driverData'] is Map<String, dynamic>
+          ? DriverData.fromJson(json['driverData'])
+          : DriverData.fromJson({}), // Or handle accordingly
+      passengerData: json['passengerData'] is Map<String, dynamic>
+          ? PassengerData.fromJson(json['passengerData'])
+          : PassengerData.fromJson({}), // Or handle accordingly
     );
   }
 
@@ -58,19 +62,19 @@ class DriverData {
   final String driverName;
   final String driverPhone;
   final String driverImage;
-  final String driverLocation;
   final String carColor;
   final String carModel;
   final String carNumber;
+  final DriverLocation driverLocation;
   DriverData({
     required this.driverId,
     required this.driverName,
     required this.driverPhone,
     required this.driverImage,
-    required this.driverLocation,
     required this.carColor,
     required this.carModel,
     required this.carNumber,
+    required this.driverLocation,
   });
 
   factory DriverData.fromJson(Map<String, dynamic> json) {
@@ -79,10 +83,10 @@ class DriverData {
       driverName: json['driverName'],
       driverPhone: json['driverPhone'],
       driverImage: json['driverImage'],
-      driverLocation: json['driverLocation'],
       carColor: json['carColor'],
       carModel: json['carModel'],
       carNumber: json['carNumber'],
+      driverLocation: DriverLocation.fromJson(json['driverLocation']),
     );
   }
 
@@ -91,10 +95,31 @@ class DriverData {
     'driverName': driverName,
     'driverPhone': driverPhone,
     'driverImage': driverImage,
-    'driverLocation': driverLocation,
     'carColor': carColor,
     'carModel': carModel,
     'carNumber': carNumber,
+    'driverLocation': driverLocation.toJson(),
+  };
+}
+class DriverLocation {
+  final double latitude;
+  final double longitude;
+
+  DriverLocation({
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory DriverLocation.fromJson(Map<String, dynamic> json) {
+    return DriverLocation(
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'latitude': latitude,
+    'longitude': longitude,
   };
 }
 
