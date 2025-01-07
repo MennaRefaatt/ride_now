@@ -110,7 +110,7 @@ class TripCubit extends Cubit<TripState> {
         from: from,
         to: to,
         status: TripStatus.pending.name,
-        dateTime: Timestamp.now(),
+        dateTime: DateTime.now(),
         price: tripCost.toString(),
         distance: distance,
         driverData: driverData,

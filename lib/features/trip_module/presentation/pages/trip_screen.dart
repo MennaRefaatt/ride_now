@@ -7,6 +7,7 @@ import 'package:ride_now/features/trip_module/presentation/widgets/waiting_for_d
 import '../../../../../core/di/di.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
+import '../../data/models/trip_model.dart';
 import '../manager/trip_cubit.dart';
 import '../widgets/trip_details.dart';
 
@@ -63,14 +64,14 @@ class _TripScreenState extends State<TripScreen> {
                         snapshot.data?.data() as Map<String, dynamic>?;
                     if (tripData != null) {
                       final tripStatus = tripData['status'];
-                      final driverId = tripData['driverData']['driverId'];
+                      final driverData = tripData['driverData'];
                       if (tripStatus != TripStatus.accepted.name &&
-                          driverId == "") {
+                          driverData["driverId"] == "") {
                         return WaitingForDriver(args: widget.args);
                       }
                       return TripDetails(
                         args: widget.args,
-                        state: AcceptTripLoaded("accepted", state.trip),
+                        tripModel: TripModel.fromJson(tripData),
                       );
                     }
                   }

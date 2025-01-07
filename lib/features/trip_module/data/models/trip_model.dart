@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class TripModel {
   late final String tripId;
   final String from;
   final String to;
   final String status;
-  final Timestamp dateTime;
+  final DateTime dateTime;
   final String price;
   final String distance;
   final DriverData driverData;
@@ -28,7 +29,9 @@ class TripModel {
       from: json['from'],
       to: json['to'],
       status: json['status'],
-      dateTime: json['dateTime'],
+      dateTime: (json['dateTime'] is Timestamp)
+          ? (json['dateTime'] as Timestamp).toDate()
+          : DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'] ?? ''), // Handle custom format
       price: json['price'],
       distance: json['distance'],
       driverData: json['driverData'] is Map<String, dynamic>
@@ -40,20 +43,24 @@ class TripModel {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    'tripId': tripId,
-    'from': from,
-    'to': to,
-    'status': status,
-    'dateTime': dateTime,
-    'price': price,
-    'distance': distance,
-    'driverData': driverData.toJson(),
-    'passengerData': passengerData.toJson(),
-  };
-
-  DateTime getDateTime() {
-    return dateTime.toDate();
+  Map<String, dynamic> toJson() {
+    final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
+    final formattedDate = dateFormat.format(dateTime);  // Formatting the DateTime to a string
+    return {
+      'tripId': tripId,
+      'from': from,
+      'to': to,
+      'status': status,
+      'dateTime': formattedDate,
+      'price': price,
+      'distance': distance,
+      'driverData': driverData.toJson(),
+      'passengerData': passengerData.toJson(),
+    };
+  }
+  String getFormattedDateTime() {
+    final dateFormatter = DateFormat('dd/MM/yyyy HH:mm');
+    return dateFormatter.format(dateTime);
   }
 }
 

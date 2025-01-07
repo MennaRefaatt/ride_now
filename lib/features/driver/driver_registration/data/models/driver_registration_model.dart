@@ -47,9 +47,20 @@ class DriverLocation{
     required this.longitude,
   });
 
-  factory DriverLocation.fromJson(Map<String, dynamic> json) => _$DriverLocationFromJson(json);
+  factory DriverLocation.fromJson(Map<String, dynamic> json) {
+    final latitude = json['latitude'];
+    final longitude = json['longitude'];
 
-  Map<String, dynamic> toJson() => _$DriverLocationToJson(this);
+    return DriverLocation(
+      latitude: latitude is String ? double.tryParse(latitude) ?? 0.0 : latitude.toDouble(),
+      longitude: longitude is String ? double.tryParse(longitude) ?? 0.0 : longitude.toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'latitude': latitude,
+    'longitude': longitude,
+  };
 }
 @JsonSerializable()
 class VehicleRegistrationModel{

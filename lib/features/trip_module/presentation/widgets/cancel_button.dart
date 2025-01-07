@@ -31,7 +31,10 @@ class CancelButton extends StatelessWidget {
         return Visibility(
           child: GestureDetector(
             onTap: () {
-              context.read<TripCubit>().cancelTrip(tripId!);
+              context
+                  .read<TripCubit>()
+                  .cancelTrip(tripId!)
+                  .then((value) => Navigator.pop(context));
             },
             child: Center(
               child: Container(
@@ -41,10 +44,12 @@ class CancelButton extends StatelessWidget {
                   color: AppColors.semiGrey.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                child:Text("Cancel",style: TextStyles.font18WhiteBold.copyWith(
-                  color: AppColors.red
+                child: Text(
+                  "Cancel",
+                  style:
+                      TextStyles.font18WhiteBold.copyWith(color: AppColors.red),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,),
               ),
             ),
           ),

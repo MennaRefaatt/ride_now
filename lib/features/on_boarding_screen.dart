@@ -28,11 +28,9 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   void _checkFirstLaunch() async {
-    bool isFirstOpen = await SharedPref
-        .isFirstOpen();
+    bool isFirstOpen = await SharedPref.isFirstOpen();
     if (isFirstOpen) {
-      await SharedPref.setFirstOpen(
-          false);
+      await SharedPref.setFirstOpen(false);
     } else {
       final userType = SharedPref.getString(key: MySharedKeys.type);
       final userId = SharedPref.getString(key: MySharedKeys.userId);

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/otp_screen.dart';
+import 'package:ride_now/features/auth/phone_args.dart';
+import 'package:ride_now/features/auth/phone_number_screen.dart';
 import 'package:ride_now/features/driver/d_pending/d_pending_screen.dart';
 import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_home.dart';
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
@@ -31,6 +33,9 @@ class RouteServices {
         return _customFadeRoute(const SplashScreen(), routeSettings.name!);
       case RoutingEndpoints.onBoardingScreen:
         return _customFadeRoute(const OnBoardingScreen(), routeSettings.name!);
+      case RoutingEndpoints.phoneNumber:
+        final args = routeSettings.arguments as PhoneArgs;
+        return _customFadeRoute(PhoneNumberScreen(args: args), routeSettings.name!);
       case RoutingEndpoints.scanner:
         return _customFadeRoute(
             const LicensePlateScanner(), routeSettings.name!);

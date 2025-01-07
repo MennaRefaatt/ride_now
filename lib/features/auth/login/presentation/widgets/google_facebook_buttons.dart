@@ -47,7 +47,7 @@ class GoogleFacebookButtons extends ConsumerWidget {
               onTap: () async {
                 await ref
                     .read(googleNotifierProvider.notifier)
-                    .signInWithGoogle();
+                    .signInWithGoogle(context);
               },
             ),
             horizontalSpacing(20.w),
@@ -61,7 +61,7 @@ class GoogleFacebookButtons extends ConsumerWidget {
               onTap: () async {
                 await ref
                     .read(facebookNotifierProvider.notifier)
-                    .signInWithFacebook();
+                    .signInWithFacebook(context);
               },
             ),
           ],
