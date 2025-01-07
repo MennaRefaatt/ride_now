@@ -1,21 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ride_now/core/helpers/shared_pref.dart';
-import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/utils/app_image.dart';
+import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/trip_tracking.dart';
 import '../../../../core/helpers/spacing.dart';
-import '../manager/trip_cubit.dart';
 import 'cancel_button.dart';
 
 class TripDetails extends StatelessWidget {
-  const TripDetails({super.key, required this.args, required this.state});
+  const TripDetails({super.key, required this.args, required this.tripModel});
 
   final TripTrackingArgs args;
-  final AcceptTripLoaded state;
+  final TripModel tripModel;
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +41,24 @@ class TripDetails extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "${SharedPref.getString(key: MySharedKeys.carColor)!} ${SharedPref.getString(key: MySharedKeys.carModel)!}",
-                        style: TextStyles.font18BlackRegular,
+                        "${tripModel.driverData.carColor} ${tripModel.driverData.carModel}",
+                        style: TextStyles.font24BlackBold,
                       ),
                     ),
-                    Text(
-                      SharedPref.getString(key: MySharedKeys.carNumber)!,
-                      style: TextStyles.font18BlackRegular,
-                    )
+                    Column(
+                      children: [
+                        AppImageAsset(
+                          path: "icons/app_icon.png",
+                          height: 50.h,
+                          width: 100.w,
+                          fit: BoxFit.cover,
+                        ),
+                        Text(
+                          " ${tripModel.driverData.carNumber}",
+                          style: TextStyles.font24BlackBold,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
                 Divider(),
@@ -61,13 +70,11 @@ class TripDetails extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 30.r,
-                          // backgroundImage: NetworkImage(SharedPref.getString(
-                          //         key: MySharedKeys.driverPicture) ??
-                          //     ""),
+                          //backgroundImage: NetworkImage(tripModel.driverData.driverImage),
                         ),
                         horizontalSpacing(10.w),
                         Text(
-                          SharedPref.getString(key: MySharedKeys.driverName)!,
+                          tripModel.driverData.driverName,
                           style: TextStyles.font18BlackRegular,
                         ),
                       ],
@@ -100,7 +107,7 @@ class TripDetails extends StatelessWidget {
                     ),
                     verticalSpacing(20.h),
                     Text(
-                      "EGP ${state.trip.price} Cash",
+                      "EGP ${tripModel.price} Cash",
                       style: TextStyles.font18BlackRegular,
                     ),
                   ],
@@ -125,7 +132,7 @@ class TripDetails extends StatelessWidget {
                         horizontalSpacing(10.w),
                         Expanded(
                           child: Text(
-                            state.trip.from,
+                            tripModel.from,
                             style: TextStyles.font18BlackRegular.copyWith(
                               fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,
@@ -144,7 +151,7 @@ class TripDetails extends StatelessWidget {
                         horizontalSpacing(10.w),
                         Expanded(
                           child: Text(
-                            state.trip.to,
+                            tripModel.to,
                             style: TextStyles.font18BlackRegular.copyWith(
                               fontWeight: FontWeight.bold,
                               overflow: TextOverflow.ellipsis,

@@ -37,7 +37,7 @@ class DriverStatusListener {
                 .collection("drivers")
                 .doc(userId)
                 .update({
-              'location': location,
+              'location': location.toJson(),
             });
 
             await storeDriverDataInPrefs(

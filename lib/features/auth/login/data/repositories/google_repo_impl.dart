@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
+import '../../../../../core/helpers/shared_pref.dart';
+import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../../../phone_args.dart';
 import '../../domain/repositories/google_repo_base.dart';
 import '../data_sources/firestore_service/firestore_param.dart';
 import '../data_sources/firestore_service/firestore_service.dart';
@@ -17,49 +23,88 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
       this._dsGoogleSignIn, this._firestoreService, this._dsAuthLocal);
 
   @override
-  Future<UserModel?> signInWithGoogle() async {
+  Future<UserModel?> signInWithGoogle(BuildContext context) async {
     final user = await _dsGoogleSignIn.signInWithGoogle();
     if (user != null) {
-      String phone = user.phoneNumber ?? '';
-      if (phone.isEmpty) {
-        phone = await _promptForPhoneNumber();
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      if (!userDoc.exists) {
+        String phone = user.phoneNumber ?? '';
+        if (phone.isEmpty) {
+          phone = await _promptForPhoneNumber();
+        }
+        final param = FirestoreParam(
+          phoneNumber: phone,
+          city: "missing to pick the location",
+          type: UserType.passenger.name,
+          currentTripId: "none",
+        );
+        await _firestoreService
+            .saveUserToFirestore(user, param)
+            .then((value) async {
+          final userModel = UserModel(
+            city: param.city ?? '',
+            type: param.type ?? '',
+            uid: user.uid,
+            name: user.displayName ?? '',
+            email: user.email ?? '',
+            photoUrl: user.photoURL ?? '',
+            phoneNumber: param.phoneNumber ?? '',
+            currentTripId: param.currentTripId ?? '',
+          );
+          await _dsAuthLocal.saveDataToLocal(userModel);
+          if (phone == "missing phone number") {
+            Navigator.pushReplacementNamed(
+                context, RoutingEndpoints.phoneNumber,
+                arguments: PhoneArgs(user: user));
+          }
+        });
+      } else {
+        String phoneNumber = userDoc.data()?['phoneNumber'] ?? '';
+
+        if (phoneNumber == "missing phone number" || phoneNumber.isEmpty) {
+          Navigator.pushReplacementNamed(context, RoutingEndpoints.phoneNumber,
+              arguments: PhoneArgs(user: user));
+        } else if (phoneNumber.isNotEmpty) {
+          final userModel = UserModel(
+            city: userDoc.data()?['city'] ?? '',
+            type: userDoc.data()?['type'] ?? '',
+            uid: user.uid,
+            name: user.displayName ?? '',
+            email: user.email ?? '',
+            photoUrl: user.photoURL ?? '',
+            phoneNumber: phoneNumber,
+            currentTripId: userDoc.data()?['currentTripId'] ?? '',
+          );
+          await _dsAuthLocal.saveDataToLocal(userModel).then((value) {
+            final userType = SharedPref.getString(key: MySharedKeys.type);
+            if (userType == UserType.driver.name) {
+              Navigator.pushReplacementNamed(
+                  context, RoutingEndpoints.driverHome);
+            } else {
+              Navigator.pushReplacementNamed(
+                  context, RoutingEndpoints.passengerHome);
+            }
+          });
+        } else {
+          Navigator.pushReplacementNamed(context, RoutingEndpoints.phoneNumber,
+              arguments: PhoneArgs(user: user));
+        }
       }
-
-      final param = FirestoreParam(
-        phoneNumber: phone,
-        city: "missing to pick the location",
-        type: UserType.passenger.name,
-        currentTripId: "none",
-      );
-      await _firestoreService.saveUserToFirestore(user,param);
-
-      final userModel = UserModel(
-        city: param.city ?? '',
-        type: param.type ?? '',
-        uid: user.uid,
-        name: user.displayName ?? '',
-        email: user.email ?? '',
-        photoUrl: user.photoURL ?? '',
-        phoneNumber: param.phoneNumber ?? '',
-        currentTripId: param.currentTripId ?? '',
-      );
-
-      await _dsAuthLocal.saveDataToLocal(userModel);
-
-      return userModel;
     }
     return null;
+  }
+
+  Future<String> _promptForPhoneNumber() async {
+    return 'missing phone number';
   }
 
   @override
   Future<void> signOutGoogle() async {
     await _dsGoogleSignIn.signOutGoogle();
     await FirebaseAuth.instance.signOut();
-  }
-
-  Future<String> _promptForPhoneNumber() async {
-    // In a real app, you'd prompt the user for their phone number
-    return 'missing phone number';
   }
 }
 

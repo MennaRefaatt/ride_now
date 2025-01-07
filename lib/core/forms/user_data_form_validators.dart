@@ -112,6 +112,9 @@ class UserDataFormValidators {
     if (!RegExp(r'^[1-9]').hasMatch(value)) {
       return 'Please start with a valid number';
     }
+    if (value.length < 10) {
+      return 'Please enter a valid phone number';
+    }
     return null;
   }
 

@@ -21,35 +21,39 @@ class TripRequestsDialogue extends StatefulWidget {
 
 class _TripRequestsDialogueState extends State<TripRequestsDialogue>
     with TickerProviderStateMixin {
-  late List<AnimationController> animationControllers;
-  late List<Animation<Offset>> slideAnimations;
+  late List<AnimationController?> animationControllers;
+  late List<Animation<Offset>?> slideAnimations;
 
   @override
   void initState() {
     super.initState();
-    animationControllers = List.generate(
-      5,
-      (index) => AnimationController(
-        duration: const Duration(seconds: 30),
-        vsync: this,
-      ),
-    );
-    slideAnimations = animationControllers
-        .map((controller) => Tween<Offset>(
-                begin: Offset.zero, end: const Offset(-1.5, 0))
-            .animate(
-                CurvedAnimation(parent: controller, curve: Curves.easeInOut)))
-        .toList();
-    for (var controller in animationControllers) {
-      controller.forward();
-    }
+    animationControllers = [];
+    slideAnimations = [];
     widget.tripCubit.getTrips();
+  }
+
+  void startSlideAnimation(int index) {
+    if (animationControllers[index] != null) return;
+
+    final controller = AnimationController(
+      duration: const Duration(seconds: 30),
+      vsync: this,
+    );
+    animationControllers[index] = controller;
+    slideAnimations[index] = Tween<Offset>(
+      begin: Offset.zero,
+      end: const Offset(-1.5, 0),
+    ).animate(
+      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+    );
+
+    controller.forward();
   }
 
   @override
   void dispose() {
     for (var controller in animationControllers) {
-      controller.dispose();
+      controller?.dispose();
     }
     super.dispose();
   }
@@ -77,17 +81,26 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
         }
 
         final trips = snapshot.data!;
+        animationControllers = List<AnimationController?>.filled(trips.length, null);
+        slideAnimations = List<Animation<Offset>?>.filled(trips.length, null);
 
         return ListView.builder(
           itemCount: trips.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (_, index) {
+            final trip = trips[index];
+            final timeRemaining = trip.dateTime.difference(DateTime.now()).inSeconds;
+
+            if (timeRemaining <= 0) {
+              startSlideAnimation(index);
+            }
+
             return AnimatedBuilder(
-              animation: animationControllers[index],
+              animation: animationControllers[index] ?? AlwaysStoppedAnimation(0),
               builder: (context, child) {
                 return SlideTransition(
-                  position: slideAnimations[index],
+                  position: slideAnimations[index] ?? AlwaysStoppedAnimation(Offset.zero),
                   child: child,
                 );
               },
@@ -100,7 +113,9 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                 child: Column(
                   children: [
                     LinearProgressIndicator(
-                      value: 1.0 - animationControllers[index].value,
+                      value: timeRemaining > 0
+                          ? timeRemaining / 30
+                          : 0.0,
                       backgroundColor: Colors.grey.shade200,
                       color: AppColors.primary,
                       minHeight: 6.h,
@@ -119,11 +134,11 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                 children: [
                                   Expanded(
                                     child: Text(
-                                      trips[index].passengerData.passengerName,
+                                      trip.passengerData.passengerName,
                                       style: TextStyles.font24BlackBold,
                                     ),
                                   ),
-                                  Text(trips[index].price.toString(),
+                                  Text(double.tryParse(trip.price)?.toStringAsFixed(2) ?? 'Invalid price',
                                       style: TextStyles.font18primaryBold),
                                 ],
                               ),
@@ -138,10 +153,10 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   horizontalSpacing(5.w),
                                   Expanded(
                                     child: Text(
-                                        trips[index].dateTime.toString(),
+                                        trip.dateTime.toString(),
                                         style: TextStyles.font18BlackRegular),
                                   ),
-                                  Text(trips[index].distance.toString(),
+                                  Text(trip.distance.toString(),
                                       style: TextStyles.font18BlackRegular),
                                 ],
                               ),
@@ -183,19 +198,19 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       key: MySharedKeys.carColor)!;
                                   safePrint("driverId: $driverId");
                                   widget.tripCubit.acceptTrip(
-                                      trips[index],
+                                      trip,
                                       DriverData(
-                                          driverId: driverId,
-                                          driverName: driverName,
-                                          driverPhone: driverPhone,
-                                          driverImage: driverImage,
-                                          carModel: carModel,
-                                          carColor: carColor,
-                                          carNumber: carNumber,
-                                          driverLocation: DriverLocation(
-                                            latitude: driverLat,
-                                            longitude: driverLong,
-                                          ),
+                                        driverId: driverId,
+                                        driverName: driverName,
+                                        driverPhone: driverPhone,
+                                        driverImage: driverImage,
+                                        carModel: carModel,
+                                        carColor: carColor,
+                                        carNumber: carNumber,
+                                        driverLocation: DriverLocation(
+                                          latitude: driverLat,
+                                          longitude: driverLong,
+                                        ),
                                       ));
                                 },
                                 textStyle: TextStyles.font18BlackRegular,

@@ -21,7 +21,7 @@ class PhoneField extends ConsumerWidget {
     final phoneState = ref.watch(phoneNotifierProvider);
     UserDataFormValidators userDataFormValidators = UserDataFormValidators();
     final phoneAuthNotifier = ref.watch(phoneNotifierProvider.notifier);
-
+    late String phoneNum;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,8 +55,8 @@ class PhoneField extends ConsumerWidget {
               LengthLimitingTextInputFormatter(10),
             ],
             onChanged: (phone) {
-              safePrint(phone.completeNumber);
-              userDataFormValidators.phoneController.text = phone.completeNumber;
+              phoneNum = phone.countryCode +
+                  userDataFormValidators.phoneController.text;
             },
             onCountryChanged: (country) {
               safePrint('Country changed to: ${country.name}');
@@ -73,8 +73,7 @@ class PhoneField extends ConsumerWidget {
                 text: "S().next",
                 backgroundColor: AppColors.primary,
                 onPressed: () async {
-                  final phoneNumber =
-                      userDataFormValidators.phoneController.text;
+                  final phoneNumber = phoneNum;
                   if (phoneNumber.isNotEmpty) {
                     await phoneAuthNotifier
                         .sendOtp(phoneNumber)

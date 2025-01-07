@@ -6,6 +6,7 @@ class RoutingEndpoints {
   static const passengerHome = '/passengerHome';
   static const driverHome = '/driverHome';
   static const otp = '/otp';
+  static const phoneNumber = '/phoneNumber';
   static const checkOut = '/checkOut';
   static const profile = '/profile';
   static const maps = '/maps';

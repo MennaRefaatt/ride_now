@@ -31,6 +31,10 @@ class TripRemoteDSImpl implements TripRemoteDS {
         safePrint("Document data: $rawData");
         TripModel tripModel = TripModel.fromJson(rawData!);
         safePrint("tripModel: $tripModel");
+        safePrint("driverData: ${tripModel.driverData}");
+        safePrint("driverData: ${tripModel.driverData.carColor}");
+        safePrint("passengerData: ${tripModel.passengerData}");
+        safePrint("status: ${tripModel.status}");
         return tripModel;
       } else {
         safePrint("No trip found for tripId: $tripId");
