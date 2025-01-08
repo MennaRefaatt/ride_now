@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/connection_lost.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
@@ -104,6 +105,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                       ? LatLng(
                           state.position.latitude, state.position.longitude)
                       : (state as LocationMarkerSet).location;
+                  homeCubit.fromLatLng = position;
                   final address = state is LocationLoaded
                       ? state.address
                       : (state as LocationMarkerSet).location;
@@ -206,6 +208,7 @@ class _PassengerHomeState extends State<PassengerHome> {
                           WhereToBar(
                             cubit: homeCubit,
                             lastTrips: trips,
+                            toLatLng: homeCubit.toLatLng,
                           ),
                           AppButton(
                             text: "Order",
@@ -215,12 +218,25 @@ class _PassengerHomeState extends State<PassengerHome> {
                                   homeCubit.toController.text.isEmpty) {
                                 _openEnterYourRouteFromOrderButton(context);
                               }
+                              final locationState =
+                                  context.read<LocationCubit>().state;
+                              if (locationState is LocationLoaded) {
+                                homeCubit.fromLatLng = LatLng(
+                                  locationState.position.latitude,
+                                  locationState.position.longitude,
+                                );
+                              }
+                              safePrint(
+                                  "From: ${homeCubit.fromLatLng}, To: ${homeCubit.toLatLng}");
+
                               Navigator.pushNamed(
                                   context, RoutingEndpoints.checkOut,
                                   arguments: CheckOutArgs(
-                                      fromAddress:
-                                          homeCubit.fromController.text,
-                                      toAddress: homeCubit.toController.text));
+                                    fromAddress: homeCubit.fromController.text,
+                                    toAddress: homeCubit.toController.text,
+                                    fromLatLng: homeCubit.fromLatLng!,
+                                    toLatLng: homeCubit.toLatLng!,
+                                  ));
                             },
                             backgroundColor: AppColors.primary,
                             width: double.infinity,

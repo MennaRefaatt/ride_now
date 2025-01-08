@@ -4,28 +4,23 @@ import 'package:http/http.dart' as http;
 import 'package:ride_now/core/services/network/api_constants.dart';
 
 class DirectionService {
-  final googleApi = ApiConstants.googleApiKey;
-
-  // Fetch route coordinates using Google Directions API
-  Future<List<LatLng>> getRouteCoordinates(LatLng origin, LatLng destination) async {
+  final openRouteServiceApiKey = ApiConstants.openRouteServiceApiKey;
+  final openRouteServiceBaseUrl = ApiConstants.openRouteServiceBaseUrl;
+  Future<List<LatLng>> getRouteCoordinates(
+      LatLng origin, LatLng destination) async {
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=$googleApi'
-    );
+        '$openRouteServiceBaseUrl$openRouteServiceApiKey&start=${origin.longitude},${origin.latitude}&end=${destination.longitude},${destination.latitude}');
 
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      final routes = data['routes'] as List;
-      final polylinePoints = routes.isNotEmpty
-          ? routes[0]['legs'][0]['steps'] as List
-          : [];
-
+      final coordinates =
+          data['features'][0]['geometry']['coordinates'] as List;
       List<LatLng> points = [];
-      for (var step in polylinePoints) {
-        final lat = step['end_location']['lat'];
-        final lng = step['end_location']['lng'];
-        points.add(LatLng(lat, lng));
+      for (var coordinate in coordinates) {
+        points.add(LatLng(
+            coordinate[1], coordinate[0]));
       }
       return points;
     } else {

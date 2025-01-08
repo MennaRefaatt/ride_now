@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/passenger/home/presentation/manager/home_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:ride_now/features/passenger/home/presentation/widgets/recent_rid
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../maps/data/model/location_model.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 import '../../../check_out/presentation/check_out_args.dart';
 
@@ -17,7 +19,7 @@ class EnterYourRoute extends StatefulWidget {
   final String fromText;
   final Color backgroundColor;
   final HomeCubit cubit;
-final List<TripModel> trips;
+  final List<TripModel> trips;
   const EnterYourRoute({
     super.key,
     required this.fromFocusNode,
@@ -33,7 +35,6 @@ final List<TripModel> trips;
 }
 
 class _EnterYourRouteState extends State<EnterYourRoute> {
-
   late String toAddress;
   @override
   void initState() {
@@ -75,13 +76,14 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
       );
       return;
     }
-
     Navigator.pushNamed(
       context,
       RoutingEndpoints.checkOut,
       arguments: CheckOutArgs(
         fromAddress: fromAddress,
         toAddress: toAddress,
+        fromLatLng: widget.cubit.fromLatLng!,
+        toLatLng: widget.cubit.toLatLng!,
       ),
     ).then((result) {
       if (result != null && result is String) {
@@ -93,14 +95,18 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
     });
   }
 
-  void _navigateToMaps(BuildContext context, TextEditingController controller) {
+  void _navigateToMaps(
+    BuildContext context,
+    TextEditingController controller,
+  ) {
     Navigator.pushNamed(
       context,
       RoutingEndpoints.maps,
     ).then((result) {
-      if (result != null && result is String) {
+      if (result != null && result is LocationData) {
         setState(() {
-          controller.text = result;
+          controller.text = result.address;
+          widget.cubit.toLatLng = LatLng(result.latitude, result.longitude);
         });
       }
     });

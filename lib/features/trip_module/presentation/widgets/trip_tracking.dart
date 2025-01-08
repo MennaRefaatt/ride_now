@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/features/maps/presentation/manager/location_cubit.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
@@ -20,8 +19,10 @@ class _TripTrackingState extends State<TripTracking> {
   late DirectionService _directionService;
   LatLng? _fromLatLng;
   LatLng? _toLatLng;
-  Set<Polyline> _polylines = {};
+  LatLng? _driverLatLng;
   LatLng? cameraPosition;
+  Set<Marker> _markers = {};
+  Set<Polyline> _polylines = {};
 
   @override
   void initState() {
@@ -39,7 +40,9 @@ class _TripTrackingState extends State<TripTracking> {
   }
 
   Future<void> _getDirections() async {
-    if (_fromLatLng == null || _toLatLng == null) return;
+    if (_fromLatLng == null || _toLatLng == null || _driverLatLng == null) {
+      return;
+    }
     try {
       List<LatLng> routeCoordinates =
           await _directionService.getRouteCoordinates(_fromLatLng!, _toLatLng!);
@@ -47,7 +50,7 @@ class _TripTrackingState extends State<TripTracking> {
       setState(() {
         _polylines = {
           Polyline(
-            polylineId: PolylineId('route'),
+            polylineId: const PolylineId('route'),
             points: routeCoordinates,
             color: Colors.green,
             width: 5,
@@ -61,16 +64,35 @@ class _TripTrackingState extends State<TripTracking> {
 
   Future<void> _getLatLngFromAddress() async {
     try {
-      final fromPlacemark = await locationFromAddress(widget.args.fromAddress);
-      final toPlacemark = await locationFromAddress(widget.args.toAddress);
-
       setState(() {
-        _fromLatLng =
-            LatLng(fromPlacemark.first.latitude, fromPlacemark.first.longitude);
-        _toLatLng =
-            LatLng(toPlacemark.first.latitude, toPlacemark.first.longitude);
+        _fromLatLng = widget.args.fromLatLng;
+        _toLatLng = widget.args.toLatLng;
+        _driverLatLng = widget.args.driverLatLng;
+        _markers = {
+          Marker(
+            markerId: const MarkerId('fromLocation'),
+            position: _fromLatLng!,
+            infoWindow: InfoWindow(title: widget.args.fromAddress),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          ),
+          Marker(
+            markerId: const MarkerId('toLocation'),
+            position: _toLatLng!,
+            infoWindow: InfoWindow(title: widget.args.toAddress),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          ),
+          Marker(
+            markerId: const MarkerId('driverLocation'),
+            position: _driverLatLng!,
+            infoWindow: const InfoWindow(title: 'Driver Location'),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen),
+          ),
+        };
       });
-      _getDirections();
+      await _getDirections();
     } catch (e) {
       safePrint('Error fetching coordinates: $e');
     }
@@ -78,25 +100,11 @@ class _TripTrackingState extends State<TripTracking> {
 
   @override
   Widget build(BuildContext context) {
-    if (_fromLatLng == null || _toLatLng == null) {
-      return const Center(child: CircularProgressIndicator());
+    if (_fromLatLng == null || _toLatLng == null || _driverLatLng == null) {
+      return GoogleMap(
+          initialCameraPosition:
+              CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 10));
     }
-
-    final markers = {
-      Marker(
-        markerId: const MarkerId('fromLocation'),
-        position: _fromLatLng!,
-        infoWindow: InfoWindow(title: widget.args.fromAddress),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-      ),
-      Marker(
-        markerId: const MarkerId('toLocation'),
-        position: _toLatLng!,
-        infoWindow: InfoWindow(title: widget.args.toAddress),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      ),
-    };
-
     return SizedBox(
       height: MediaQuery.of(context).size.height,
       child: BlocBuilder<LocationCubit, LocationState>(
@@ -107,43 +115,18 @@ class _TripTrackingState extends State<TripTracking> {
                 : (state as LocationMarkerSet).location;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (_mapController != null) {
-                _animateToLocation(position);
+                // _animateToLocation(position);
               }
             });
             return GoogleMap(
-              mapType: MapType.satellite,
+              mapType: MapType.normal,
               initialCameraPosition: CameraPosition(
                 target: _fromLatLng!,
                 zoom: 10,
               ),
               onMapCreated: (controller) {
                 _mapController = controller;
-                _animateToLocation(position);
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _mapController.animateCamera(
-                    CameraUpdate.newLatLngBounds(
-                      LatLngBounds(
-                        southwest: LatLng(
-                          _fromLatLng!.latitude < _toLatLng!.latitude
-                              ? _fromLatLng!.latitude
-                              : _toLatLng!.latitude,
-                          _fromLatLng!.longitude < _toLatLng!.longitude
-                              ? _fromLatLng!.longitude
-                              : _toLatLng!.longitude,
-                        ),
-                        northeast: LatLng(
-                          _fromLatLng!.latitude > _toLatLng!.latitude
-                              ? _fromLatLng!.latitude
-                              : _toLatLng!.latitude,
-                          _fromLatLng!.longitude > _toLatLng!.longitude
-                              ? _fromLatLng!.longitude
-                              : _toLatLng!.longitude,
-                        ),
-                      ),
-                      100.0,
-                    ),
-                  );
-                });
+                // _animateToLocation(position);
               },
               onTap: (LatLng position) {
                 setState(() {
@@ -151,7 +134,7 @@ class _TripTrackingState extends State<TripTracking> {
                 });
                 _moveCamera(position);
               },
-              markers: markers,
+              markers: _markers,
               polylines: _polylines,
             );
           }

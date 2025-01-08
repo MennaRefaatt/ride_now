@@ -1,13 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
-
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
@@ -77,33 +77,18 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
-  Future<void> createTrip(String from, String to) async {
+  Future<void> createTrip(
+      String from, LatLng fromLatLng, String to, LatLng toLatLng) async {
     emit(CreateTripLoading());
     try {
       TripHelper tripHelper = TripHelper();
-      String distance =
-          await tripHelper.calculateDistance(from, to, unit: 'km');
+      LatLng fromCoordinates = fromLatLng;
+      LatLng toCoordinates =toLatLng;
+
+      String distance = await tripHelper
+          .calculateDistance(fromCoordinates, toCoordinates, unit: 'km');
       double distanceInKm = double.parse(distance.split(" ")[0]);
       double tripCost = tripHelper.calculateCost(distanceInKm);
-      DriverData driverData = DriverData(
-          driverId: "",
-          driverName: "",
-          driverPhone: "",
-          driverImage: "",
-          carColor: "",
-          carModel: "",
-          carNumber: "",
-          driverLocation: DriverLocation(
-            latitude: 0.0,
-            longitude: 0.0,
-          )
-          );
-
-      PassengerData passengerData = PassengerData(
-        passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
-        passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
-        passengerPhone: "",
-      );
 
       final tripModel = TripModel(
         tripId: "",
@@ -113,8 +98,23 @@ class TripCubit extends Cubit<TripState> {
         dateTime: DateTime.now(),
         price: tripCost.toString(),
         distance: distance,
-        driverData: driverData,
-        passengerData: passengerData,
+        fromLatLng: fromLatLng,
+        toLatLng: toLatLng,
+        driverData: DriverData(
+          driverId: "",
+          driverName: "",
+          driverPhone: "",
+          driverImage: "",
+          carColor: "",
+          carModel: "",
+          carNumber: "",
+          driverLocation: LatLng(0, 0),
+        ),
+        passengerData: PassengerData(
+          passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
+          passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
+          passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
+        ),
       );
       await createTripUseCase.call(tripModel);
 
