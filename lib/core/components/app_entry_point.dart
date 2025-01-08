@@ -31,7 +31,7 @@ class _AppEntryPointState extends State<AppEntryPoint> {
             navigatorKey: appNavKey,
             onGenerateRoute: RouteServices.generateRoute,
             title: 'ride_now',
-            initialRoute: widget.initialRoute, // Use the passed initial route
+            initialRoute: widget.initialRoute,
             debugShowCheckedModeBanner: false,
             builder: (context, child) {
               child ??= const SizedBox.shrink();

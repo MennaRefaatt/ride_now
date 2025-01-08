@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 class TripModel {
@@ -9,6 +10,8 @@ class TripModel {
   final DateTime dateTime;
   final String price;
   final String distance;
+  final LatLng fromLatLng;
+  final LatLng toLatLng;
   final DriverData driverData;
   final PassengerData passengerData;
   TripModel({
@@ -18,6 +21,8 @@ class TripModel {
     required this.status,
     required this.dateTime,
     required this.price,
+    required this.fromLatLng,
+    required this.toLatLng,
     required this.distance,
     required this.driverData,
     required this.passengerData,
@@ -29,9 +34,12 @@ class TripModel {
       from: json['from'],
       to: json['to'],
       status: json['status'],
+      fromLatLng: LatLng(json['fromLat'], json['fromLng']),
+      toLatLng: LatLng(json['toLat'], json['toLng']),
       dateTime: (json['dateTime'] is Timestamp)
           ? (json['dateTime'] as Timestamp).toDate()
-          : DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'] ?? ''), // Handle custom format
+          : DateFormat('dd/MM/yyyy HH:mm')
+              .parse(json['dateTime'] ?? ''), // Handle custom format
       price: json['price'],
       distance: json['distance'],
       driverData: json['driverData'] is Map<String, dynamic>
@@ -45,11 +53,13 @@ class TripModel {
 
   Map<String, dynamic> toJson() {
     final dateFormat = DateFormat('dd/MM/yyyy HH:mm');
-    final formattedDate = dateFormat.format(dateTime);  // Formatting the DateTime to a string
+    final formattedDate = dateFormat.format(dateTime);
     return {
       'tripId': tripId,
       'from': from,
       'to': to,
+      "fromLatLng": fromLatLng.toJson(),
+      "toLatLng": toLatLng.toJson(),
       'status': status,
       'dateTime': formattedDate,
       'price': price,
@@ -58,6 +68,7 @@ class TripModel {
       'passengerData': passengerData.toJson(),
     };
   }
+
   String getFormattedDateTime() {
     final dateFormatter = DateFormat('dd/MM/yyyy HH:mm');
     return dateFormatter.format(dateTime);
@@ -72,7 +83,7 @@ class DriverData {
   final String carColor;
   final String carModel;
   final String carNumber;
-  final DriverLocation driverLocation;
+  final LatLng driverLocation;
   DriverData({
     required this.driverId,
     required this.driverName,
@@ -93,48 +104,27 @@ class DriverData {
       carColor: json['carColor'],
       carModel: json['carModel'],
       carNumber: json['carNumber'],
-      driverLocation: DriverLocation.fromJson(json['driverLocation']),
+      driverLocation: LatLng(json['driverLocation']['latitude'],
+          json['driverLocation']['longitude']),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'driverId': driverId,
-    'driverName': driverName,
-    'driverPhone': driverPhone,
-    'driverImage': driverImage,
-    'carColor': carColor,
-    'carModel': carModel,
-    'carNumber': carNumber,
-    'driverLocation': driverLocation.toJson(),
-  };
-}
-class DriverLocation {
-  final double latitude;
-  final double longitude;
-
-  DriverLocation({
-    required this.latitude,
-    required this.longitude,
-  });
-
-  factory DriverLocation.fromJson(Map<String, dynamic> json) {
-    return DriverLocation(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'latitude': latitude,
-    'longitude': longitude,
-  };
+        'driverId': driverId,
+        'driverName': driverName,
+        'driverPhone': driverPhone,
+        'driverImage': driverImage,
+        'carColor': carColor,
+        'carModel': carModel,
+        'carNumber': carNumber,
+        'driverLocation': driverLocation.toJson(),
+      };
 }
 
 class PassengerData {
   final String passengerId;
   final String passengerName;
   final String passengerPhone;
-
   PassengerData({
     required this.passengerId,
     required this.passengerName,
@@ -150,8 +140,8 @@ class PassengerData {
   }
 
   Map<String, dynamic> toJson() => {
-    'passengerId': passengerId,
-    'passengerName': passengerName,
-    'passengerPhone': passengerPhone,
-  };
+        'passengerId': passengerId,
+        'passengerName': passengerName,
+        'passengerPhone': passengerPhone,
+      };
 }

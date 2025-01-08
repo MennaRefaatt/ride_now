@@ -10,6 +10,7 @@ import '../../../maps/presentation/manager/location_cubit.dart';
 import '../../data/models/trip_model.dart';
 import '../manager/trip_cubit.dart';
 import '../widgets/trip_details.dart';
+import '../widgets/trip_tracking.dart';
 
 class TripScreen extends StatefulWidget {
   const TripScreen({super.key, required this.args});
@@ -65,13 +66,28 @@ class _TripScreenState extends State<TripScreen> {
                     if (tripData != null) {
                       final tripStatus = tripData['status'];
                       final driverData = tripData['driverData'];
-                      if (tripStatus != TripStatus.accepted.name &&
-                          driverData["driverId"] == "") {
-                        return WaitingForDriver(args: widget.args);
-                      }
-                      return TripDetails(
-                        args: widget.args,
-                        tripModel: TripModel.fromJson(tripData),
+                      final TripTrackingArgs args = TripTrackingArgs(
+                        fromAddress: widget.args.fromAddress,
+                        toAddress: widget.args.toAddress,
+                        tripId: widget.args.tripId,
+                        fromLatLng: widget.args.fromLatLng,
+                        toLatLng: widget.args.toLatLng,
+                        driverLatLng: widget.args.driverLatLng,
+                      );
+                      return Stack(
+                        children: [
+                          TripTracking(
+                            args: args,
+                          ),
+                          if (tripStatus == TripStatus.accepted.name &&
+                              driverData["driverId"] != "")
+                            TripDetails(
+                              tripModel: TripModel.fromJson(tripData),
+                            ),
+                          if (tripStatus != TripStatus.accepted.name &&
+                              driverData["driverId"] == "")
+                            WaitingForDriver(),
+                        ],
                       );
                     }
                   }

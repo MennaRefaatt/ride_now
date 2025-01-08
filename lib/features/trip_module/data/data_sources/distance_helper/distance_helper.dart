@@ -1,52 +1,41 @@
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'dart:math';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripHelper {
-  static const double costPerKm = 10.0;  // سعر ثابت لكل كيلومتر (على سبيل المثال)
-  // Function to calculate distance between two locations
-  Future<String> calculateDistance(String from, String to, {String unit = 'km'}) async {
-    try {
-      // Get the coordinates (latitude and longitude) for the 'from' and 'to' locations
-      List<Location> fromLocations = await locationFromAddress(from);
-      List<Location> toLocations = await locationFromAddress(to);
+  /// Calculates the distance between two coordinates (lat1, lon1) and (lat2, lon2).
+  /// Returns the distance as a string in the specified unit ('km' or 'miles').
+  Future<String> calculateDistance(LatLng from, LatLng to, {String unit = 'km'}) async {
+    const double radiusOfEarthKm = 6371.0; // Radius of Earth in kilometers
+    const double radiusOfEarthMiles = 3958.8; // Radius of Earth in miles
 
-      // Check if coordinates are available
-      if (fromLocations.isNotEmpty && toLocations.isNotEmpty) {
-        double fromLatitude = fromLocations.first.latitude;
-        double fromLongitude = fromLocations.first.longitude;
-        double toLatitude = toLocations.first.latitude;
-        double toLongitude = toLocations.first.longitude;
+    final double lat1Rad = radians(from.latitude);
+    final double lon1Rad = radians(from.longitude);
+    final double lat2Rad = radians(to.latitude);
+    final double lon2Rad = radians(to.longitude);
 
-        // Calculate distance using Geolocator (returns distance in meters)
-        double distanceInMeters = Geolocator.distanceBetween(
-          fromLatitude,
-          fromLongitude,
-          toLatitude,
-          toLongitude,
-        );
+    // Haversine formula
+    final double dLat = lat2Rad - lat1Rad;
+    final double dLon = lon2Rad - lon1Rad;
+    final double a = pow(sin(dLat / 2), 2) +
+        cos(lat1Rad) * cos(lat2Rad) * pow(sin(dLon / 2), 2);
+    final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-        // Convert distance to requested unit (km or m)
-        if (unit == 'km') {
-          // Convert from meters to kilometers
-          return (distanceInMeters / 1000).toStringAsFixed(2) + ' km';
-        } else if (unit == 'm') {
-          // Return the distance in meters
-          return distanceInMeters.toStringAsFixed(2) + ' m';
-        } else {
-          // Default to kilometers if the unit is unknown
-          return (distanceInMeters / 1000).toStringAsFixed(2) + ' km';
-        }
-      } else {
-        throw Exception("Unable to find coordinates for one of the locations.");
-      }
-    } catch (e) {
-      throw Exception("Error calculating distance: $e");
-    }
+    // Choose the correct radius
+    final double radius = unit == 'miles' ? radiusOfEarthMiles : radiusOfEarthKm;
+
+    final double distance = radius * c;
+
+    return "${distance.toStringAsFixed(2)} $unit";
   }
-  double calculateCost(double distanceInKm) {
-      if (distanceInKm <= 0) {
-        throw Exception("Invalid distance value");
-      }
-      return costPerKm * distanceInKm;
+
+  /// Converts degrees to radians.
+  double radians(double degrees) {
+    return degrees * (pi / 180);
+  }
+
+  /// Example function to calculate trip cost based on distance.
+  double calculateCost(double distanceInKm, {double ratePerKm = 1.5}) {
+    return distanceInKm * ratePerKm;
   }
 }

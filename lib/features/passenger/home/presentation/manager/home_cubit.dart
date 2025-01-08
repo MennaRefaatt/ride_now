@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
@@ -20,6 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final fromFocusNode = FocusNode();
   final toFocusNode = FocusNode();
+  LatLng? fromLatLng, toLatLng;
   Future<void> getCategoriesAndTrips() async {
     emit(HomeLoading());
     try {

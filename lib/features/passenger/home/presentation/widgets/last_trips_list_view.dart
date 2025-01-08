@@ -45,6 +45,8 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                           arguments: CheckOutArgs(
                             fromAddress: widget.cubit.fromController.text,
                             toAddress: widget.cubit.toController.text,
+                            fromLatLng: widget.cubit.fromLatLng!,
+                            toLatLng: widget.cubit.toLatLng!,
                           ),
                         );
                       }
@@ -86,6 +88,8 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                         arguments: CheckOutArgs(
                           fromAddress: widget.cubit.fromController.text,
                           toAddress: widget.cubit.toController.text,
+                          fromLatLng: widget.cubit.fromLatLng!,
+                          toLatLng: widget.cubit.toLatLng!,
                         ),
                       );
                     }

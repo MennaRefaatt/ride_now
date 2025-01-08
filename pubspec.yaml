@@ -164,6 +164,8 @@ dependencies:
   # --------------------------------------
   flutter_facebook_auth: ^7.1.1
   flutter_otp_text_field: ^1.2.0
+  firebase_database: ^11.3.0
+  flutter_map: ^7.0.2
 
 
 dev_dependencies:

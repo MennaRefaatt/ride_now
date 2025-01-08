@@ -65,6 +65,8 @@ class CheckOut extends StatelessWidget {
               fromAddress: args.fromAddress,
               toAddress: args.toAddress,
               tripCubit: tripCubit,
+              fromLatLng: args.fromLatLng,
+              toLatLng: args.toLatLng,
             ),
           ],
         ),
