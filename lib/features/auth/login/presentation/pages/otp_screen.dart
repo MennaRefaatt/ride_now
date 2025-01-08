@@ -79,7 +79,7 @@ class _OTPScreenState extends State<OTPScreen> {
       );
       await FirebaseAuth.instance.signInWithCredential(cred);
 
-      Navigator.pushReplacementNamed(context, RoutingEndpoints.home);
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
     } catch (e) {
       log(e.toString());
     } finally {

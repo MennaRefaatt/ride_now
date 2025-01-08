@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
+import 'package:ride_now/features/driver/driver_status_listener.dart';
 import 'package:ride_now/firebase_options.dart';
 import 'core/components/app_entry_point.dart';
 import 'core/di/di.dart';
@@ -20,18 +21,18 @@ Future<void> main() async {
   ApiService.init();
   await init();
   await SharedPref.init();
-
-  safePrint(SharedPref.getString(key: MySharedKeys.userId));
+  final userId = SharedPref.getString(key: MySharedKeys.userId);
+  safePrint(userId);
   safePrint(SharedPref.getString(key: MySharedKeys.userName));
   safePrint(SharedPref.getString(key: MySharedKeys.picture));
-
+  safePrint(SharedPref.getString(key: MySharedKeys.type));
+  DriverStatusListener driverStatusListener = DriverStatusListener(
+    userId: userId!,
+  );
+  driverStatusListener.listenToDriverStatusChanges();
   SecureStorageService();
 
-  final initialRoute = SharedPref.getString(key: MySharedKeys.userId) == null
-      ? RoutingEndpoints.login
-      : RoutingEndpoints.home;
-
   runApp(
-    AppEntryPoint(initialRoute: initialRoute),
+    AppEntryPoint(initialRoute: RoutingEndpoints.splash),
   );
 }

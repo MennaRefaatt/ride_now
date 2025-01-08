@@ -37,9 +37,18 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   void setMarker(LatLng location) async {
-    selectedLocation = location;
-    await setLocationUseCase.setLocation(location);
-    emit(LocationMarkerSet(location));
+    try {
+      selectedLocation = location;
+      await setLocationUseCase.setLocation(location);
+      List<Placemark> placemarks = await placemarkFromCoordinates(location.latitude, location.longitude);
+      Placemark place = placemarks[2];
+      final address = '${place.street}';
+      safePrint("Address: $address");
+      emit(LocationMarkerSet(location,address));
+    } catch (e) {
+      safePrint(e.toString());
+    }
+
   }
 
   StreamSubscription<Position>? _positionSubscription;
@@ -59,6 +68,6 @@ class LocationCubit extends Cubit<LocationState> {
 
   void updateCityToFirestore(String city) {
     FirestoreService().updateUserCityToFirestore(city);
-    SharedPref.setString(key: MySharedKeys.type, value: city);
+    SharedPref.setString(key: MySharedKeys.city, value: city);
   }
 }

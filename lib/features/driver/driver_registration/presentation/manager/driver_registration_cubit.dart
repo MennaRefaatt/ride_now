@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ride_now/core/helpers/enums/driver_trip_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
+import '../../../../../core/helpers/enums/driver_status.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../domain/use_cases/d_fetch_colors_usecase.dart';
 import '../../domain/use_cases/fetch_brands_usecase.dart';
@@ -155,14 +157,18 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
   Future<bool> submitRegistration() async {
     try {
       final driverData = DriverRegistrationModel(
-        driverStatus: "pending",
+        driverTripStatus: DriverTripStatus.available.name,
+        driverStatus: DriverStatus.pending.name,
         driverId: SharedPref.getString(key: MySharedKeys.userId) ?? '',
+        currentTripId: 'none',
         personalInfo: PersonalRegistrationModel(
           firstName: firstName ?? '',
           lastName: lastName ?? '',
           dateOfBirth: dateOfBirth ?? '',
           personalImage: personalImage ?? '',
+          phone: "",
         ),
+        location: DriverLocation(latitude: 0.0, longitude: 0.0),
         vehicleInfo: VehicleRegistrationModel(
           vehicleBrand: vehicleBrand ?? '',
           vehicleModel: vehicleModel ?? '',
@@ -205,7 +211,6 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       return false; // إرجاع قيمة في حالة حدوث خطأ
     }
   }
-
 
   Future<void> pickImage(ImageType type) async {
     final ImagePicker picker = ImagePicker();

@@ -11,9 +11,9 @@ class AppEntryPoint extends StatefulWidget {
   final String initialRoute;
 
   const AppEntryPoint({
-    Key? key,
+    super.key,
     required this.initialRoute,
-  }) : super(key: key);
+  });
 
   @override
   State<AppEntryPoint> createState() => _AppEntryPointState();

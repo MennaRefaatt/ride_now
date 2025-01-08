@@ -4,6 +4,8 @@ import 'package:ride_now/core/components/app_name.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
+import '../core/helpers/enums/user_type.dart';
+import '../core/helpers/shared_pref_keys.dart';
 import '../core/services/routing/routing_endpoints.dart';
 import '../core/theming/styles.dart';
 import '../core/utils/app_image.dart';
@@ -26,14 +28,21 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
   }
 
   void _checkFirstLaunch() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      bool isFirstOpen = SharedPref.isFirstOpen();
-      if (!isFirstOpen) {
+    bool isFirstOpen = await SharedPref.isFirstOpen();
+    if (isFirstOpen) {
+      await SharedPref.setFirstOpen(false);
+    } else {
+      final userType = SharedPref.getString(key: MySharedKeys.type);
+      final userId = SharedPref.getString(key: MySharedKeys.userId);
+
+      if (userId == null) {
         Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
+      } else if (userType == UserType.driver.name) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
       } else {
-        await SharedPref.setFirstOpen(true);
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
       }
-    });
+    }
   }
 
   void _startAnimation() {

@@ -1,0 +1,121 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/components/app_text_form_field.dart';
+import 'package:ride_now/core/theming/app_colors.dart';
+import 'package:ride_now/core/theming/styles.dart';
+import 'package:ride_now/features/passenger/home/presentation/widgets/last_trips_list_view.dart';
+import '../../../../maps/presentation/manager/location_cubit.dart';
+import '../../../../trip_module/data/models/trip_model.dart';
+import '../manager/home_cubit.dart';
+
+class WhereToBar extends StatefulWidget {
+  const WhereToBar({super.key, required this.cubit, required this.lastTrips});
+  final HomeCubit cubit;
+  final List<TripModel> lastTrips;
+
+  @override
+  State<WhereToBar> createState() => _WhereToBarState();
+}
+
+class _WhereToBarState extends State<WhereToBar> {
+  bool disappear = false;
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LocationCubit, LocationState>(
+      builder: (context, state) {
+        String fromText = 'S().From';
+        Color backgroundColor = Colors.grey.shade200;
+
+        if (state is LocationLoaded) {
+          fromText = state.address;
+          backgroundColor = Colors.transparent;
+          widget.cubit.fromController.text = state.address;
+        }
+        disappear = widget.cubit.toController.text.isNotEmpty;
+
+        return Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                widget.cubit.openEnterYourRoute(
+                    context,
+                    widget.cubit.fromFocusNode,
+                    widget.cubit.toFocusNode,
+                    fromText,
+                    backgroundColor,
+                    widget.cubit,
+                  widget.lastTrips
+                );
+                widget.cubit.fromFocusNode.requestFocus();
+              },
+              child: AppTextFormField(
+                controller: TextEditingController(text: fromText),
+                borderRadius: BorderRadius.circular(15.r),
+                backgroundColor: backgroundColor,
+                borderColor: Colors.transparent,
+                isFilled: true,
+                withHint: true,
+                enable: false,
+                hintStyle: TextStyles.font18BlackRegular.copyWith(
+                  color: Colors.grey.shade800,
+                ),
+                hintText: "S().From",
+                keyboardType: TextInputType.text,
+                prefixIcon: Icon(
+                  Icons.trip_origin,
+                  color: AppColors.primary,
+                  size: 25.sp,
+                ),
+              ),
+            ),
+            Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    widget.cubit.openEnterYourRoute(
+                        context,
+                        widget.cubit.fromFocusNode,
+                        widget.cubit.toFocusNode,
+                        fromText,
+                        backgroundColor,
+                        widget.cubit,
+                      widget.lastTrips);
+                    widget.cubit.toFocusNode.requestFocus();
+                  },
+                  child: AppTextFormField(
+                    controller: widget.cubit.toController,
+                    borderRadius: BorderRadius.circular(15.r),
+                    backgroundColor:
+                        disappear ? Colors.transparent : Colors.grey.shade200,
+                    borderColor: Colors.transparent,
+                    isFilled: true,
+                    withHint: true,
+                    enable: false,
+                    hintStyle: TextStyles.font18BlackRegular.copyWith(
+                      color: Colors.grey.shade800,
+                    ),
+                    hintText: "S().To",
+                    keyboardType: TextInputType.text,
+                    prefixIcon: Icon(
+                      CupertinoIcons.search,
+                      color: disappear ? AppColors.primary : Colors.black,
+                      size: 25.sp,
+                    ),
+                  ),
+                ),
+                LastTripsListView(
+                  lastTrips: widget.lastTrips,
+                  cubit: widget.cubit,
+                  disappear: disappear,
+                )
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

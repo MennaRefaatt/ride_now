@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacementNamed(
             context,
             RoutingEndpoints
-                .home);
+                .passengerHome);
       });
     }
   }
