@@ -3,11 +3,15 @@ part 'driver_registration_model.g.dart';
 @JsonSerializable()
 class DriverRegistrationModel{
   final String driverStatus;
+  final String driverTripStatus;
   final String driverId;
+  final String currentTripId;
   final PersonalRegistrationModel personalInfo;
   final VehicleRegistrationModel vehicleInfo;
   final DriverLicenseModel driverInfo;
   final PersonalDocumentModel personalDocument;
+  final DriverLocation location;
+
   DriverRegistrationModel({
     required this.driverId,
     required this.driverStatus,
@@ -15,6 +19,9 @@ class DriverRegistrationModel{
     required this.vehicleInfo,
     required this.driverInfo,
     required this.personalDocument,
+    required this.driverTripStatus,
+    required this.currentTripId,
+    required this.location
   });
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
@@ -22,10 +29,37 @@ class DriverRegistrationModel{
   Map<String, dynamic> toJson() => {
     'driverStatus': driverStatus,
     'driverId': driverId,
+    'currentTripId': currentTripId,
+    'driverTripStatus': driverTripStatus,
+    'location': location.toJson(),
     'personalInfo': personalInfo.toJson(),
     'vehicleInfo': vehicleInfo.toJson(),
     'driverInfo': driverInfo.toJson(),
     'personalDocument': personalDocument.toJson(),
+  };
+}
+@JsonSerializable()
+class DriverLocation{
+  final double latitude;
+  final double longitude;
+  DriverLocation({
+    required this.latitude,
+    required this.longitude,
+  });
+
+  factory DriverLocation.fromJson(Map<String, dynamic> json) {
+    final latitude = json['latitude'];
+    final longitude = json['longitude'];
+
+    return DriverLocation(
+      latitude: latitude is String ? double.tryParse(latitude) ?? 0.0 : latitude.toDouble(),
+      longitude: longitude is String ? double.tryParse(longitude) ?? 0.0 : longitude.toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'latitude': latitude,
+    'longitude': longitude,
   };
 }
 @JsonSerializable()
@@ -60,11 +94,13 @@ class PersonalRegistrationModel{
   final String lastName;
   final String dateOfBirth;
   final String personalImage;
+  final String phone;
   PersonalRegistrationModel({
     required this.firstName,
     required this.lastName,
     required this.dateOfBirth,
     required this.personalImage,
+    required this.phone,
   });
 
   factory PersonalRegistrationModel.fromJson(Map<String, dynamic> json) => _$PersonalRegistrationModelFromJson(json);

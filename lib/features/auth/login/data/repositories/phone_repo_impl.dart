@@ -42,6 +42,7 @@ class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {
         phoneNumber: phoneNumber,
         city: "missing to pick the location",
         type: UserType.passenger.name,
+        currentTripId: "none",
       );
       await _firestoreService.saveUserToFirestore(user, param);
 
@@ -53,6 +54,7 @@ class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {
         email: user.email ?? '',
         photoUrl: user.photoURL ?? '',
         phoneNumber: param.phoneNumber ?? '',
+        currentTripId: param.currentTripId ?? '',
       );
       await _dsAuthLocal.saveDataToLocal(userModel);
 

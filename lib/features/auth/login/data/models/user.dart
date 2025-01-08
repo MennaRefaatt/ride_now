@@ -12,6 +12,7 @@ class UserModel {
   final String phoneNumber;
   final String? city;
   final String? type;
+  final String? currentTripId;
 
   UserModel({
     required this.phoneNumber,
@@ -21,6 +22,7 @@ class UserModel {
     required this.city,
     required this.type,
     required this.photoUrl,
+    required this.currentTripId,
   });
 
   factory UserModel.fromDocument(DocumentSnapshot doc) {
@@ -32,3 +34,4 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 }
+

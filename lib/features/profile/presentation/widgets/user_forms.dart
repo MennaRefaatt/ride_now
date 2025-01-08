@@ -53,11 +53,13 @@ class _UserFormsState extends State<UserForms> {
     final phone = SharedPref.getString(key: MySharedKeys.phone) ?? '';
     widget.phoneController.text = phone;
 
-    // if (phone.isEmpty || !isValidEgyptianPhone(phone)) {
-    //   setState(() {
-    //     missingPhoneMessage = "Invalid or missing phone number!";
-    //   });
-    // }
+    if (phone.isEmpty ||
+        phone == "missing phone number" ||
+        !isValidEgyptianPhone(phone)) {
+      setState(() {
+        missingPhoneMessage = "Phone number is required or invalid!";
+      });
+    }
 
     widget.firstNameController.addListener(() {
       if (widget.firstNameController.text != firstName) {
@@ -88,7 +90,7 @@ class _UserFormsState extends State<UserForms> {
   }
 
   bool isValidEgyptianPhone(String phone) {
-    final regex = RegExp(r'^01[0125][0-9]{8}');
+    final regex = RegExp(r'^\+20[1][0125][0-9]{8}$');
     return regex.hasMatch(phone);
   }
 
@@ -123,7 +125,6 @@ class _UserFormsState extends State<UserForms> {
               icon: CupertinoIcons.phone,
               controller: widget.phoneController,
               errorText: missingPhoneMessage,
-              maxLength: 11,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Phone number is required!";
@@ -134,17 +135,17 @@ class _UserFormsState extends State<UserForms> {
                 return null;
               },
               controllerTextColor:
-                  widget.phoneController.text == "missing phone number"
-                      ? AppColors.red
-                      : Colors.grey),
+                  missingPhoneMessage != null ? AppColors.red : AppColors.primary,
+              borderColor: missingPhoneMessage != null
+                  ? AppColors.red
+                  : Colors.transparent),
           item(
               context: context,
               icon: CupertinoIcons.building_2_fill,
               controller: widget.cityController,
               enable: false,
               onTap: () => Navigator.pushNamed(context, RoutingEndpoints.city),
-              controllerTextColor:
-              widget.cityController.text == "missing city"
+              controllerTextColor: widget.cityController.text == "missing city"
                   ? AppColors.red
                   : AppColors.primary),
         ],
@@ -166,11 +167,12 @@ class _UserFormsState extends State<UserForms> {
     required IconData icon,
     required TextEditingController controller,
     Color? controllerTextColor,
+    Color? borderColor,
     bool? enable,
     String? errorText,
     String? Function(String?)? validator,
     int? maxLength,
-    void Function()? onTap
+    void Function()? onTap,
   }) {
     return InkWell(
       onTap: onTap,
@@ -182,7 +184,7 @@ class _UserFormsState extends State<UserForms> {
             child: AppTextFormField(
               controller: controller,
               contentPadding: EdgeInsets.only(left: 10.sp),
-              borderColor: Colors.transparent,
+              borderColor: borderColor ?? Colors.transparent,
               enable: enable ?? true,
               controllerTextColor: errorText != null && errorText.isNotEmpty
                   ? Colors.red

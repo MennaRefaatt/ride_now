@@ -4,14 +4,19 @@ import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_image.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import '../core/helpers/enums/user_type.dart';
+import '../core/helpers/shared_pref.dart';
+import '../core/helpers/shared_pref_keys.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   double _opacity = 0.0;
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimationRide;
@@ -30,15 +35,18 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       duration: const Duration(seconds: 3),
     );
 
-    _slideAnimationRide = Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero).animate(
+    _slideAnimationRide =
+        Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _slideAnimationNow = Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
+    _slideAnimationNow =
+        Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _carAnimation = Tween<Offset>(begin: const Offset(1.5, 0.0), end: Offset.zero).animate(
+    _carAnimation =
+        Tween<Offset>(begin: const Offset(1.5, 0.0), end: Offset.zero).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
@@ -49,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 1));
 
     setState(() {
-       _opacity = 1.0;
+      _opacity = 1.0;
     });
 
     _animationController.forward();
@@ -57,7 +65,23 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     await Future.delayed(const Duration(seconds: 2));
     _audioPlayer.play(AssetSource('sounds/car_horn.mp3'));
     await Future.delayed(const Duration(seconds: 3));
-    Navigator.pushReplacementNamed(context, RoutingEndpoints.onBoardingScreen); ;
+    bool isFirstOpen = await SharedPref.isFirstOpen();
+
+    if (isFirstOpen) {
+      Navigator.pushReplacementNamed(
+          context, RoutingEndpoints.onBoardingScreen);
+    } else {
+      final userType = SharedPref.getString(key: MySharedKeys.type);
+      final userId = SharedPref.getString(key: MySharedKeys.userId);
+
+      if (userId == null) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
+      } else if (userType == UserType.driver.name) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
+      } else {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
+      }
+    }
   }
 
   @override
@@ -82,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               child: AppImageAsset(
                 path: 'icons/app_icon.png',
                 height: 300.h,
-                width: 300.w,
+                width: 400.w,
                 fit: BoxFit.cover,
               ),
             ),

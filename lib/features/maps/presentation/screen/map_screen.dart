@@ -4,9 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/components/app_icon.dart';
-import 'package:ride_now/core/services/routing/routing_endpoints.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
 import '../../../../core/di/di.dart';
-import '../../../../core/helpers/safe_print.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/utils/app_button.dart';
@@ -37,11 +36,11 @@ class _MapScreenState extends State<MapScreen> {
                   : (state as LocationMarkerSet).location;
               final address = state is LocationLoaded
                   ? state.address
-                  : (state as LocationMarkerSet).location;
+                  : (state as LocationMarkerSet).address;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (_mapController != null && position != _selectedLocation) {
-                  _animateToLocation(position);
-                  _selectedLocation = position; // Update selected location
+                  //_animateToLocation(position);
+                  _selectedLocation = position;
                 }
               });
 
@@ -54,13 +53,14 @@ class _MapScreenState extends State<MapScreen> {
                           alignment: Alignment.bottomCenter,
                           children: [
                             GoogleMap(
+                              mapType:MapType.satellite,
                               initialCameraPosition: CameraPosition(
                                 target: position,
                                 zoom: 15,
                               ),
                               onMapCreated: (controller) {
                                 _mapController = controller;
-                                _animateToLocation(position);
+                                // _animateToLocation(position);
                               },
                               markers: _selectedLocation != null
                                   ? {
@@ -95,15 +95,7 @@ class _MapScreenState extends State<MapScreen> {
                               text: S().done,
                               backgroundColor: AppColors.primary,
                               borderRadius: 15.r,
-                              onPressed: () {
-                                if (_selectedLocation != null) {
-                                  safePrint(
-                                      "Saved Location: ${_selectedLocation!.latitude}, ${_selectedLocation!.longitude}");
-                                  Navigator.pushReplacementNamed(
-                                      context, RoutingEndpoints.checkOut,
-                                      arguments: _selectedLocation);
-                                }
-                              },
+                              onPressed: () => Navigator.pop(context, address),
                               textStyle: TextStyles.font18BlackRegular,
                             ),
                           ],
@@ -137,25 +129,14 @@ class _MapScreenState extends State<MapScreen> {
                             navigation: _zoomIn,
                             withShadow: false,
                           ),
-                          SizedBox(height: 10.sp),
+                          verticalSpacing(10.h),
                           AppIcon(
                             icon: CupertinoIcons.location,
                             backgroundColor: Colors.white,
                             iconColor: Colors.black,
-                            navigation: () async {
-                              final locationState =
-                                  context.read<LocationCubit>().state;
-                              if (locationState is LocationLoaded) {
-                                final position = LatLng(
-                                    locationState.position.latitude,
-                                    locationState.position.longitude);
-                                _animateToLocation(position);
-                              } else {
-                                await context
-                                    .read<LocationCubit>()
-                                    .fetchUserLocation();
-                              }
-                            },
+                            navigation: () => context
+                                .read<LocationCubit>()
+                                .fetchUserLocation(),
                             withShadow: false,
                           ),
                         ],
@@ -174,30 +155,6 @@ class _MapScreenState extends State<MapScreen> {
         ),
       ),
     );
-  }
-
-  void _animateToLocation(LatLng position) {
-    if (_mapController != null) {
-      _mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: position,
-            zoom: 18,
-            tilt: 50,
-            bearing: 0,
-          ),
-        ),
-      );
-
-      _mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: position,
-            zoom: 18,
-          ),
-        ),
-      );
-    }
   }
 
   void _zoomIn() {

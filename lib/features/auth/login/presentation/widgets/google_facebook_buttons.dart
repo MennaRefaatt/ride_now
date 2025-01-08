@@ -19,7 +19,7 @@ class GoogleFacebookButtons extends ConsumerWidget {
     ref.listen(googleNotifierProvider, (previous, next) {
       if (next.user != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pushReplacementNamed(context, RoutingEndpoints.home);
+          Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
         });
       }
     });
@@ -27,7 +27,7 @@ class GoogleFacebookButtons extends ConsumerWidget {
     ref.listen(facebookNotifierProvider, (previous, next) {
       if (next.user != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pushReplacementNamed(context, RoutingEndpoints.home);
+          Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
         });
       }
     });
@@ -47,7 +47,7 @@ class GoogleFacebookButtons extends ConsumerWidget {
               onTap: () async {
                 await ref
                     .read(googleNotifierProvider.notifier)
-                    .signInWithGoogle();
+                    .signInWithGoogle(context);
               },
             ),
             horizontalSpacing(20.w),
@@ -61,7 +61,7 @@ class GoogleFacebookButtons extends ConsumerWidget {
               onTap: () async {
                 await ref
                     .read(facebookNotifierProvider.notifier)
-                    .signInWithFacebook();
+                    .signInWithFacebook(context);
               },
             ),
           ],
