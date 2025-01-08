@@ -45,6 +45,7 @@ class TripDetails extends StatelessWidget {
                         style: TextStyles.font24BlackBold,
                       ),
                     ),
+
                     Column(
                       children: [
                         AppImageAsset(
