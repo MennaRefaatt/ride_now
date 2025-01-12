@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import '../../../../core/helpers/enums/driver_trip_status.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
@@ -21,13 +22,17 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<TripModel> getTripDetails(String tripId) async {
     try {
-      final getTheTrip = await FirebaseFirestore.instance
+      if (tripId.isEmpty) {
+        throw Exception('Trip ID is empty');
+      }
+
+      final getTheTrip = await _firestore
           .collection('trips')
           .doc(tripId)
           .get();
 
       if (getTheTrip.exists) {
-        final rawData = getTheTrip.data();
+        final rawData = getTheTrip.data()as Map<String, dynamic>;
         safePrint("Document data: $rawData");
         TripModel tripModel = TripModel.fromJson(rawData!);
         safePrint("tripModel: $tripModel");
@@ -41,6 +46,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
         throw Exception("No trip found");
       }
     } catch (e) {
+      safePrint("Error getting trip details: $e");
       throw Exception("Error getting trips: $e");
     }
   }
@@ -100,24 +106,29 @@ class TripRemoteDSImpl implements TripRemoteDS {
       }
 
       TripHelper tripHelper = TripHelper();
+      LatLng fromCoordinates = tripModel.fromLatLng;
+      LatLng toCoordinates = tripModel.toLatLng;
+
       String distance = await tripHelper
-          .calculateDistance(tripModel.from, tripModel.to, unit: 'km');
+          .calculateDistance(fromCoordinates, toCoordinates, unit: 'km');
       double distanceInKm = double.parse(distance.split(" ")[0]);
       double tripCost = tripHelper.calculateCost(distanceInKm);
 
       final model = TripModel(
+        fromLatLng: fromCoordinates,
+        toLatLng: toCoordinates,
         driverData: DriverData(
-            driverId: "",
-            driverName: "",
-            driverPhone: "",
-            driverImage: "",
-            carColor: "",
-            carModel: "",
-            carNumber: "",
-            driverLocation: DriverLocation(
-              latitude: 0.0,
-              longitude: 0.0,
-            ),
+          driverId: "",
+          driverName: "",
+          driverPhone: "",
+          driverImage: "",
+          carColor: "",
+          carModel: "",
+          carNumber: "",
+          driverLocation: LatLng(
+            0,
+            0,
+          ),
         ),
         passengerData: PassengerData(
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
@@ -132,8 +143,6 @@ class TripRemoteDSImpl implements TripRemoteDS {
         status: TripStatus.pending.name,
         distance: distance,
       );
-
-      // Add the trip to Firestore and update tripId
       final tripRef = await FirebaseFirestore.instance
           .collection('trips')
           .add(model.toJson());
@@ -180,8 +189,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
             driverName: driverName,
             driverPhone: driverPhone,
             driverImage: driverImage,
-            driverLocation:
-                DriverLocation(latitude: diverLat, longitude: diverLong),
+            driverLocation: LatLng(diverLat, diverLong),
             carColor: carColor,
             carModel: carModel,
             carNumber: carNumber,
@@ -197,6 +205,9 @@ class TripRemoteDSImpl implements TripRemoteDS {
       await _firestore.collection('drivers').doc(driverData.driverId).update({
         'currentTripId': tripModel.tripId,
         'driverTripStatus': DriverTripStatus.onTrip.name,
+      });
+      await _firestore.collection('users').doc(driverData.driverId).update({
+        'currentTripId': tripModel.tripId,
       });
 
       safePrint("Trip $tripModel.tripId successfully accepted.");
@@ -236,6 +247,12 @@ class TripRemoteDSImpl implements TripRemoteDS {
       await driverRef.update({
         "driverTripStatus": DriverTripStatus.available.name,
         "currentTripId": "none",
+      });
+      await _firestore
+          .collection('users')
+          .doc(tripDoc.data()!['driverData']['driverId'])
+          .update({
+        'currentTripId': "none",
       });
 
       safePrint("Trip $tripId successfully cancelled.");

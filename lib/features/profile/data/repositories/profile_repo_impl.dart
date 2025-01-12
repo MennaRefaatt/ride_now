@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/features/profile/domain/repositories/profile_repo_base.dart';
 import '../../../../core/helpers/shared_pref.dart';
@@ -7,7 +9,6 @@ import '../models/profile_model.dart';
 
 class ProfileRepoImpl implements ProfileRepoBase {
   final ProfileRemoteDS remoteDS;
-
   ProfileRepoImpl(this.remoteDS);
 
   @override
@@ -29,7 +30,7 @@ class ProfileRepoImpl implements ProfileRepoBase {
   }
 
   @override
-  Future<void> saveProfile(ProfileModel profile) async {
+  Future<void> saveProfile(ProfileModel profile, {File? imageFile}) async {
     final userId = SharedPref.getString(key: MySharedKeys.userId)!;
    final saveProfile = await remoteDS.saveProfile(profile);
    try {

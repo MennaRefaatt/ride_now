@@ -4,6 +4,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/helpers/shared_pref.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../../auth/login/data/data_sources/firestore_service/firestore_service.dart';
@@ -18,14 +19,16 @@ class LocationCubit extends Cubit<LocationState> {
   final GetRealtimeLocationUseCase getRealTimeLocationUseCase;
   LatLng? selectedLocation;
 
-  LocationCubit(this.getUserLocationUseCase, this.setLocationUseCase, this.getRealTimeLocationUseCase)
+  LocationCubit(this.getUserLocationUseCase, this.setLocationUseCase,
+      this.getRealTimeLocationUseCase)
       : super(LocationInitial());
 
   Future<void> fetchUserLocation() async {
     emit(LocationLoading());
     try {
       final position = await getUserLocationUseCase.getCurrentLocation();
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
       Placemark place = placemarks[0];
       final address = '${place.street}';
       safePrint(address);
@@ -40,22 +43,24 @@ class LocationCubit extends Cubit<LocationState> {
     try {
       selectedLocation = location;
       await setLocationUseCase.setLocation(location);
-      List<Placemark> placemarks = await placemarkFromCoordinates(location.latitude, location.longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(location.latitude, location.longitude);
       Placemark place = placemarks[2];
       final address = '${place.street}';
       safePrint("Address: $address");
-      emit(LocationMarkerSet(location,address));
+      emit(LocationMarkerSet(location, address));
     } catch (e) {
       safePrint(e.toString());
     }
-
   }
 
   StreamSubscription<Position>? _positionSubscription;
 
   void trackDriverLocation() {
     emit(LocationLoading());
-    _positionSubscription = getRealTimeLocationUseCase.getRealTimeLocationUpdates().listen((position) {
+    _positionSubscription = getRealTimeLocationUseCase
+        .getRealTimeLocationUpdates()
+        .listen((position) {
       emit(LocationLoaded(position, ''));
     }, onError: (e) {
       emit(LocationError("Failed to update driver location"));
@@ -67,7 +72,7 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   void updateCityToFirestore(String city) {
-    FirestoreService().updateUserCityToFirestore(city);
+    FirestoreService(sl(), sl()).updateUserCityToFirestore(city);
     SharedPref.setString(key: MySharedKeys.city, value: city);
   }
 }

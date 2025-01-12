@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
 import '../../domain/repositories/phone_repo_base.dart';
 import '../data_sources/firestore_service/firestore_param.dart';
@@ -66,7 +67,7 @@ class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {
 
 final phoneRepositoryProvider = Provider<PhoneAuthRepositoryBase>((ref) {
   final phoneAuthService = DSPhoneAuthServiceImpl();
-  final firestoreService = FirestoreService();
+  final firestoreService = FirestoreService(sl(), sl());
   return PhoneAuthRepositoryImpl(
       phoneAuthService, firestoreService, DSAuthLocalImpl());
 });

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
@@ -11,9 +12,14 @@ import '../../../../trip_module/data/models/trip_model.dart';
 import '../manager/home_cubit.dart';
 
 class WhereToBar extends StatefulWidget {
-  const WhereToBar({super.key, required this.cubit, required this.lastTrips});
+  WhereToBar(
+      {super.key,
+      required this.cubit,
+      required this.lastTrips,
+      required this.toLatLng});
   final HomeCubit cubit;
   final List<TripModel> lastTrips;
+  LatLng? toLatLng;
 
   @override
   State<WhereToBar> createState() => _WhereToBarState();
@@ -27,11 +33,12 @@ class _WhereToBarState extends State<WhereToBar> {
       builder: (context, state) {
         String fromText = 'S().From';
         Color backgroundColor = Colors.grey.shade200;
-
         if (state is LocationLoaded) {
           fromText = state.address;
           backgroundColor = Colors.transparent;
           widget.cubit.fromController.text = state.address;
+          widget.toLatLng =
+              LatLng(state.position.latitude, state.position.longitude);
         }
         disappear = widget.cubit.toController.text.isNotEmpty;
 
@@ -46,8 +53,7 @@ class _WhereToBarState extends State<WhereToBar> {
                     fromText,
                     backgroundColor,
                     widget.cubit,
-                  widget.lastTrips
-                );
+                    widget.lastTrips);
                 widget.cubit.fromFocusNode.requestFocus();
               },
               child: AppTextFormField(
@@ -82,7 +88,7 @@ class _WhereToBarState extends State<WhereToBar> {
                         fromText,
                         backgroundColor,
                         widget.cubit,
-                      widget.lastTrips);
+                        widget.lastTrips);
                     widget.cubit.toFocusNode.requestFocus();
                   },
                   child: AppTextFormField(

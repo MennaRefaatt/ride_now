@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
@@ -9,6 +10,7 @@ import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
 import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
 import '../../../../../core/helpers/spacing.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/styles.dart';
 
 class TripRequestsDialogue extends StatefulWidget {
@@ -81,7 +83,8 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
         }
 
         final trips = snapshot.data!;
-        animationControllers = List<AnimationController?>.filled(trips.length, null);
+        animationControllers =
+            List<AnimationController?>.filled(trips.length, null);
         slideAnimations = List<Animation<Offset>?>.filled(trips.length, null);
 
         return ListView.builder(
@@ -90,17 +93,20 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (_, index) {
             final trip = trips[index];
-            final timeRemaining = trip.dateTime.difference(DateTime.now()).inSeconds;
+            final timeRemaining =
+                trip.dateTime.difference(DateTime.now()).inSeconds;
 
             if (timeRemaining <= 0) {
               startSlideAnimation(index);
             }
 
             return AnimatedBuilder(
-              animation: animationControllers[index] ?? AlwaysStoppedAnimation(0),
+              animation:
+                  animationControllers[index] ?? AlwaysStoppedAnimation(0),
               builder: (context, child) {
                 return SlideTransition(
-                  position: slideAnimations[index] ?? AlwaysStoppedAnimation(Offset.zero),
+                  position: slideAnimations[index] ??
+                      AlwaysStoppedAnimation(Offset.zero),
                   child: child,
                 );
               },
@@ -113,9 +119,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                 child: Column(
                   children: [
                     LinearProgressIndicator(
-                      value: timeRemaining > 0
-                          ? timeRemaining / 30
-                          : 0.0,
+                      value: timeRemaining > 0 ? timeRemaining / 30 : 0.0,
                       backgroundColor: Colors.grey.shade200,
                       color: AppColors.primary,
                       minHeight: 6.h,
@@ -138,7 +142,10 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       style: TextStyles.font24BlackBold,
                                     ),
                                   ),
-                                  Text(double.tryParse(trip.price)?.toStringAsFixed(2) ?? 'Invalid price',
+                                  Text(
+                                      double.tryParse(trip.price)
+                                              ?.toStringAsFixed(2) ??
+                                          'Invalid price',
                                       style: TextStyles.font18primaryBold),
                                 ],
                               ),
@@ -152,8 +159,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   ),
                                   horizontalSpacing(5.w),
                                   Expanded(
-                                    child: Text(
-                                        trip.dateTime.toString(),
+                                    child: Text(trip.dateTime.toString(),
                                         style: TextStyles.font18BlackRegular),
                                   ),
                                   Text(trip.distance.toString(),
@@ -197,21 +203,25 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   final carColor = SharedPref.getString(
                                       key: MySharedKeys.carColor)!;
                                   safePrint("driverId: $driverId");
-                                  widget.tripCubit.acceptTrip(
-                                      trip,
-                                      DriverData(
-                                        driverId: driverId,
-                                        driverName: driverName,
-                                        driverPhone: driverPhone,
-                                        driverImage: driverImage,
-                                        carModel: carModel,
-                                        carColor: carColor,
-                                        carNumber: carNumber,
-                                        driverLocation: DriverLocation(
-                                          latitude: driverLat,
-                                          longitude: driverLong,
-                                        ),
-                                      ));
+                                  widget.tripCubit
+                                      .acceptTrip(
+                                          trip,
+                                          DriverData(
+                                              driverId: driverId,
+                                              driverName: driverName,
+                                              driverPhone: driverPhone,
+                                              driverImage: driverImage,
+                                              carModel: carModel,
+                                              carColor: carColor,
+                                              carNumber: carNumber,
+                                              driverLocation: LatLng(
+                                                driverLat,
+                                                driverLong,
+                                              )))
+                                      .then((_) {
+                                    Navigator.pushReplacementNamed(
+                                        context, RoutingEndpoints.tripTracking);
+                                  });
                                 },
                                 textStyle: TextStyles.font18BlackRegular,
                                 borderRadius: 10.r,
