@@ -11,9 +11,10 @@ import '../../../../core/helpers/enums/trip_status.dart';
 import '../../data/data_sources/direction_service/direction_service.dart';
 
 class TripTracking extends StatefulWidget {
-  const TripTracking({super.key, required this.args});
+  const TripTracking(
+      {super.key, required this.args, required this.driverLatLng});
   final TripTrackingArgs args;
-
+  final LatLng driverLatLng;
   @override
   State<TripTracking> createState() => _TripTrackingState();
 }
@@ -27,6 +28,7 @@ class _TripTrackingState extends State<TripTracking> {
   LatLng? cameraPosition;
   Set<Marker> _markers = {};
   Set<Polyline> _polylines = {};
+
   @override
   void initState() {
     super.initState();
@@ -48,7 +50,9 @@ class _TripTrackingState extends State<TripTracking> {
     }
     try {
       List<LatLng> routeCoordinates =
-          await _directionService.getRouteCoordinates(_fromLatLng!, _toLatLng!);
+          await _directionService.getRouteCoordinates(
+              _driverLatLng != null ? _driverLatLng! : _fromLatLng!,
+              _toLatLng!);
 
       setState(() {
         _polylines = {
@@ -121,7 +125,20 @@ class _TripTrackingState extends State<TripTracking> {
                 : (state as LocationMarkerSet).location;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (_mapController != null) {
-                _animateToLocation(position);
+               // _animateToLocation(position);
+                if (widget.driverLatLng != null) {
+                  setState(() {
+                    _driverLatLng = widget.driverLatLng;
+                    _markers.add(Marker(
+                      markerId: const MarkerId('driverLocation'),
+                      position: widget.driverLatLng,
+                      infoWindow: const InfoWindow(title: 'Driver Location'),
+                      icon: BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueBlue),
+                    ));
+                    _getDirections();
+                  });
+                }
               }
             });
             return Stack(
