@@ -10,6 +10,7 @@ import '../../../../core/theming/app_colors.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/utils/app_button.dart';
 import '../../../../generated/l10n.dart';
+import '../../data/model/location_model.dart';
 import '../manager/location_cubit.dart';
 
 class MapScreen extends StatefulWidget {
@@ -22,6 +23,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _mapController;
   LatLng? _selectedLocation;
+  String? _selectedAddress;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,8 @@ class _MapScreenState extends State<MapScreen> {
                 if (_mapController != null && position != _selectedLocation) {
                   //_animateToLocation(position);
                   _selectedLocation = position;
+                  _selectedAddress = address;
+
                 }
               });
 
@@ -53,7 +57,7 @@ class _MapScreenState extends State<MapScreen> {
                           alignment: Alignment.bottomCenter,
                           children: [
                             GoogleMap(
-                              mapType:MapType.satellite,
+                              mapType: MapType.satellite,
                               initialCameraPosition: CameraPosition(
                                 target: position,
                                 zoom: 15,
@@ -95,7 +99,24 @@ class _MapScreenState extends State<MapScreen> {
                               text: S().done,
                               backgroundColor: AppColors.primary,
                               borderRadius: 15.r,
-                              onPressed: () => Navigator.pop(context, address),
+                              onPressed: () {
+                                if (_selectedLocation != null) {
+                                  Navigator.pop(
+                                    context,
+                                    LocationData(
+                                      address: _selectedAddress!,
+                                      latitude: _selectedLocation!.latitude,
+                                      longitude: _selectedLocation!.longitude,
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content:
+                                            Text("Please select a location.")),
+                                  );
+                                }
+                              },
                               textStyle: TextStyles.font18BlackRegular,
                             ),
                           ],

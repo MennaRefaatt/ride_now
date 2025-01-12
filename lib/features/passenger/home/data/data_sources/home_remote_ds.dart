@@ -30,20 +30,20 @@ class HomeRemoteDSImpl implements HomeRemoteDS {
   @override
   Future<List<TripModel>> getRecentTrips() async {
     try {
-      final userId=SharedPref.getString(key: MySharedKeys.userId)!;
+      final userId = SharedPref.getString(key: MySharedKeys.userId)!;
       final getTrips = await FirebaseFirestore.instance
           .collection('trips')
-          .where("passengerId", isEqualTo: userId)
-          .orderBy('status', descending: false)
-          .orderBy('dateTime', descending: true)
-          .orderBy(FieldPath.documentId, descending: true)
+          .where("passengerData.passengerId", isEqualTo: userId)
           .get();
+      safePrint(
+          "passenger id:${getTrips.docs.map((doc) => doc.data()['passengerData']['passengerId'])}");
       return getTrips.docs.map((doc) {
         final data = doc.data();
         safePrint("data: $data");
         return TripModel.fromJson(doc.data());
       }).toList();
     } catch (e) {
+      safePrint("Error getting trips: $e");
       throw Exception("Error getting trips: $e");
     }
   }

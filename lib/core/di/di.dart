@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ride_now/features/driver/driver_registration/data/repositories/d_repo_impl.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/repositories/d_repo_base.dart';
@@ -65,9 +66,13 @@ Future<void> init() async {
   // Register Firebase Firestore instance
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
 
+  // Register Firebase Storage
+  sl.registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
+
   ///profile
   // Register Data Sources
-  sl.registerLazySingleton<ProfileRemoteDS>(() => ProfileRemoteDSImpl(sl()));
+  sl.registerLazySingleton<ProfileRemoteDS>(
+      () => ProfileRemoteDSImpl(sl(), sl()));
 
   // Register Repositories
   sl.registerLazySingleton<ProfileRepoBase>(() => ProfileRepoImpl(sl()));

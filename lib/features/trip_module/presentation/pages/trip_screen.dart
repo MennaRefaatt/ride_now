@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/waiting_for_driver.dart';
@@ -10,6 +11,7 @@ import '../../../maps/presentation/manager/location_cubit.dart';
 import '../../data/models/trip_model.dart';
 import '../manager/trip_cubit.dart';
 import '../widgets/trip_details.dart';
+import '../widgets/trip_tracking.dart';
 
 class TripScreen extends StatefulWidget {
   const TripScreen({super.key, required this.args});
@@ -65,13 +67,32 @@ class _TripScreenState extends State<TripScreen> {
                     if (tripData != null) {
                       final tripStatus = tripData['status'];
                       final driverData = tripData['driverData'];
-                      if (tripStatus != TripStatus.accepted.name &&
-                          driverData["driverId"] == "") {
-                        return WaitingForDriver(args: widget.args);
-                      }
-                      return TripDetails(
-                        args: widget.args,
-                        tripModel: TripModel.fromJson(tripData),
+                      final TripTrackingArgs updatedArgs = TripTrackingArgs(
+                        fromAddress: widget.args.fromAddress,
+                        toAddress: widget.args.toAddress,
+                        tripId: widget.args.tripId,
+                        fromLatLng: widget.args.fromLatLng,
+                        toLatLng: widget.args.toLatLng,
+                        driverLatLng: driverData['driverLocation'] != null
+                            ? LatLng(driverData['driverLocation']['latitude'],
+                                driverData['driverLocation']['longitude'])
+                            : null,
+                        tripStatus: tripStatus,
+                      );
+                      return Stack(
+                        children: [
+                          TripTracking(
+                            args: updatedArgs,
+                          ),
+                          if (tripStatus == TripStatus.accepted.name &&
+                              driverData["driverId"] != "")
+                            TripDetails(
+                              tripModel: TripModel.fromJson(tripData),
+                            ),
+                          if (tripStatus != TripStatus.accepted.name &&
+                              driverData["driverId"] == "")
+                            WaitingForDriver(),
+                        ],
                       );
                     }
                   }

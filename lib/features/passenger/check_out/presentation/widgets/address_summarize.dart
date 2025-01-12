@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 
+import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
@@ -21,10 +23,14 @@ class AddressSummarize extends StatefulWidget {
     required this.fromAddress,
     required this.toAddress,
     required this.tripCubit,
+    required this.fromLatLng,
+    required this.toLatLng,
   });
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
+  final LatLng fromLatLng;
+  final LatLng toLatLng;
 
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
@@ -120,16 +126,18 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                             ),
                           );
                         }
-                        // if (state is CreateTripLoaded) {
-                        //   tripId = state.trip.tripId;
-                        // }
                         return AppButton(
                           text: "S().done",
                           textStyle: TextStyles.font14BlackRegular,
                           onPressed: () async {
                             try {
                               await widget.tripCubit
-                                  .createTrip(widget.fromAddress, toAddress)
+                                  .createTrip(
+                                widget.fromAddress,
+                                widget.fromLatLng,
+                                toAddress,
+                                widget.toLatLng,
+                              )
                                   .then((_) {
                                 tripId = SharedPref.getString(
                                         key: MySharedKeys.currentTripId) ??
@@ -149,6 +157,10 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                                       fromAddress: widget.fromAddress,
                                       toAddress: toAddress,
                                       tripId: tripId,
+                                      fromLatLng: widget.fromLatLng,
+                                      toLatLng: widget.toLatLng,
+                                      driverLatLng: widget.toLatLng,
+                                      tripStatus: TripStatus.pending.name,
                                     ),
                                   );
                                 } else {

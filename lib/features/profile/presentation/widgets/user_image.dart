@@ -22,50 +22,39 @@ class _UserImageState extends State<UserImage> {
   File? _imageFile;
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final pickedFile = await showDialog<XFile?>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('S().pick an Image'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () async {
-                final file = await picker.pickImage(source: ImageSource.camera);
-                Navigator.pop(context, file);
-              },
-              child: Text("S().camera"),
-            ),
-            TextButton(
-              onPressed: () async {
-                final file =
-                    await picker.pickImage(source: ImageSource.gallery);
-                Navigator.pop(context, file);
-              },
-              child: Text('S().gallery'),
-            ),
-          ],
-        );
-      },
-    );
+    final pickedFile = await showDialog<XFile?>(context: context, builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Pick an Image'),
+        actions: <Widget>[
+          TextButton(onPressed: () async {
+            final file = await picker.pickImage(source: ImageSource.camera);
+            Navigator.pop(context, file);
+          }, child: Text("Camera")),
+          TextButton(onPressed: () async {
+            final file = await picker.pickImage(source: ImageSource.gallery);
+            Navigator.pop(context, file);
+          }, child: Text('Gallery')),
+        ],
+      );
+    });
 
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
         widget.isChanged = true;
       });
-      context.read<ProfileCubit>().saveProfile(
-            ProfileModel(
-              email: SharedPref.getString(key: MySharedKeys.email) ?? "",
-              city: SharedPref.getString(key: MySharedKeys.city) ?? "",
-              phoneNumber: SharedPref.getString(key: MySharedKeys.phone) ?? "",
-              photoUrl: _imageFile!.path,
-              name: SharedPref.getString(key: MySharedKeys.userName) ?? "",
-              uid: SharedPref.getString(key: MySharedKeys.userId)!,
-            ),
-          );
+      final profile = ProfileModel(
+        email: SharedPref.getString(key: MySharedKeys.email) ?? "",
+        city: SharedPref.getString(key: MySharedKeys.city) ?? "",
+        phoneNumber: SharedPref.getString(key: MySharedKeys.phone) ?? "",
+        photoUrl: _imageFile!.path,
+        name: SharedPref.getString(key: MySharedKeys.userName) ?? "",
+        uid: SharedPref.getString(key: MySharedKeys.userId)!,
+      );
+
+      context.read<ProfileCubit>().saveProfile(profile, imageFile: _imageFile);
     }
   }
-
   final pictureUrl = SharedPref.getString(key: MySharedKeys.picture) ?? "";
   final userName = SharedPref.getString(key: MySharedKeys.userName) ?? "";
   @override

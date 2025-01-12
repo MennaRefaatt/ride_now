@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../manager/trip_cubit.dart';
@@ -31,10 +32,19 @@ class CancelButton extends StatelessWidget {
         return Visibility(
           child: GestureDetector(
             onTap: () {
-              context
-                  .read<TripCubit>()
-                  .cancelTrip(tripId!)
-                  .then((value) => Navigator.pop(context));
+              if (tripId != null) {
+                context
+                    .read<TripCubit>()
+                    .cancelTrip(tripId)
+                    .then((value) => Navigator.pushReplacementNamed(
+                          context,
+                          RoutingEndpoints.passengerHome,
+                        ));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Trip ID is not available')),
+                );
+              }
             },
             child: Center(
               child: Container(
