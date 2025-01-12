@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
-import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 
 class RecentRide extends StatelessWidget {
-  const RecentRide({super.key, required this.trips});
+  const RecentRide(
+      {super.key, required this.trips, required this.onAddressSelected});
   final List<TripModel> trips;
+  final Function(String address, LatLng latLng) onAddressSelected;
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -17,29 +20,28 @@ class RecentRide extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           return Column(children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10.sp),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                      backgroundColor: AppColors.primary.withOpacity(0.2),
-                      child: const Icon(
-                        CupertinoIcons.clock,
-                        color: AppColors.primary,
-                      )),
-                  horizontalSpacing(10.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Home",
-                            style: TextStyles.font18BlackRegular
-                                .copyWith(fontWeight: FontWeight.bold)),
-                        Text(trips[index].to),
-                      ],
+            GestureDetector(
+              onTap: () {
+                safePrint(trips[index].toLatLng);
+                safePrint(trips[index].to);
+                onAddressSelected(trips[index].to, trips[index].toLatLng);
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 10.sp),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                        backgroundColor: AppColors.primary.withOpacity(0.2),
+                        child: const Icon(
+                          CupertinoIcons.clock,
+                          color: AppColors.primary,
+                        )),
+                    horizontalSpacing(10.w),
+                    Expanded(
+                      child: Text(trips[index].to),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             if (index != 1)

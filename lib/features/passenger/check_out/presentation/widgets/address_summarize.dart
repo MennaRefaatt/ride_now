@@ -15,6 +15,7 @@ import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
 
 class AddressSummarize extends StatefulWidget {
@@ -143,24 +144,24 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                                         key: MySharedKeys.currentTripId) ??
                                     "";
                                 if (tripId.isNotEmpty) {
-                                  safePrint(
-                                      "Trip created successfully: $tripId");
+                                  safePrint("Trip id: $tripId");
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            "Trip created successfully: $tripId")),
+                                    SnackBar(content: Text("Trip id: $tripId")),
                                   );
                                   Navigator.pushReplacementNamed(
                                     context,
                                     RoutingEndpoints.tripTracking,
-                                    arguments: TripTrackingArgs(
-                                      fromAddress: widget.fromAddress,
-                                      toAddress: toAddress,
-                                      tripId: tripId,
-                                      fromLatLng: widget.fromLatLng,
-                                      toLatLng: widget.toLatLng,
-                                      driverLatLng: widget.toLatLng,
-                                      tripStatus: TripStatus.pending.name,
+                                    arguments: TripTrackingRouteArgs(
+                                      tripTrackingArgs: TripTrackingArgs(
+                                        fromAddress: widget.fromAddress,
+                                        toAddress: toAddress,
+                                        tripId: tripId,
+                                        fromLatLng: widget.fromLatLng,
+                                        toLatLng: widget.toLatLng,
+                                        driverLatLng: widget.toLatLng,
+                                        tripStatus: TripStatus.pending.name,
+                                      ),
+                                      isPassenger: true,
                                     ),
                                   );
                                 } else {
@@ -184,7 +185,7 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                       },
                     ),
                   ),
-                  SizedBox(width: 10.w),
+                  horizontalSpacing(10.w),
                   MoreOptions(),
                 ],
               ),
