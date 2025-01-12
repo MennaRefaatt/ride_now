@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ride_now/features/profile/domain/repositories/profile_repo_base.dart';
 import '../../data/models/profile_model.dart';
 
@@ -6,7 +8,7 @@ class SaveProfileUseCase {
 
   SaveProfileUseCase(this.repository);
 
-  Future<void> execute(ProfileModel profile) async {
+  Future<void> execute(ProfileModel profile, {File? imageFile}) async {
     await repository.saveProfile(profile);
   }
 }

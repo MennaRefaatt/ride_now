@@ -34,20 +34,19 @@ class TripModel {
       from: json['from'],
       to: json['to'],
       status: json['status'],
-      fromLatLng: LatLng(json['fromLat'], json['fromLng']),
-      toLatLng: LatLng(json['toLat'], json['toLng']),
+      fromLatLng: LatLng(json['fromLat']?.toDouble() ?? 0.0, json['fromLng']?.toDouble() ?? 0.0),
+      toLatLng: LatLng(json['toLat']?.toDouble() ?? 0.0, json['toLng']?.toDouble() ?? 0.0),
       dateTime: (json['dateTime'] is Timestamp)
           ? (json['dateTime'] as Timestamp).toDate()
-          : DateFormat('dd/MM/yyyy HH:mm')
-              .parse(json['dateTime'] ?? ''), // Handle custom format
-      price: json['price'],
-      distance: json['distance'],
+          : DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'] ?? ''),
+      price: (json['price'] is String) ? double.tryParse(json['price'])?.toString() ?? '0.0' : json['price'].toString(),
+      distance: (json['distance'] is String) ? double.tryParse(json['distance'])?.toString() ?? '0.0' : json['distance'].toString(),
       driverData: json['driverData'] is Map<String, dynamic>
           ? DriverData.fromJson(json['driverData'])
-          : DriverData.fromJson({}), // Or handle accordingly
+          : DriverData.fromJson({}),
       passengerData: json['passengerData'] is Map<String, dynamic>
           ? PassengerData.fromJson(json['passengerData'])
-          : PassengerData.fromJson({}), // Or handle accordingly
+          : PassengerData.fromJson({}),
     );
   }
 
@@ -58,8 +57,14 @@ class TripModel {
       'tripId': tripId,
       'from': from,
       'to': to,
-      "fromLatLng": fromLatLng.toJson(),
-      "toLatLng": toLatLng.toJson(),
+      "fromLatLng": {
+        "latitude": fromLatLng.latitude,
+        "longitude": fromLatLng.longitude
+      },
+      "toLatLng": {
+        "latitude": toLatLng.latitude,
+        "longitude": toLatLng.longitude
+      },
       'status': status,
       'dateTime': formattedDate,
       'price': price,
@@ -104,8 +109,8 @@ class DriverData {
       carColor: json['carColor'],
       carModel: json['carModel'],
       carNumber: json['carNumber'],
-      driverLocation: LatLng(json['driverLocation']['latitude'],
-          json['driverLocation']['longitude']),
+      driverLocation: LatLng(json['driverLocation']['latitude'] ?? 0.0,
+          json['driverLocation']['longitude'] ?? 0.0),
     );
   }
 
@@ -117,7 +122,10 @@ class DriverData {
         'carColor': carColor,
         'carModel': carModel,
         'carNumber': carNumber,
-        'driverLocation': driverLocation.toJson(),
+        'driverLocation': {
+          'latitude': driverLocation.latitude,
+          'longitude': driverLocation.longitude,
+        },
       };
 }
 

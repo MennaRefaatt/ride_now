@@ -1,9 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/features/maps/presentation/manager/location_cubit.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
+import '../../../../core/helpers/enums/trip_status.dart';
 import '../../data/data_sources/direction_service/direction_service.dart';
 
 class TripTracking extends StatefulWidget {
@@ -23,7 +27,6 @@ class _TripTrackingState extends State<TripTracking> {
   LatLng? cameraPosition;
   Set<Marker> _markers = {};
   Set<Polyline> _polylines = {};
-
   @override
   void initState() {
     super.initState();
@@ -62,19 +65,21 @@ class _TripTrackingState extends State<TripTracking> {
     }
   }
 
-  Future<void> _getLatLngFromAddress() async {
+  void _getLatLngFromAddress() async {
     try {
       setState(() {
         _fromLatLng = widget.args.fromLatLng;
         _toLatLng = widget.args.toLatLng;
         _driverLatLng = widget.args.driverLatLng;
+        bool isDriverAccepted =
+            widget.args.tripStatus == TripStatus.accepted.name;
         _markers = {
           Marker(
             markerId: const MarkerId('fromLocation'),
             position: _fromLatLng!,
             infoWindow: InfoWindow(title: widget.args.fromAddress),
-            icon:
-                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueGreen),
           ),
           Marker(
             markerId: const MarkerId('toLocation'),
@@ -83,13 +88,14 @@ class _TripTrackingState extends State<TripTracking> {
             icon:
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           ),
-          Marker(
-            markerId: const MarkerId('driverLocation'),
-            position: _driverLatLng!,
-            infoWindow: const InfoWindow(title: 'Driver Location'),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueGreen),
-          ),
+          if (isDriverAccepted && _driverLatLng != null)
+            Marker(
+              markerId: const MarkerId('driverLocation'),
+              position: _driverLatLng!,
+              infoWindow: const InfoWindow(title: 'Driver Location'),
+              icon: BitmapDescriptor.defaultMarkerWithHue(
+                  BitmapDescriptor.hueGreen),
+            ),
         };
       });
       await _getDirections();
@@ -115,27 +121,47 @@ class _TripTrackingState extends State<TripTracking> {
                 : (state as LocationMarkerSet).location;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (_mapController != null) {
-                // _animateToLocation(position);
+                _animateToLocation(position);
               }
             });
-            return GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: CameraPosition(
-                target: _fromLatLng!,
-                zoom: 10,
-              ),
-              onMapCreated: (controller) {
-                _mapController = controller;
-                // _animateToLocation(position);
-              },
-              onTap: (LatLng position) {
-                setState(() {
-                  cameraPosition = position;
-                });
-                _moveCamera(position);
-              },
-              markers: _markers,
-              polylines: _polylines,
+            return Stack(
+              children: [
+                GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    target: _fromLatLng!,
+                    zoom: 10,
+                  ),
+                  onMapCreated: (controller) {
+                    _mapController = controller;
+                    _animateToLocation(position);
+                  },
+                  onTap: (LatLng position) {
+                    setState(() {
+                      cameraPosition = position;
+                    });
+                    _moveCamera(position);
+                  },
+                  markers: _markers,
+                  polylines: _polylines,
+                ),
+                Positioned(
+                  top: 40,
+                  right: 20,
+                  child: FloatingActionButton(
+                    onPressed: () {
+                      _mapController.animateCamera(
+                        CameraUpdate.zoomOut(),
+                      );
+                    },
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    backgroundColor: AppColors.primary,
+                    child: Icon(CupertinoIcons.zoom_out, color: Colors.white),
+                  ),
+                ),
+              ],
             );
           }
           return GoogleMap(
@@ -152,7 +178,7 @@ class _TripTrackingState extends State<TripTracking> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: position,
-            zoom: 18,
+            zoom: 10,
             tilt: 50,
             bearing: 0,
           ),
@@ -163,7 +189,7 @@ class _TripTrackingState extends State<TripTracking> {
         CameraUpdate.newCameraPosition(
           CameraPosition(
             target: position,
-            zoom: 18,
+            zoom: 15,
           ),
         ),
       );

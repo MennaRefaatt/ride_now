@@ -90,7 +90,7 @@ dependencies:
   # --------------------------------------
   file_picker: ^8.1.2
   upgrader: ^11.3.0
-  url_launcher: ^6.3.0
+  url_launcher: ^6.3.1
   share_plus: ^10.0.2
   enum_to_string: ^2.0.1
   permission_handler: ^11.3.1
@@ -166,6 +166,8 @@ dependencies:
   flutter_otp_text_field: ^1.2.0
   firebase_database: ^11.3.0
   flutter_map: ^7.0.2
+  firebase_storage: ^12.4.0
+  uuid: ^4.5.1
 
 
 dev_dependencies:

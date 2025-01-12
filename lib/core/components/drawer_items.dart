@@ -11,6 +11,7 @@ import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import '../../features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
 import '../../features/driver/driver_registration/data/models/driver_registration_model.dart';
+import '../di/di.dart';
 import '../helpers/safe_print.dart';
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
@@ -149,7 +150,7 @@ class _DrawerItemsState extends State<DrawerItems> {
   }
 
   void saveModeToFirestore(String mode) {
-    FirestoreService().saveUserModeToFirestore(mode);
+    FirestoreService(sl(), sl()).saveUserModeToFirestore(mode);
     SharedPref.setString(key: MySharedKeys.type, value: mode);
   }
 

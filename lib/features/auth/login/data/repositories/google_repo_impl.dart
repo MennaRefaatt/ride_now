@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
 import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
@@ -55,6 +58,9 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
             currentTripId: param.currentTripId ?? '',
           );
           await _dsAuthLocal.saveDataToLocal(userModel);
+          if (user.photoURL != null) {
+            await _firestoreService.uploadProfileImage(File(user.photoURL!));
+          }
           if (phone == "missing phone number") {
             Navigator.pushReplacementNamed(
                 context, RoutingEndpoints.phoneNumber,
@@ -63,7 +69,6 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
         });
       } else {
         String phoneNumber = userDoc.data()?['phoneNumber'] ?? '';
-
         if (phoneNumber == "missing phone number" || phoneNumber.isEmpty) {
           Navigator.pushReplacementNamed(context, RoutingEndpoints.phoneNumber,
               arguments: PhoneArgs(user: user));
@@ -110,7 +115,7 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
 
 final googleRepositoryProvider = Provider<GoogleRepositoryBase>((ref) {
   final googleSignInService = GoogleSignInServiceImpl();
-  final firestoreService = FirestoreService();
+  final firestoreService = FirestoreService(sl(), sl());
   return GoogleRepositoryImpl(
       googleSignInService, firestoreService, DSAuthLocalImpl());
 });

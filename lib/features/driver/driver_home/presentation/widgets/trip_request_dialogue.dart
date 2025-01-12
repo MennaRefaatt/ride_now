@@ -10,6 +10,7 @@ import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
 import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
 import '../../../../../core/helpers/spacing.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/styles.dart';
 
 class TripRequestsDialogue extends StatefulWidget {
@@ -202,20 +203,25 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   final carColor = SharedPref.getString(
                                       key: MySharedKeys.carColor)!;
                                   safePrint("driverId: $driverId");
-                                  widget.tripCubit.acceptTrip(
-                                      trip,
-                                      DriverData(
-                                          driverId: driverId,
-                                          driverName: driverName,
-                                          driverPhone: driverPhone,
-                                          driverImage: driverImage,
-                                          carModel: carModel,
-                                          carColor: carColor,
-                                          carNumber: carNumber,
-                                          driverLocation: LatLng(
-                                            driverLat,
-                                            driverLong,
-                                          )));
+                                  widget.tripCubit
+                                      .acceptTrip(
+                                          trip,
+                                          DriverData(
+                                              driverId: driverId,
+                                              driverName: driverName,
+                                              driverPhone: driverPhone,
+                                              driverImage: driverImage,
+                                              carModel: carModel,
+                                              carColor: carColor,
+                                              carNumber: carNumber,
+                                              driverLocation: LatLng(
+                                                driverLat,
+                                                driverLong,
+                                              )))
+                                      .then((_) {
+                                    Navigator.pushReplacementNamed(
+                                        context, RoutingEndpoints.tripTracking);
+                                  });
                                 },
                                 textStyle: TextStyles.font18BlackRegular,
                                 borderRadius: 10.r,

@@ -8,6 +8,7 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 
+import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
@@ -132,10 +133,11 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                             try {
                               await widget.tripCubit
                                   .createTrip(
-                                      widget.fromAddress,
-                                     widget.fromLatLng,
-                                      toAddress,
-                                      widget.toLatLng,)
+                                widget.fromAddress,
+                                widget.fromLatLng,
+                                toAddress,
+                                widget.toLatLng,
+                              )
                                   .then((_) {
                                 tripId = SharedPref.getString(
                                         key: MySharedKeys.currentTripId) ??
@@ -158,6 +160,7 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                                       fromLatLng: widget.fromLatLng,
                                       toLatLng: widget.toLatLng,
                                       driverLatLng: widget.toLatLng,
+                                      tripStatus: TripStatus.pending.name,
                                     ),
                                   );
                                 } else {

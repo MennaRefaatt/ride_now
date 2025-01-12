@@ -9,6 +9,7 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
 import 'package:ride_now/features/auth/phone_args.dart';
+import '../../core/di/di.dart';
 import '../../core/forms/user_data_form_validators.dart';
 import '../../core/helpers/enums/user_type.dart';
 import '../../core/helpers/safe_print.dart';
@@ -26,7 +27,7 @@ class PhoneNumberScreen extends StatefulWidget {
 }
 
 class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
-  final FirestoreService _firestoreService = FirestoreService();
+  final FirestoreService _firestoreService=FirestoreService(sl(), sl());
 
   Future<void> _savePhoneNumber() async {
     userDataFormValidators.phoneController.text.trim();

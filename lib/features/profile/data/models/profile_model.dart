@@ -6,7 +6,7 @@ class ProfileModel {
   final String uid;
   final String name;
   final String email;
-  late  String phoneNumber;
+  late String phoneNumber;
   final String photoUrl;
   final String? city;
 
@@ -23,4 +23,21 @@ class ProfileModel {
       _$ProfileModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProfileModelToJson(this);
+  ProfileModel copyWith({
+    String? uid,
+    String? name,
+    String? email,
+    String? phoneNumber,
+    String? photoUrl,
+    String? city,
+  }) {
+    return ProfileModel(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      photoUrl: photoUrl ?? this.photoUrl,
+      city: city ?? this.city,
+    );
+  }
 }
