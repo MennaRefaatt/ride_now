@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
@@ -9,9 +10,13 @@ import '../../../../trip_module/data/models/trip_model.dart';
 import '../manager/home_cubit.dart';
 
 class LastTripsListView extends StatefulWidget {
-   LastTripsListView({super.key, required this.lastTrips, required this.disappear, required this.cubit});
+  LastTripsListView(
+      {super.key,
+      required this.lastTrips,
+      required this.disappear,
+      required this.cubit});
   final List<TripModel> lastTrips;
-   bool disappear;
+  bool disappear;
   final HomeCubit cubit;
 
   @override
@@ -19,7 +24,6 @@ class LastTripsListView extends StatefulWidget {
 }
 
 class _LastTripsListViewState extends State<LastTripsListView> {
-
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -82,16 +86,29 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                       setState(() {
                         widget.disappear = true;
                       });
-                      Navigator.pushNamed(
-                        context,
-                        RoutingEndpoints.checkOut,
-                        arguments: CheckOutArgs(
-                          fromAddress: widget.cubit.fromController.text,
-                          toAddress: widget.cubit.toController.text,
-                          fromLatLng: widget.cubit.fromLatLng!,
-                          toLatLng: widget.cubit.toLatLng!,
-                        ),
-                      );
+                      if (widget.cubit.fromLatLng != null &&
+                          widget.cubit.toLatLng != null) {
+                        Navigator.pushNamed(
+                          context,
+                          RoutingEndpoints.checkOut,
+                          arguments: CheckOutArgs(
+                            fromAddress: widget.cubit.fromController.text,
+                            toAddress: widget.cubit.toController.text,
+                            fromLatLng: widget.cubit.fromLatLng!,
+                            toLatLng: widget.cubit.toLatLng!,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "Error: LatLng values are null",
+                              style: TextStyles.font18BlackRegular,
+                            ),
+                          ),
+                        );
+                        safePrint("Error: LatLng values are null");
+                      }
                     }
                   },
                   child: Container(

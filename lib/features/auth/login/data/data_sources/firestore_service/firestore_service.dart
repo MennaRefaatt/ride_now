@@ -1,13 +1,17 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/features/auth/login/data/data_sources/firestore_service/firestore_param.dart';
 import '../../../../../../core/helpers/enums/user_type.dart';
 import '../../models/user.dart';
 
 class FirestoreService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-  FirestoreService();
+  final FirebaseFirestore _db ;
+  final FirebaseStorage _storage;
+  FirestoreService(this._db, this._storage);
 
   Future<void> saveUserToFirestore(User user, FirestoreParam param) async {
     try {
@@ -66,7 +70,28 @@ class FirestoreService {
       throw Exception("Error saving user phone number to Firestore: $e");
     }
   }
+  Future<void> uploadProfileImage(File image) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Upload the image to Firebase Storage
+        final storageRef = _storage.ref().child('user_images/${user.uid}.jpg');
+        await storageRef.putFile(image);
 
+        // Get the download URL
+        final downloadUrl = await storageRef.getDownloadURL();
+
+        // Update the user's profile image URL in Firestore
+        await _db.collection('users').doc(user.uid).update({
+          'photoUrl': downloadUrl,
+        });
+
+        safePrint("Profile image uploaded and Firestore updated.");
+      }
+    } catch (e) {
+      safePrint("Error uploading profile image: $e");
+    }
+  }
     Future<void> updateUserCityToFirestore(String city) async {
       try {
         final user = FirebaseAuth.instance.currentUser;

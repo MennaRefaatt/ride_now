@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/utils/app_image.dart';
 import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
+import 'package:ride_now/features/trip_module/presentation/widgets/contact_call.dart';
+import 'package:ride_now/features/trip_module/presentation/widgets/your_current_trip.dart';
 import '../../../../core/helpers/spacing.dart';
-import 'cancel_button.dart';
 
 class TripDetails extends StatefulWidget {
   const TripDetails({super.key, required this.tripModel});
@@ -18,7 +17,8 @@ class TripDetails extends StatefulWidget {
 }
 
 class _TripDetailsState extends State<TripDetails> {
-  final DraggableScrollableController _controller = DraggableScrollableController();
+  final DraggableScrollableController _controller =
+      DraggableScrollableController();
   double _childSize = 0.3;
 
   @override
@@ -33,7 +33,8 @@ class _TripDetailsState extends State<TripDetails> {
           alignment: Alignment.bottomCenter,
           child: GestureDetector(
             onVerticalDragUpdate: (details) {
-              double newHeight = _childSize - details.primaryDelta! / MediaQuery.of(context).size.height;
+              double newHeight = _childSize -
+                  details.primaryDelta! / MediaQuery.of(context).size.height;
               if (newHeight > 0.2 && newHeight < 0.8) {
                 setState(() {
                   _childSize = newHeight;
@@ -90,7 +91,6 @@ class _TripDetailsState extends State<TripDetails> {
                             children: [
                               CircleAvatar(
                                 radius: 30.r,
-                                //backgroundImage: NetworkImage(widget.tripModel.driverData.driverImage),
                               ),
                               horizontalSpacing(10.w),
                               Text(
@@ -102,10 +102,9 @@ class _TripDetailsState extends State<TripDetails> {
                           horizontalSpacing(20.w),
                           Column(
                             children: [
-                              CircleAvatar(
-                                radius: 30.r,
-                                backgroundColor: AppColors.primary,
-                                child: Icon(CupertinoIcons.phone),
+                              ContactCall(
+                                driverPhone:
+                                    widget.tripModel.driverData.driverPhone,
                               ),
                               horizontalSpacing(10.w),
                               Text(
@@ -135,55 +134,8 @@ class _TripDetailsState extends State<TripDetails> {
                       verticalSpacing(10.h),
                       Divider(),
                       verticalSpacing(10.h),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Your Current Trip",
-                            style: TextStyles.font24BlackBold,
-                          ),
-                          verticalSpacing(20.h),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.trip_origin,
-                                color: AppColors.red,
-                              ),
-                              horizontalSpacing(10.w),
-                              Expanded(
-                                child: Text(
-                                  widget.tripModel.from,
-                                  style: TextStyles.font18BlackRegular.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          verticalSpacing(10.h),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.trip_origin,
-                                color: AppColors.primary,
-                              ),
-                              horizontalSpacing(10.w),
-                              Expanded(
-                                child: Text(
-                                  widget.tripModel.to,
-                                  style: TextStyles.font18BlackRegular.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          verticalSpacing(20.h),
-                          CancelButton(),
-                        ],
-                      )
+                      YourCurrentTrip(
+                          to: widget.tripModel.to, from: widget.tripModel.from),
                     ],
                   ),
                 ],

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/waiting_for_driver.dart';
@@ -66,18 +67,22 @@ class _TripScreenState extends State<TripScreen> {
                     if (tripData != null) {
                       final tripStatus = tripData['status'];
                       final driverData = tripData['driverData'];
-                      final TripTrackingArgs args = TripTrackingArgs(
+                      final TripTrackingArgs updatedArgs = TripTrackingArgs(
                         fromAddress: widget.args.fromAddress,
                         toAddress: widget.args.toAddress,
                         tripId: widget.args.tripId,
                         fromLatLng: widget.args.fromLatLng,
                         toLatLng: widget.args.toLatLng,
-                        driverLatLng: widget.args.driverLatLng,
+                        driverLatLng: driverData['driverLocation'] != null
+                            ? LatLng(driverData['driverLocation']['latitude'],
+                                driverData['driverLocation']['longitude'])
+                            : null,
+                        tripStatus: tripStatus,
                       );
                       return Stack(
                         children: [
                           TripTracking(
-                            args: args,
+                            args: updatedArgs,
                           ),
                           if (tripStatus == TripStatus.accepted.name &&
                               driverData["driverId"] != "")

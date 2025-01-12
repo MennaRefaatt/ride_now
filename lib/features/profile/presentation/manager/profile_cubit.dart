@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -51,10 +53,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  Future<void> saveProfile(ProfileModel profile) async {
+  Future<void> saveProfile(ProfileModel profile, {File? imageFile}) async {
     try {
       emit(ProfileLoading());
-      await saveProfileUseCase.execute(profile);
+      await saveProfileUseCase.execute(profile, imageFile: imageFile);
       safePrint("profile saved: ${profile.toJson()}");
       SharedPref.setString(key: MySharedKeys.picture, value: profile.photoUrl);
       emit(ProfileSaved());
