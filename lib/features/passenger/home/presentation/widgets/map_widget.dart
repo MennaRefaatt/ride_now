@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/theming/app_colors.dart';
+import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/features/passenger/home/presentation/manager/home_cubit.dart';
-import '../../../../maps/presentation/manager/location_cubit.dart';
+import '../../../maps/presentation/manager/location_cubit.dart';
 
 class MapWidget extends StatefulWidget {
   MapWidget({super.key, required this.homeCubit, required this.isHidden});
@@ -14,6 +17,7 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
   late final GoogleMapController mapController;
+  LatLng? selectedLocation;
 
   void _onMapSwipe() {
     setState(() {
@@ -28,23 +32,16 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   void _updateCameraPosition(LatLng position) {
-    mapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: position,
-          zoom: 15,
-        ),
-      ),
-    );
+    if (mapController != null) {
+      final cameraPosition = CameraPosition(
+        target: position,
+        zoom: 18,
+      );
 
-    mapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: position,
-          zoom: 18,
-        ),
-      ),
-    );
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(cameraPosition),
+      );
+    }
   }
 
   @override
@@ -61,8 +58,12 @@ class _MapWidgetState extends State<MapWidget> {
               : (state as LocationMarkerSet).location;
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _updateCameraPosition(position);
+            if (mapController != null) {
+              _updateCameraPosition(position);
+            }
           });
+          selectedLocation = position;
+
           return GestureDetector(
             onPanUpdate: (details) {
               if (details.delta.dy < 0 || details.delta.dx != 0) {
@@ -74,27 +75,56 @@ class _MapWidgetState extends State<MapWidget> {
             },
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
-              child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                  target: position,
-                  zoom: 18,
-                ),
-                onMapCreated: (controller) {
-                  mapController = controller;
-                },
-                markers: {
-                  Marker(
-                    markerId: const MarkerId('selectedLocation'),
-                    infoWindow: InfoWindow(title: address.toString()),
-                    position: position,
-                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                      BitmapDescriptor.hueGreen,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    mapType: MapType.satellite,
+                    initialCameraPosition: CameraPosition(
+                      target: position,
+                      zoom: 18,
                     ),
+                    onMapCreated: (controller) {
+                      mapController = controller;
+                    },
+                    markers: {
+                      Marker(
+                        markerId: const MarkerId('selectedLocation'),
+                        infoWindow: InfoWindow(title: address.toString()),
+                        position: position,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueGreen,
+                        ),
+                      ),
+                    },
+                    onCameraMove: (CameraPosition cameraPosition) {
+                      _updateCameraPosition(cameraPosition.target);
+                    },
+                    onTap: (LatLng tappedLocation) {
+                      context.read<LocationCubit>().setMarker(tappedLocation);
+                    },
                   ),
-                },
-                onTap: (LatLng tappedLocation) {
-                  context.read<LocationCubit>().setMarker(tappedLocation);
-                },
+                  if (selectedLocation != null)
+                    Positioned(
+                      top: 100,
+                      left: MediaQuery.of(context).size.width * 0.25,
+                      child: Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          padding: EdgeInsets.all(8.sp),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.r),
+                            color: AppColors.primary,
+                          ),
+                          child: Text(
+                            address.toString(),
+                            style: TextStyles.font18WhiteRegular,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           );

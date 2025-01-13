@@ -135,6 +135,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                       child: Column(
                         children: [
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -145,11 +146,15 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                     ),
                                   ),
                                   Text(
-                                      double.tryParse(trip.price)
-                                              ?.toStringAsFixed(2) ??
-                                          'Invalid price',
+                                      "EGP ${trip.price.split('.')[0]} ${trip.paymentMethod}",
                                       style: TextStyles.font18primaryBold),
                                 ],
+                              ),
+                              verticalSpacing(10.h),
+                              Text(
+                                trip.to,
+                                style: TextStyles.font18BlackRegular,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               verticalSpacing(20.h),
                               Row(
@@ -161,10 +166,11 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   ),
                                   horizontalSpacing(5.w),
                                   Expanded(
-                                    child: Text(trip.dateTime.toString(),
+                                    child: Text(
+                                        "${trip.dateTime.hour}:${trip.dateTime.minute}",
                                         style: TextStyles.font18BlackRegular),
                                   ),
-                                  Text(trip.distance.toString(),
+                                  Text(trip.distance,
                                       style: TextStyles.font18BlackRegular),
                                 ],
                               ),

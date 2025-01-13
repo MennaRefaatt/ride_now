@@ -5,11 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/components/app_icon.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
-import '../../../../core/di/di.dart';
-import '../../../../core/theming/app_colors.dart';
-import '../../../../core/theming/styles.dart';
-import '../../../../core/utils/app_button.dart';
-import '../../../../generated/l10n.dart';
+import '../../../../../core/di/di.dart';
+import '../../../../../core/theming/app_colors.dart';
+import '../../../../../core/theming/styles.dart';
+import '../../../../../core/utils/app_button.dart';
+import '../../../../../generated/l10n.dart';
 import '../../data/model/location_model.dart';
 import '../manager/location_cubit.dart';
 
@@ -24,6 +24,7 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _mapController;
   LatLng? _selectedLocation;
   String? _selectedAddress;
+  double markerTopPosition = 100.0;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,7 @@ class _MapScreenState extends State<MapScreen> {
                               onMapCreated: (controller) {
                                 _mapController = controller;
                               },
+                              zoomControlsEnabled: false,
                               markers: _selectedLocation != null
                                   ? {
                                       Marker(
@@ -92,6 +94,28 @@ class _MapScreenState extends State<MapScreen> {
                                 }
                               },
                             ),
+                            if (_selectedLocation != null)
+                              Positioned(
+                                top: markerTopPosition,
+                                left: MediaQuery.of(context).size.width * 0.25,
+                                child: Center(
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.5,
+                                    padding: EdgeInsets.all(8.sp),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      color: AppColors.primary,
+                                    ),
+                                    child: Text(
+                                      address.toString(),
+                                      style: TextStyles.font18WhiteRegular,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             AppButton(
                               text: S().done,
                               backgroundColor: AppColors.primary,
@@ -141,10 +165,18 @@ class _MapScreenState extends State<MapScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           AppIcon(
-                            icon: Icons.zoom_in,
+                            icon: CupertinoIcons.zoom_in,
                             backgroundColor: Colors.white,
                             iconColor: Colors.black,
                             navigation: _zoomIn,
+                            withShadow: false,
+                          ),
+                          verticalSpacing(10.h),
+                          AppIcon(
+                            icon: CupertinoIcons.zoom_out,
+                            backgroundColor: Colors.white,
+                            iconColor: Colors.black,
+                            navigation: _zoomOut,
                             withShadow: false,
                           ),
                           verticalSpacing(10.h),
@@ -179,6 +211,14 @@ class _MapScreenState extends State<MapScreen> {
     if (_mapController != null) {
       _mapController.animateCamera(
         CameraUpdate.zoomIn(),
+      );
+    }
+  }
+
+  void _zoomOut() {
+    if (_mapController != null) {
+      _mapController.animateCamera(
+        CameraUpdate.zoomOut(),
       );
     }
   }

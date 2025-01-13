@@ -7,8 +7,8 @@ import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/features/passenger/home/presentation/widgets/last_trips_list_view.dart';
-import '../../../../maps/presentation/manager/location_cubit.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';
 
 class WhereToBar extends StatefulWidget {

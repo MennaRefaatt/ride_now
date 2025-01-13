@@ -17,13 +17,14 @@ class AddressSummarize extends StatefulWidget {
     required this.tripCubit,
     required this.fromLatLng,
     required this.toLatLng,
+    required this.paymentMethod,
   });
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
-
+  final String paymentMethod;
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
 }
@@ -121,6 +122,7 @@ class _AddressSummarizeState extends State<AddressSummarize> {
               toAddress: toAddress,
               fromLatLng: widget.fromLatLng,
               toLatLng: toLatLng,
+              paymentMethod: widget.paymentMethod,
             ),
           ],
         ),

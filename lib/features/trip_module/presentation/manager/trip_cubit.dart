@@ -8,6 +8,7 @@ import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
+import '../../../../core/helpers/enums/payment_method.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
@@ -82,7 +83,12 @@ class TripCubit extends Cubit<TripState> {
   }
 
   Future<void> createTrip(
-      String from, LatLng fromLatLng, String to, LatLng toLatLng) async {
+    String from,
+    LatLng fromLatLng,
+    String to,
+    LatLng toLatLng,
+    String paymentMethod,
+  ) async {
     emit(CreateTripLoading());
     try {
       TripHelper tripHelper = TripHelper();
@@ -97,6 +103,7 @@ class TripCubit extends Cubit<TripState> {
       final tripModel = TripModel(
         tripId: "",
         from: from,
+        paymentMethod: paymentMethod,
         to: to,
         status: TripStatus.pending.name,
         dateTime: DateTime.now(),

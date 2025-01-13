@@ -7,6 +7,7 @@ class TripModel {
   final String from;
   final String to;
   final String status;
+  final String paymentMethod;
   final DateTime dateTime;
   final String price;
   final String distance;
@@ -26,11 +27,13 @@ class TripModel {
     required this.distance,
     required this.driverData,
     required this.passengerData,
+    required this.paymentMethod,
   });
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
       tripId: json['tripId'],
+      paymentMethod: json['paymentMethod'],
       from: json['from'],
       to: json['to'],
       status: json['status'],
@@ -69,6 +72,7 @@ class TripModel {
     final formattedDate = dateFormat.format(dateTime);
     return {
       'tripId': tripId,
+      'paymentMethod': paymentMethod,
       'from': from,
       'to': to,
       "fromLatLng": {
