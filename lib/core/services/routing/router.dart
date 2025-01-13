@@ -21,7 +21,7 @@ import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.da
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
 import '../../../features/passenger/check_out/presentation/check_out_args.dart';
 import '../../../features/passenger/check_out/presentation/pages/check_out.dart';
-import '../../../features/passenger/home/presentation/pages/home_screen.dart';
+import '../../../features/passenger/home/presentation/pages/passenger_home.dart';
 import '../../helpers/safe_print.dart';
 
 class RouteServices {

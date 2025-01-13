@@ -33,6 +33,10 @@ class TripCubit extends Cubit<TripState> {
   CancelTripUseCase cancelTripUseCase;
 
   double cost = 0.0;
+  void updateCost(String costText) {
+    cost = double.parse(costText);
+    emit(TripCostUpdated(cost));
+  }
 
   Stream<DocumentSnapshot> listenToTripDetails(String tripId) {
     if (tripId.isEmpty) {
@@ -83,7 +87,7 @@ class TripCubit extends Cubit<TripState> {
     try {
       TripHelper tripHelper = TripHelper();
       LatLng fromCoordinates = fromLatLng;
-      LatLng toCoordinates =toLatLng;
+      LatLng toCoordinates = toLatLng;
 
       String distance = await tripHelper
           .calculateDistance(fromCoordinates, toCoordinates, unit: 'km');
