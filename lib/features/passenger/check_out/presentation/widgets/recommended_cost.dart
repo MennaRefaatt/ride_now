@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
-
 import '../../../../../core/theming/styles.dart';
+
 class RecommendedCost extends StatelessWidget {
   const RecommendedCost({super.key, required this.costText});
-final String costText;
+  final String costText;
   @override
   Widget build(BuildContext context) {
     return Container(

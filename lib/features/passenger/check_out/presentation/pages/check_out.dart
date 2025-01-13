@@ -20,7 +20,11 @@ class CheckOut extends StatelessWidget {
   });
   final CheckOutArgs args;
   final tripCubit = TripCubit(
-      acceptTripUseCase: sl(), getTripsUseCase: sl(), createTripUseCase: sl(),getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
+      acceptTripUseCase: sl(),
+      getTripsUseCase: sl(),
+      createTripUseCase: sl(),
+      getTripDetailsUseCase: sl(),
+      cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -37,8 +41,17 @@ class CheckOut extends StatelessWidget {
         ),
         body: Column(
           children: [
-            RecommendedCost(
-              costText: tripCubit.cost.toString(),
+            BlocBuilder<TripCubit, TripState>(
+              builder: (context, state) {
+                if (state is TripCostUpdated) {
+                  return RecommendedCost(
+                    costText: state.cost.toStringAsFixed(2),
+                  );
+                }
+                return RecommendedCost(
+                  costText: tripCubit.cost.toStringAsFixed(2),
+                );
+              },
             ),
             verticalSpacing(10.h),
             Container(

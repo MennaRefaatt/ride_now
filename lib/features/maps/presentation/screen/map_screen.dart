@@ -41,10 +41,8 @@ class _MapScreenState extends State<MapScreen> {
                   : (state as LocationMarkerSet).address;
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (_mapController != null && position != _selectedLocation) {
-                  //_animateToLocation(position);
                   _selectedLocation = position;
                   _selectedAddress = address;
-
                 }
               });
 
@@ -64,7 +62,6 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                               onMapCreated: (controller) {
                                 _mapController = controller;
-                                // _animateToLocation(position);
                               },
                               markers: _selectedLocation != null
                                   ? {

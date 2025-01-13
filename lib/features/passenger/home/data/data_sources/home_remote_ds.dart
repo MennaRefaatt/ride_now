@@ -41,23 +41,16 @@ class HomeRemoteDSImpl implements HomeRemoteDS {
         final data = doc.data();
         safePrint('Raw trip data: $data');
 
-        final latLngData = data['toLatLng'];
-        safePrint('LatLng Data: $latLngData');
-
-        double lat = 0.0;
-        double lng = 0.0;
-
-        if (latLngData != null && latLngData is Map) {
-          lat = latLngData['latitude'] ?? 0.0;
-          lng = latLngData['longitude'] ?? 0.0;
-        }
-
-        final toLatLng = LatLng(lat, lng);
-        safePrint('Parsed LatLng: $toLatLng');
-
+        final fromLatLngData = data['fromLatLng'] as Map?;
+        final toLatLngData = data['toLatLng'] as Map?;
+        double fromLat = fromLatLngData?['latitude'] ?? 0.0;
+        double fromLng = fromLatLngData?['longitude'] ?? 0.0;
+        double toLat = toLatLngData?['latitude'] ?? 0.0;
+        double toLng = toLatLngData?['longitude'] ?? 0.0;
         return TripModel.fromJson({
           ...data,
-          'toLatLng': toLatLng,
+          'fromLatLng': LatLng(fromLat, fromLng),
+          'toLatLng': LatLng(toLat, toLng),
         });
       }).toList();
     } catch (e) {
