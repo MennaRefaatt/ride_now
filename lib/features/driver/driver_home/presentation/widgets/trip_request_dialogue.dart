@@ -9,9 +9,11 @@ import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
 import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
+import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../trip_module/presentation/trip_tracking_args.dart';
 
 class TripRequestsDialogue extends StatefulWidget {
   const TripRequestsDialogue({super.key, required this.tripCubit});
@@ -34,23 +36,23 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
     widget.tripCubit.getTrips();
   }
 
-  void startSlideAnimation(int index) {
-    if (animationControllers[index] != null) return;
-
-    final controller = AnimationController(
-      duration: const Duration(seconds: 30),
-      vsync: this,
-    );
-    animationControllers[index] = controller;
-    slideAnimations[index] = Tween<Offset>(
-      begin: Offset.zero,
-      end: const Offset(-1.5, 0),
-    ).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-    );
-
-    controller.forward();
-  }
+  // void startSlideAnimation(int index) {
+  //   if (animationControllers[index] != null) return;
+  //
+  //   final controller = AnimationController(
+  //     duration: const Duration(seconds: 30),
+  //     vsync: this,
+  //   );
+  //   animationControllers[index] = controller;
+  //   slideAnimations[index] = Tween<Offset>(
+  //     begin: Offset.zero,
+  //     end: const Offset(-1.5, 0),
+  //   ).animate(
+  //     CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+  //   );
+  //
+  //   controller.forward();
+  // }
 
   @override
   void dispose() {
@@ -97,7 +99,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                 trip.dateTime.difference(DateTime.now()).inSeconds;
 
             if (timeRemaining <= 0) {
-              startSlideAnimation(index);
+              //startSlideAnimation(index);
             }
 
             return AnimatedBuilder(
@@ -133,6 +135,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                       child: Column(
                         children: [
                           Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -143,11 +146,15 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                     ),
                                   ),
                                   Text(
-                                      double.tryParse(trip.price)
-                                              ?.toStringAsFixed(2) ??
-                                          'Invalid price',
+                                      "EGP ${trip.price.split('.')[0]} ${trip.paymentMethod}",
                                       style: TextStyles.font18primaryBold),
                                 ],
+                              ),
+                              verticalSpacing(10.h),
+                              Text(
+                                trip.to,
+                                style: TextStyles.font18BlackRegular,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               verticalSpacing(20.h),
                               Row(
@@ -159,10 +166,11 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   ),
                                   horizontalSpacing(5.w),
                                   Expanded(
-                                    child: Text(trip.dateTime.toString(),
+                                    child: Text(
+                                        "${trip.dateTime.hour}:${trip.dateTime.minute}",
                                         style: TextStyles.font18BlackRegular),
                                   ),
-                                  Text(trip.distance.toString(),
+                                  Text(trip.distance,
                                       style: TextStyles.font18BlackRegular),
                                 ],
                               ),
@@ -219,8 +227,30 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                                 driverLong,
                                               )))
                                       .then((_) {
-                                    Navigator.pushReplacementNamed(
-                                        context, RoutingEndpoints.tripTracking);
+                                    if (trip.tripId.isNotEmpty) {
+                                      safePrint("Trip id: ${trip.tripId}");
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                "Trip id: ${trip.tripId}")),
+                                      );
+                                      Navigator.pushReplacementNamed(context,
+                                          RoutingEndpoints.tripTracking,
+                                          arguments: TripTrackingRouteArgs(
+                                              tripTrackingArgs:
+                                                  TripTrackingArgs(
+                                                fromAddress: trip.from,
+                                                toAddress: trip.to,
+                                                tripId: trip.tripId,
+                                                fromLatLng: trip.fromLatLng,
+                                                toLatLng: trip.toLatLng,
+                                                driverLatLng: LatLng(
+                                                    driverLat, driverLong),
+                                                tripStatus: trip.status,
+                                              ),
+                                              isPassenger: false));
+                                    }
                                   });
                                 },
                                 textStyle: TextStyles.font18BlackRegular,

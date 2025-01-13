@@ -1,8 +1,8 @@
-- animated splash
-- firebase auth
+- animated splash ✅
+- firebase auth ✅
 - riverpod
 - ui
-- google maps
+- google maps ✅
 - license plate scanner
 - payment
 - animations
@@ -16,28 +16,31 @@
 - Ride status => Pending, Accepted,Cancelled, ,Started, Completed.
 =============================================================
 Client
-- login
-- register
-- Drawer
-- home screen => Map
+- login ✅
+- Drawer ✅
+- home screen => Map ✅
 ==============================================================
 Driver
-- pop up dialogue for trips
+- pop up dialogue for trips ✅
 ==============================================================
 Drawer 
-- profile
+- profile ✅
 - My Trips
 - payment
 - Help
 - Notifications 
 - Safety
-- Settings
+- Settings ✅
 ==============================================================
 Trip
-- trip id
-- client id
-- driver id
-- tripe price
-- from and to
-- trip status
+- trip id ✅
+- passenger id ✅
+- driver id ✅
+- tripe price ✅
+- from and to ✅
+- trip status ✅
+- trip time ✅
+- driver data ✅
+- passenger data ✅
+- trip payment status 
 ==============================================================

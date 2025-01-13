@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/components/app_text_form_field.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/passenger/home/presentation/manager/home_cubit.dart';
 import 'package:ride_now/features/passenger/home/presentation/widgets/recent_ride.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
-import '../../../../maps/data/model/location_model.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 import '../../../check_out/presentation/check_out_args.dart';
+import '../../../maps/data/model/location_model.dart';
 
 class EnterYourRoute extends StatefulWidget {
   final FocusNode fromFocusNode;
@@ -64,6 +65,15 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
   void _clearTextField(TextEditingController controller, FocusNode focusNode) {
     controller.clear();
     focusNode.requestFocus();
+  }
+
+  void _onAddressSelected(String address, LatLng latLng) {
+    setState(() {
+      widget.cubit.toController.text = address;
+      widget.cubit.toLatLng = latLng;
+      safePrint('Address selected: $address');
+      safePrint('LatLng selected: $latLng');
+    });
   }
 
   void _navigateToCheckout(BuildContext context) {
@@ -222,7 +232,10 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
               ),
             ),
             verticalSpacing(10.h),
-            RecentRide(trips: widget.trips),
+            RecentRide(
+              trips: widget.trips,
+              onAddressSelected: _onAddressSelected,
+            ),
           ],
         ),
       ),

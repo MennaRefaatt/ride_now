@@ -23,22 +23,6 @@ class RideDescription extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(
-            alignment: Alignment.topRight,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: CircleAvatar(
-                radius: 20.r,
-                backgroundColor: AppColors.semiGrey.withOpacity(0.3),
-                child: Icon(
-                  CupertinoIcons.xmark,
-                  color: Colors.black,
-                  size: 25.sp,
-                ),
-              ),
-            ),
-          ),
-          verticalSpacing(20.h),
           AppNetworkImage(
             borderRadius: BorderRadius.circular(10.r),
             imageUrl: image,

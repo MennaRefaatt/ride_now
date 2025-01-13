@@ -76,7 +76,7 @@ class _WaitingForDriverState extends State<WaitingForDriver> {
                                     style: TextStyles.font18BlackRegular,
                                   ),
                                   Text(
-                                    'Price: ${state.trip.price}',
+                                    'Price: ${state.trip.price} ${state.trip.paymentMethod}',
                                     style: TextStyles.font18BlackRegular,
                                   )
                                 ],

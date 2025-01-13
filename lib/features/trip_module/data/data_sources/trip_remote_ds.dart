@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import '../../../../core/helpers/enums/driver_trip_status.dart';
+import '../../../../core/helpers/enums/payment_method.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/safe_print.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
@@ -117,6 +118,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
       final model = TripModel(
         fromLatLng: fromCoordinates,
         toLatLng: toCoordinates,
+        paymentMethod: PaymentMethod.cash.name,
         driverData: DriverData(
           driverId: "",
           driverName: "",

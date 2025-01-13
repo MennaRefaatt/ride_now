@@ -7,6 +7,7 @@ class TripModel {
   final String from;
   final String to;
   final String status;
+  final String paymentMethod;
   final DateTime dateTime;
   final String price;
   final String distance;
@@ -26,21 +27,37 @@ class TripModel {
     required this.distance,
     required this.driverData,
     required this.passengerData,
+    required this.paymentMethod,
   });
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
       tripId: json['tripId'],
+      paymentMethod: json['paymentMethod'],
       from: json['from'],
       to: json['to'],
       status: json['status'],
-      fromLatLng: LatLng(json['fromLat']?.toDouble() ?? 0.0, json['fromLng']?.toDouble() ?? 0.0),
-      toLatLng: LatLng(json['toLat']?.toDouble() ?? 0.0, json['toLng']?.toDouble() ?? 0.0),
+      fromLatLng: json['fromLatLng'] is Map<String, dynamic>
+          ? LatLng(
+              json['fromLatLng']['latitude']?.toDouble() ?? 0.0,
+              json['fromLatLng']['longitude']?.toDouble() ?? 0.0,
+            )
+          : json['fromLatLng'] as LatLng,
+      toLatLng: json['toLatLng'] is Map<String, dynamic>
+          ? LatLng(
+              json['toLatLng']['latitude']?.toDouble() ?? 0.0,
+              json['toLatLng']['longitude']?.toDouble() ?? 0.0,
+            )
+          : json['toLatLng'] as LatLng,
       dateTime: (json['dateTime'] is Timestamp)
           ? (json['dateTime'] as Timestamp).toDate()
           : DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'] ?? ''),
-      price: (json['price'] is String) ? double.tryParse(json['price'])?.toString() ?? '0.0' : json['price'].toString(),
-      distance: (json['distance'] is String) ? double.tryParse(json['distance'])?.toString() ?? '0.0' : json['distance'].toString(),
+      price: (json['price'] is String)
+          ? double.tryParse(json['price'])?.toString() ?? '0.0'
+          : json['price'].toString(),
+      distance: (json['distance'] is String)
+          ? double.tryParse(json['distance'])?.toString() ?? '0.0'
+          : json['distance'].toString(),
       driverData: json['driverData'] is Map<String, dynamic>
           ? DriverData.fromJson(json['driverData'])
           : DriverData.fromJson({}),
@@ -55,6 +72,7 @@ class TripModel {
     final formattedDate = dateFormat.format(dateTime);
     return {
       'tripId': tripId,
+      'paymentMethod': paymentMethod,
       'from': from,
       'to': to,
       "fromLatLng": {
