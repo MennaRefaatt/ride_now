@@ -23,6 +23,7 @@ class CheckOutButtons extends StatelessWidget {
       required this.fromAddress,
       required this.toAddress,
       required this.fromLatLng,
+      required this.paymentMethod,
       required this.toLatLng});
 
   final TripCubit tripCubit;
@@ -31,6 +32,7 @@ class CheckOutButtons extends StatelessWidget {
   final LatLng fromLatLng;
   final LatLng toLatLng;
   late  String tripId;
+  final String paymentMethod;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +61,7 @@ class CheckOutButtons extends StatelessWidget {
                         fromLatLng,
                         toAddress,
                         toLatLng,
+                        paymentMethod,
                       )
                           .then((_) {
                         tripId = SharedPref.getString(

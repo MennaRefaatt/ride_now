@@ -8,7 +8,7 @@ import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_a
 import 'package:ride_now/features/trip_module/presentation/widgets/waiting_for_driver.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
-import '../../../maps/presentation/manager/location_cubit.dart';
+import '../../../passenger/maps/presentation/manager/location_cubit.dart';
 import '../../data/models/trip_model.dart';
 import '../manager/trip_cubit.dart';
 import '../widgets/trip_details.dart';

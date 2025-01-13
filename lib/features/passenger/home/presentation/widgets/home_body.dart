@@ -8,8 +8,8 @@ import 'package:ride_now/features/passenger/check_out/presentation/check_out_arg
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../core/utils/app_button.dart';
-import '../../../../maps/presentation/manager/location_cubit.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';
 import '../widgets/ride_categories.dart';
 import '../widgets/where_to_bar.dart';
@@ -18,26 +18,26 @@ class HomeBody extends StatelessWidget {
   HomeBody({super.key, required this.homeCubit, required this.isHidden});
   late bool isHidden;
   final HomeCubit homeCubit;
+  void openEnterYourRouteFromOrderButton(BuildContext context) {
+    final locationState = context.read<LocationCubit>().state;
+    final homeState = context.read<HomeCubit>().state;
+    String fromText = 'S().From';
+    Color backgroundColor = Colors.grey.shade200;
+    List<TripModel> trips = [];
+
+    if (locationState is LocationLoaded) {
+      fromText = locationState.address;
+      backgroundColor = Colors.transparent;
+    }
+    if (homeState is GetRecentTripsLoaded) {
+      trips = homeState.trips;
+    }
+    homeCubit.openEnterYourRoute(context, homeCubit.fromFocusNode,
+        homeCubit.toFocusNode, fromText, backgroundColor, homeCubit, trips);
+  }
+
   @override
   Widget build(BuildContext context) {
-    void _openEnterYourRouteFromOrderButton(BuildContext context) {
-      final locationState = context.read<LocationCubit>().state;
-      final homeState = context.read<HomeCubit>().state;
-      String fromText = 'S().From';
-      Color backgroundColor = Colors.grey.shade200;
-      List<TripModel> trips = [];
-
-      if (locationState is LocationLoaded) {
-        fromText = locationState.address;
-        backgroundColor = Colors.transparent;
-      }
-      if (homeState is GetRecentTripsLoaded) {
-        trips = homeState.trips;
-      }
-      homeCubit.openEnterYourRoute(context, homeCubit.fromFocusNode,
-          homeCubit.toFocusNode, fromText, backgroundColor, homeCubit, trips);
-    }
-
     return Align(
       alignment: Alignment.bottomCenter,
       child: AnimatedContainer(
@@ -81,7 +81,7 @@ class HomeBody extends StatelessWidget {
                     onPressed: () {
                       if (homeCubit.fromController.text.isEmpty ||
                           homeCubit.toController.text.isEmpty) {
-                        _openEnterYourRouteFromOrderButton(context);
+                        openEnterYourRouteFromOrderButton(context);
                       }
                       final locationState = context.read<LocationCubit>().state;
                       if (locationState is LocationLoaded) {

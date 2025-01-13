@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
-import 'package:ride_now/features/maps/presentation/manager/location_cubit.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
+import '../../../passenger/maps/presentation/manager/location_cubit.dart';
 import '../../data/data_sources/direction_service/direction_service.dart';
 
 class TripTracking extends StatefulWidget {
@@ -28,6 +28,7 @@ class _TripTrackingState extends State<TripTracking> {
   LatLng? cameraPosition;
   Set<Marker> _markers = {};
   Set<Polyline> _polylines = {};
+  bool _isAnimating = false;
 
   @override
   void initState() {
@@ -49,24 +50,75 @@ class _TripTrackingState extends State<TripTracking> {
       return;
     }
     try {
-      List<LatLng> routeCoordinates =
-          await _directionService.getRouteCoordinates(
-              _driverLatLng != null ? _driverLatLng! : _fromLatLng!,
-              _toLatLng!);
-
-      setState(() {
-        _polylines = {
-          Polyline(
-            polylineId: const PolylineId('route'),
+      if (widget.args.tripStatus == TripStatus.pending.name && !_isAnimating) {
+        _startAnimation();
+      } else if (widget.args.tripStatus == TripStatus.accepted.name) {
+        _stopAnimation();
+        List<LatLng> routeCoordinates = await _directionService
+            .getRouteCoordinates(_driverLatLng!, _fromLatLng!);
+        setState(() {
+          _polylines.add(Polyline(
+            polylineId: const PolylineId('driverToFrom'),
+            points: routeCoordinates,
+            color: Colors.blue,
+            width: 5,
+          ));
+        });
+      } else {
+        List<LatLng> routeCoordinates = await _directionService
+            .getRouteCoordinates(_fromLatLng!, _toLatLng!);
+        setState(() {
+          _polylines.add(Polyline(
+            polylineId: const PolylineId('fromTo'),
             points: routeCoordinates,
             color: Colors.green,
             width: 5,
-          ),
-        };
-      });
+          ));
+        });
+      }
+
+      if (_driverLatLng != null && _driverLatLng == _fromLatLng) {
+        setState(() async {
+          _markers.removeWhere(
+              (marker) => marker.markerId.value == 'driverLocation');
+          _markers.add(Marker(
+            markerId: const MarkerId('sharedLocation'),
+            position: _fromLatLng!,
+            infoWindow: const InfoWindow(title: 'Driver & Passenger Location'),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueMagenta),
+          ));
+
+          List<LatLng> finalRoute = await _directionService.getRouteCoordinates(
+              _fromLatLng!, _toLatLng!);
+          setState(() {
+            _polylines.add(Polyline(
+              polylineId: const PolylineId('driverToTo'),
+              points: finalRoute,
+              color: Colors.red,
+              width: 5,
+            ));
+          });
+        });
+      }
     } catch (e) {
       safePrint('Error fetching directions: $e');
     }
+  }
+
+  void _startAnimation() {
+    setState(() {
+      _isAnimating = true;
+    });
+    _mapController.animateCamera(
+      CameraUpdate.newLatLngZoom(_fromLatLng!, 15),
+    );
+  }
+
+  void _stopAnimation() {
+    setState(() {
+      _isAnimating = false;
+    });
   }
 
   void _getLatLngFromAddress() async {
@@ -92,15 +144,16 @@ class _TripTrackingState extends State<TripTracking> {
             icon:
                 BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           ),
-          if (isDriverAccepted && _driverLatLng != null)
-            Marker(
-              markerId: const MarkerId('driverLocation'),
-              position: _driverLatLng!,
-              infoWindow: const InfoWindow(title: 'Driver Location'),
-              icon: BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueGreen),
-            ),
         };
+        if (isDriverAccepted && _driverLatLng != null) {
+          _markers.add(Marker(
+            markerId: const MarkerId('driverLocation'),
+            position: _driverLatLng!,
+            infoWindow: const InfoWindow(title: 'Driver Location'),
+            icon:
+                BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          ));
+        }
       });
       await _getDirections();
     } catch (e) {
@@ -125,7 +178,6 @@ class _TripTrackingState extends State<TripTracking> {
                 : (state as LocationMarkerSet).location;
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (_mapController != null) {
-               // _animateToLocation(position);
                 if (widget.driverLatLng != null) {
                   setState(() {
                     _driverLatLng = widget.driverLatLng;
@@ -144,14 +196,13 @@ class _TripTrackingState extends State<TripTracking> {
             return Stack(
               children: [
                 GoogleMap(
-                  mapType: MapType.normal,
+                  mapType: MapType.satellite,
                   initialCameraPosition: CameraPosition(
                     target: _fromLatLng!,
                     zoom: 10,
                   ),
                   onMapCreated: (controller) {
                     _mapController = controller;
-                    _animateToLocation(position);
                   },
                   onTap: (LatLng position) {
                     setState(() {
@@ -187,29 +238,5 @@ class _TripTrackingState extends State<TripTracking> {
         },
       ),
     );
-  }
-
-  void _animateToLocation(LatLng position) {
-    if (_mapController != null) {
-      _mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: position,
-            zoom: 10,
-            tilt: 50,
-            bearing: 0,
-          ),
-        ),
-      );
-
-      _mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: position,
-            zoom: 15,
-          ),
-        ),
-      );
-    }
   }
 }

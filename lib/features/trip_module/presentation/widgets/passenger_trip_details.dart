@@ -86,7 +86,7 @@ class PassengerTripDetails extends StatelessWidget {
                 ),
                 verticalSpacing(20.h),
                 Text(
-                  "EGP ${tripModel.price} Cash",
+                  "EGP ${tripModel.price} ${tripModel.paymentMethod}",
                   style: TextStyles.font18BlackRegular,
                 ),
               ],
