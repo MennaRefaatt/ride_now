@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_network_image.dart';
+import 'package:ride_now/core/components/custom_bottom_sheet.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
@@ -145,10 +146,13 @@ class RideCategoriesState extends State<RideCategories> {
       ) {
     showModalBottomSheet(
       context: context,
-      builder: (_) => RideDescription(
-        image: image,
-        text: text,
-        description: description,
+      builder: (_) => CustomBottomSheet(
+        title: "S().RideDescription",
+        child: RideDescription(
+          image: image,
+          text: text,
+          description: description,
+        ),
       ),
     );
   }

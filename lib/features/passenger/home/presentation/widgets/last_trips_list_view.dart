@@ -80,35 +80,38 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) => GestureDetector(
                   onTap: () {
-                    widget.cubit.toController.text = widget.lastTrips[index].to;
-                    if (widget.cubit.toController.text ==
-                        widget.lastTrips[index].to) {
+                    final selectedTrip = widget.lastTrips[index];
+                    widget.cubit.toController.text = selectedTrip.to;
+                    widget.cubit.toLatLng = selectedTrip.toLatLng;
+                    widget.cubit.fromLatLng = selectedTrip.fromLatLng;
+
+                    if (widget.cubit.toLatLng != null &&
+                        widget.cubit.fromLatLng != null) {
                       setState(() {
                         widget.disappear = true;
                       });
-                      if (widget.cubit.fromLatLng != null &&
-                          widget.cubit.toLatLng != null) {
-                        Navigator.pushNamed(
-                          context,
-                          RoutingEndpoints.checkOut,
-                          arguments: CheckOutArgs(
-                            fromAddress: widget.cubit.fromController.text,
-                            toAddress: widget.cubit.toController.text,
-                            fromLatLng: widget.cubit.fromLatLng!,
-                            toLatLng: widget.cubit.toLatLng!,
+
+                      Navigator.pushNamed(
+                        context,
+                        RoutingEndpoints.checkOut,
+                        arguments: CheckOutArgs(
+                          fromAddress: widget.cubit.fromController.text,
+                          toAddress: widget.cubit.toController.text,
+                          fromLatLng: widget.cubit.fromLatLng!,
+                          toLatLng: widget.cubit.toLatLng!,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: AppColors.red,
+                          content: Text(
+                            "Error: LatLng values are null",
+                            style: TextStyles.font18BlackRegular,
                           ),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Error: LatLng values are null",
-                              style: TextStyles.font18BlackRegular,
-                            ),
-                          ),
-                        );
-                        safePrint("Error: LatLng values are null");
-                      }
+                        ),
+                      );
+                      safePrint("Error: LatLng values are null");
                     }
                   },
                   child: Container(

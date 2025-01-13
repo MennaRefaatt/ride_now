@@ -28,6 +28,7 @@ final class GetTripDetailsError extends TripState {
   final String message;
   GetTripDetailsError(this.message);
 }
+
 final class CancelTripLoading extends TripState {}
 
 final class CancelTripSuccess extends TripState {
@@ -63,4 +64,10 @@ final class AcceptTripLoaded extends TripState {
 final class AcceptTripError extends TripState {
   final String message;
   AcceptTripError(this.message);
+}
+
+class TripCostUpdated extends TripState {
+  final double cost;
+
+  TripCostUpdated(this.cost);
 }

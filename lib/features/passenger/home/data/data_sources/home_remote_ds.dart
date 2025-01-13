@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 
@@ -29,22 +30,31 @@ class HomeRemoteDSImpl implements HomeRemoteDS {
 
   @override
   Future<List<TripModel>> getRecentTrips() async {
+    final firestore = FirebaseFirestore.instance;
+    final userId = SharedPref.getString(key: MySharedKeys.userId);
     try {
-      final userId = SharedPref.getString(key: MySharedKeys.userId)!;
-      final getTrips = await FirebaseFirestore.instance
+      final querySnapshot = await firestore
           .collection('trips')
-          .where("passengerData.passengerId", isEqualTo: userId)
+          .where('passengerData.passengerId', isEqualTo: userId)
           .get();
-      safePrint(
-          "passenger id:${getTrips.docs.map((doc) => doc.data()['passengerData']['passengerId'])}");
-      return getTrips.docs.map((doc) {
+      return querySnapshot.docs.map((doc) {
         final data = doc.data();
-        safePrint("data: $data");
-        return TripModel.fromJson(doc.data());
+        safePrint('Raw trip data: $data');
+
+        final fromLatLngData = data['fromLatLng'] as Map?;
+        final toLatLngData = data['toLatLng'] as Map?;
+        double fromLat = fromLatLngData?['latitude'] ?? 0.0;
+        double fromLng = fromLatLngData?['longitude'] ?? 0.0;
+        double toLat = toLatLngData?['latitude'] ?? 0.0;
+        double toLng = toLatLngData?['longitude'] ?? 0.0;
+        return TripModel.fromJson({
+          ...data,
+          'fromLatLng': LatLng(fromLat, fromLng),
+          'toLatLng': LatLng(toLat, toLng),
+        });
       }).toList();
     } catch (e) {
-      safePrint("Error getting trips: $e");
-      throw Exception("Error getting trips: $e");
+      throw Exception("Error getting recent trips: $e");
     }
   }
 }

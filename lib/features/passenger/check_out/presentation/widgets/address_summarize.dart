@@ -1,21 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
-import 'package:ride_now/core/utils/app_button.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
-
-import '../../../../../core/helpers/enums/trip_status.dart';
-import '../../../../../core/helpers/safe_print.dart';
-import '../../../../../core/helpers/shared_pref_keys.dart';
+import 'package:ride_now/features/passenger/check_out/presentation/widgets/check_out_buttons.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
-import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../trip_module/data/data_sources/distance_helper/distance_helper.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
-import 'more_options.dart';
 
 class AddressSummarize extends StatefulWidget {
   const AddressSummarize({
@@ -25,13 +17,14 @@ class AddressSummarize extends StatefulWidget {
     required this.tripCubit,
     required this.fromLatLng,
     required this.toLatLng,
+    required this.paymentMethod,
   });
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
-
+  final String paymentMethod;
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
 }
@@ -39,23 +32,36 @@ class AddressSummarize extends StatefulWidget {
 class _AddressSummarizeState extends State<AddressSummarize> {
   late String toAddress;
   late String tripId;
+  late LatLng toLatLng;
 
   @override
   void initState() {
     super.initState();
     toAddress = widget.toAddress;
+    toLatLng = widget.toLatLng;
+    _calculateCost();
   }
 
-  void _pickDestinationAddress(
-    BuildContext context,
-  ) {
+  void _pickDestinationAddress(BuildContext context) {
     Navigator.pushNamed(context, RoutingEndpoints.maps).then((result) {
-      if (result != null && result is String) {
+      if (result != null && result is Map<String, dynamic>) {
         setState(() {
-          toAddress = result;
+          toAddress = result['to'];
+          toLatLng = LatLng(result['latitude'], result['longitude']);
         });
+        _calculateCost();
       }
     });
+  }
+
+  void _calculateCost() async {
+    final distanceText = await TripHelper().calculateDistance(
+      widget.fromLatLng,
+      toLatLng,
+    );
+    final distanceInKm = double.parse(distanceText.split(' ')[0]);
+    final cost = TripHelper().calculateCost(distanceInKm);
+    widget.tripCubit.updateCost(cost.toStringAsFixed(2));
   }
 
   @override
@@ -104,90 +110,19 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () => _pickDestinationAddress(
-                    context,
-                  ),
+                  onPressed: () => _pickDestinationAddress(context),
                   icon: Icon(CupertinoIcons.add),
                 ),
               ],
             ),
             Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: BlocBuilder<TripCubit, TripState>(
-                      builder: (context, state) {
-                        if (state is CreateTripLoading) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: AppColors.primary,
-                            ),
-                          );
-                        }
-                        return AppButton(
-                          text: "S().done",
-                          textStyle: TextStyles.font14BlackRegular,
-                          onPressed: () async {
-                            try {
-                              await widget.tripCubit
-                                  .createTrip(
-                                widget.fromAddress,
-                                widget.fromLatLng,
-                                toAddress,
-                                widget.toLatLng,
-                              )
-                                  .then((_) {
-                                tripId = SharedPref.getString(
-                                        key: MySharedKeys.currentTripId) ??
-                                    "";
-                                if (tripId.isNotEmpty) {
-                                  safePrint(
-                                      "Trip created successfully: $tripId");
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            "Trip created successfully: $tripId")),
-                                  );
-                                  Navigator.pushReplacementNamed(
-                                    context,
-                                    RoutingEndpoints.tripTracking,
-                                    arguments: TripTrackingArgs(
-                                      fromAddress: widget.fromAddress,
-                                      toAddress: toAddress,
-                                      tripId: tripId,
-                                      fromLatLng: widget.fromLatLng,
-                                      toLatLng: widget.toLatLng,
-                                      driverLatLng: widget.toLatLng,
-                                      tripStatus: TripStatus.pending.name,
-                                    ),
-                                  );
-                                } else {
-                                  throw Exception(
-                                      "Trip ID is missing after creation");
-                                }
-                              });
-                            } catch (error) {
-                              safePrint("Error creating trip: $error");
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    content:
-                                        Text("Error creating trip: $error")),
-                              );
-                            }
-                            safePrint("Order button pressed");
-                          },
-                          backgroundColor: AppColors.primary,
-                          width: double.infinity,
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 10.w),
-                  MoreOptions(),
-                ],
-              ),
+            CheckOutButtons(
+              tripCubit: widget.tripCubit,
+              fromAddress: widget.fromAddress,
+              toAddress: toAddress,
+              fromLatLng: widget.fromLatLng,
+              toLatLng: toLatLng,
+              paymentMethod: widget.paymentMethod,
             ),
           ],
         ),

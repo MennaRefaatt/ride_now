@@ -1,8 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../../../core/helpers/safe_print.dart';
-
+import '../../../../../core/helpers/safe_print.dart';
 abstract class GeolocationDataSource {
   Future<Position> getCurrentLocation();
   Stream<Position> getRealTimeLocationUpdates();

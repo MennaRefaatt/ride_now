@@ -8,8 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/helpers/spacing.dart';
 
 class ContactCall extends StatefulWidget {
-  const ContactCall({super.key, required this.driverPhone});
-  final String driverPhone;
+  const ContactCall({super.key, required this.phone});
+  final String phone;
   @override
   State<ContactCall> createState() => _ContactCallState();
 }
@@ -71,7 +71,7 @@ class _ContactCallState extends State<ContactCall> {
   }
 
   void _startRegularCall() async {
-    final phoneNumber = widget.driverPhone;
+    final phoneNumber = widget.phone;
     final url = 'tel:$phoneNumber';
 
     if (await canLaunch(url)) {
