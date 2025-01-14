@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripHelper {
@@ -31,7 +30,7 @@ class TripHelper {
     return degrees * (pi / 180);
   }
 
-  double calculateCost(double distanceInKm, {double ratePerKm = 1.5}) {
+  double calculateCost(double distanceInKm, {double ratePerKm = 10}) {
     return distanceInKm * ratePerKm;
   }
 }

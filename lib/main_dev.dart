@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/driver/driver_status_listener.dart';
 import 'package:ride_now/firebase_options.dart';
@@ -9,9 +10,11 @@ import 'core/helpers/safe_print.dart';
 import 'core/helpers/secure_storage/secure_storage.dart';
 import 'core/helpers/shared_pref.dart';
 import 'core/helpers/shared_pref_keys.dart';
+import 'core/services/network/api_constants.dart';
 import 'core/services/network/api_service.dart';
 
 Future<void> main() async {
+  Stripe.publishableKey=ApiConstants.stripePublishableKey;
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
