@@ -2,16 +2,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/enums/payment_method.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../../core/components/custom_bottom_sheet.dart';
+import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
 
 class TripPaymentMethod extends StatefulWidget {
-  TripPaymentMethod({super.key, required this.selectedPaymentMethod, required this.onSelect});
+  TripPaymentMethod({
+    super.key,
+    required this.selectedPaymentMethod,
+    required this.onSelect,
+    required this.cost,
+    required this.paymentStatus,
+  });
+
   String selectedPaymentMethod;
   final Function(String) onSelect;
-
+  final double cost;
+  String paymentStatus;
 
   @override
   State<TripPaymentMethod> createState() => _TripPaymentMethodState();
@@ -19,7 +29,9 @@ class TripPaymentMethod extends StatefulWidget {
 
 class _TripPaymentMethodState extends State<TripPaymentMethod> {
   void _showPaymentMethodSheet(
-      BuildContext context, String selectedPaymentMethod,) {
+    BuildContext context,
+    String selectedPaymentMethod,
+  ) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -33,12 +45,14 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
             _buildPaymentOption(
               context,
               method: PaymentMethod.cash,
-              isSelected: widget.selectedPaymentMethod == PaymentMethod.cash.name,
+              isSelected:
+                  widget.selectedPaymentMethod == PaymentMethod.cash.name,
             ),
             _buildPaymentOption(
               context,
               method: PaymentMethod.card,
-              isSelected: widget.selectedPaymentMethod == PaymentMethod.card.name,
+              isSelected:
+                  widget.selectedPaymentMethod == PaymentMethod.card.name,
             ),
           ],
         ),
@@ -46,22 +60,43 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
     );
   }
 
-  Widget _buildPaymentOption(BuildContext context,
-      {required PaymentMethod method,
-        required bool isSelected,
-       }) {
+  Widget _buildPaymentOption(
+    BuildContext context, {
+    required PaymentMethod method,
+    required bool isSelected,
+  }) {
     return Container(
-      color: isSelected ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
+      color:
+          isSelected ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
       child: ListTile(
         leading: Icon(
-          method == PaymentMethod.cash ? Icons.wallet : CupertinoIcons.creditcard,
+          method == PaymentMethod.cash
+              ? Icons.wallet
+              : CupertinoIcons.creditcard,
           color: isSelected ? AppColors.primary : AppColors.semiGrey,
         ),
         title: Text(method.name),
-        trailing: isSelected ? Icon(Icons.check, color: AppColors.primary) : null,
+        trailing:
+            isSelected ? Icon(Icons.check, color: AppColors.primary) : null,
         onTap: () {
           widget.onSelect(method.name);
           Navigator.pop(context);
+          safePrint("Selected payment cost: ${widget.cost}");
+          if (method == PaymentMethod.card) {
+            if (widget.cost <= 0) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Please enter a valid amount")));
+              return;
+            }
+            if (widget.cost > 0) {
+              StripePaymentManager.makePayment(widget.cost, "EGP")
+                  .then((status) {
+                setState(() {
+                  widget.paymentStatus = status;
+                });
+              });
+            }
+          }
         },
       ),
     );
@@ -93,6 +128,9 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
               ),
             ),
             Icon(CupertinoIcons.right_chevron),
+            if (widget.paymentStatus.isNotEmpty) ...[
+              Text(widget.paymentStatus),
+            ]
           ],
         ),
       ),
