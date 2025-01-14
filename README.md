@@ -4,7 +4,7 @@
 - ui
 - google maps ✅
 - license plate scanner
-- payment
+- payment ✅
 - animations
 - chat
 - audio & video calls
