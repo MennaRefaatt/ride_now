@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import '../../../../core/helpers/enums/driver_trip_status.dart';
-import '../../../../core/helpers/enums/payment_method.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/safe_print.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
@@ -35,7 +35,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
       if (getTheTrip.exists) {
         final rawData = getTheTrip.data()as Map<String, dynamic>;
         safePrint("Document data: $rawData");
-        TripModel tripModel = TripModel.fromJson(rawData!);
+        TripModel tripModel = TripModel.fromJson(rawData);
         safePrint("tripModel: $tripModel");
         safePrint("driverData: ${tripModel.driverData}");
         safePrint("driverData: ${tripModel.driverData.carColor}");
@@ -118,7 +118,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
       final model = TripModel(
         fromLatLng: fromCoordinates,
         toLatLng: toCoordinates,
-        paymentMethod: PaymentMethod.cash.name,
+        paymentMethod: tripModel.paymentMethod,
+        paymentStatus: StripePaymentStatus.holding.name,
         driverData: DriverData(
           driverId: "",
           driverName: "",
@@ -150,7 +151,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           .add(model.toJson());
 
       await tripRef.update({'tripId': tripRef.id});
-      await SharedPref.setString(
+       SharedPref.setString(
           key: MySharedKeys.currentTripId, value: tripRef.id);
       await userRef.update({'currentTripId': tripRef.id});
       safePrint("Trip created successfully.");
@@ -203,6 +204,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
       await tripRef.update({
         'status': TripStatus.accepted.name,
         "driverData": driverData.toJson(),
+        "paymentStatus": StripePaymentStatus.succeeded.name
       });
       await _firestore.collection('drivers').doc(driverData.driverId).update({
         'currentTripId': tripModel.tripId,

@@ -17,7 +17,7 @@ import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
 
 class CheckOutButtons extends StatelessWidget {
-   CheckOutButtons(
+  CheckOutButtons(
       {super.key,
       required this.tripCubit,
       required this.fromAddress,
@@ -31,7 +31,7 @@ class CheckOutButtons extends StatelessWidget {
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
-  late  String tripId;
+  late String tripId;
   final String paymentMethod;
 
   @override

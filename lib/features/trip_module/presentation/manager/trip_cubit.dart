@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
+import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
-import '../../../../core/helpers/enums/payment_method.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
@@ -34,6 +34,12 @@ class TripCubit extends Cubit<TripState> {
   CancelTripUseCase cancelTripUseCase;
 
   double cost = 0.0;
+  String paymentStatus = "";
+  void updatePaymentStatus(String status) {
+    paymentStatus = status;
+    emit(TripPaymentStatusUpdated(status));
+  }
+
   void updateCost(String costText) {
     cost = double.parse(costText);
     emit(TripCostUpdated(cost));
@@ -105,6 +111,7 @@ class TripCubit extends Cubit<TripState> {
         from: from,
         paymentMethod: paymentMethod,
         to: to,
+        paymentStatus: StripePaymentStatus.holding.name,
         status: TripStatus.pending.name,
         dateTime: DateTime.now(),
         price: tripCost.toString(),

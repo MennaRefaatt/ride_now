@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/widgets/check_out_buttons.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
@@ -12,7 +12,7 @@ import '../../../../trip_module/data/data_sources/distance_helper/distance_helpe
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 
 class AddressSummarize extends StatefulWidget {
-  AddressSummarize({
+  const AddressSummarize({
     super.key,
     required this.fromAddress,
     required this.toAddress,
@@ -20,15 +20,15 @@ class AddressSummarize extends StatefulWidget {
     required this.fromLatLng,
     required this.toLatLng,
     required this.paymentMethod,
-    required this.paymentStatus,
   });
+
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
   final String paymentMethod;
-  String paymentStatus;
+
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
 }
@@ -120,15 +120,21 @@ class _AddressSummarizeState extends State<AddressSummarize> {
               ],
             ),
             Spacer(),
-            if (widget.paymentStatus==StripePaymentStatus.succeeded.name)
-              CheckOutButtons(
-                tripCubit: widget.tripCubit,
-                fromAddress: widget.fromAddress,
-                toAddress: toAddress,
-                fromLatLng: widget.fromLatLng,
-                toLatLng: toLatLng,
-                paymentMethod: widget.paymentMethod,
-              ),
+            BlocBuilder<TripCubit, TripState>(
+              builder: (context, state) {
+                if (state is TripPaymentStatusUpdated) {
+                  return CheckOutButtons(
+                    tripCubit: widget.tripCubit,
+                    fromAddress: widget.fromAddress,
+                    toAddress: toAddress,
+                    fromLatLng: widget.fromLatLng,
+                    toLatLng: toLatLng,
+                    paymentMethod: widget.paymentMethod,
+                  );
+                }
+                return SizedBox.shrink();
+              },
+            ),
           ],
         ),
       ),
