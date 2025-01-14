@@ -1,9 +1,16 @@
 class ApiConstants {
   static const String apiBaseUrl = "";
   static const String googleApiKey = "AIzaSyBguCp1Dd56DuLnY_dpForpu_hIRfbUTQo";
-  static const String openRouteServiceApiKey = "5b3ce3597851110001cf6248f5679835dc164e1fa6aa78fb59a2aecf";
-  static const String openRouteServiceBaseUrl = "https://api.openrouteservice.org/v2/directions/driving-car?api_key=";
+  static const String openRouteServiceApiKey =
+      "5b3ce3597851110001cf6248f5679835dc164e1fa6aa78fb59a2aecf";
+  static const String openRouteServiceBaseUrl =
+      "https://api.openrouteservice.org/v2/directions/driving-car?api_key=";
+  static const String stripePublishableKey =
+      "pk_test_51QUR44CAQYQfL0y3S5B7tCuRrMpFUG2xAVCFzMM8GK89zXNDnad6NnTFO48sNfpr9if4eu2B6gBxkAICMTj5eaT000XZBEv6Zu";
+  static const String stripeSecretKey =
+      "sk_test_51QUR44CAQYQfL0y3rRjWRWJmfWCsxPYGkPqcBCXS1QWbHMXhOiyX3fK1wNT6ufaTzzbHD5bdv9rGx8SJ528EmQhv00XsgQSea4";
 }
+
 class ApiErrors {
   static const String badRequestError = "badRequestError";
   static const String noContent = "noContent";

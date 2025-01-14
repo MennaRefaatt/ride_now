@@ -2,15 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/widgets/check_out_buttons.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/data/data_sources/distance_helper/distance_helper.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 
 class AddressSummarize extends StatefulWidget {
-  const AddressSummarize({
+  AddressSummarize({
     super.key,
     required this.fromAddress,
     required this.toAddress,
@@ -18,6 +20,7 @@ class AddressSummarize extends StatefulWidget {
     required this.fromLatLng,
     required this.toLatLng,
     required this.paymentMethod,
+    required this.paymentStatus,
   });
   final TripCubit tripCubit;
   final String fromAddress;
@@ -25,6 +28,7 @@ class AddressSummarize extends StatefulWidget {
   final LatLng fromLatLng;
   final LatLng toLatLng;
   final String paymentMethod;
+  String paymentStatus;
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
 }
@@ -83,7 +87,7 @@ class _AddressSummarizeState extends State<AddressSummarize> {
           children: [
             Row(
               children: [
-                Icon(Icons.trip_origin),
+                Icon(Icons.trip_origin, color: AppColors.primary),
                 horizontalSpacing(10.w),
                 Expanded(
                   child: Text(
@@ -98,7 +102,7 @@ class _AddressSummarizeState extends State<AddressSummarize> {
             ),
             Row(
               children: [
-                Icon(Icons.trip_origin),
+                Icon(Icons.trip_origin, color: AppColors.red),
                 horizontalSpacing(10.w),
                 Expanded(
                   child: Text(
@@ -116,14 +120,15 @@ class _AddressSummarizeState extends State<AddressSummarize> {
               ],
             ),
             Spacer(),
-            CheckOutButtons(
-              tripCubit: widget.tripCubit,
-              fromAddress: widget.fromAddress,
-              toAddress: toAddress,
-              fromLatLng: widget.fromLatLng,
-              toLatLng: toLatLng,
-              paymentMethod: widget.paymentMethod,
-            ),
+            if (widget.paymentStatus==StripePaymentStatus.succeeded.name)
+              CheckOutButtons(
+                tripCubit: widget.tripCubit,
+                fromAddress: widget.fromAddress,
+                toAddress: toAddress,
+                fromLatLng: widget.fromLatLng,
+                toLatLng: toLatLng,
+                paymentMethod: widget.paymentMethod,
+              ),
           ],
         ),
       ),
