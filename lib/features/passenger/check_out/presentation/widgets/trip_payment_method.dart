@@ -8,6 +8,7 @@ import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../../core/components/custom_bottom_sheet.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 
 class TripPaymentMethod extends StatefulWidget {
   TripPaymentMethod({
@@ -15,13 +16,15 @@ class TripPaymentMethod extends StatefulWidget {
     required this.selectedPaymentMethod,
     required this.onSelect,
     required this.cost,
-    required this.paymentStatus,
+    required this.tripCubit,
+    required this.tripId,
   });
 
   String selectedPaymentMethod;
   final Function(String) onSelect;
   final double cost;
-  String paymentStatus;
+  final TripCubit tripCubit;
+  final String tripId;
 
   @override
   State<TripPaymentMethod> createState() => _TripPaymentMethodState();
@@ -78,7 +81,7 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
         title: Text(method.name),
         trailing:
             isSelected ? Icon(Icons.check, color: AppColors.primary) : null,
-        onTap: () {
+        onTap: () async {
           widget.onSelect(method.name);
           Navigator.pop(context);
           safePrint("Selected payment cost: ${widget.cost}");
@@ -89,12 +92,9 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
               return;
             }
             if (widget.cost > 0) {
-              StripePaymentManager.makePayment(widget.cost, "EGP")
-                  .then((status) {
-                setState(() {
-                  widget.paymentStatus = status;
-                });
-              });
+              String paymentStatus = await StripePaymentManager.makePayment(
+                  widget.cost, "EGP", widget.tripId);
+              widget.tripCubit.updatePaymentStatus(paymentStatus);
             }
           }
         },
@@ -128,9 +128,6 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
               ),
             ),
             Icon(CupertinoIcons.right_chevron),
-            if (widget.paymentStatus.isNotEmpty) ...[
-              Text(widget.paymentStatus),
-            ]
           ],
         ),
       ),

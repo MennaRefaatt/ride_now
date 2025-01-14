@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
@@ -69,6 +70,7 @@ class _TripScreenState extends State<TripScreen> {
                     if (tripData != null) {
                       final tripStatus = tripData['status'];
                       final driverData = tripData['driverData'];
+                      final paymentStatus = tripData['paymentStatus'];
                       final driverLocation =
                           tripData['driverData']['driverLocation'] != null
                               ? LatLng(
@@ -94,7 +96,9 @@ class _TripScreenState extends State<TripScreen> {
                             driverLatLng: driverLocation!,
                           ),
                           if (tripStatus == TripStatus.accepted.name &&
-                              driverData["driverId"] != "")
+                              driverData["driverId"] != "" &&
+                              paymentStatus ==
+                                  StripePaymentStatus.succeeded.name)
                             TripDetails(
                               tripModel: TripModel.fromJson(tripData),
                               isPassenger: widget.args.isPassenger,

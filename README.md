@@ -42,5 +42,6 @@ Trip
 - trip time ✅
 - driver data ✅
 - passenger data ✅
-- trip payment status 
+- trip payment method ✅ 
+- trip payment status
 ==============================================================
