@@ -7,6 +7,7 @@ import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/passenger/home/presentation/manager/home_cubit.dart';
 import 'package:ride_now/features/passenger/home/presentation/widgets/recent_ride.dart';
+import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
@@ -109,10 +110,11 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
     BuildContext context,
     TextEditingController controller,
   ) {
-    Navigator.pushNamed(
-      context,
-      RoutingEndpoints.maps,
-    ).then((result) {
+    Navigator.pushNamed(context, RoutingEndpoints.maps,
+        arguments: MapsArgs(
+          initialLatitude: widget.cubit.toLatLng!.latitude,
+          initialLongitude: widget.cubit.toLatLng!.longitude,
+        )).then((result) {
       if (result != null && result is LocationData) {
         setState(() {
           controller.text = result.address;

@@ -40,6 +40,7 @@ class _CheckOutState extends State<CheckOut> {
     super.initState();
     tripId = SharedPref.getString(key: MySharedKeys.currentTripId) ?? "";
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -58,7 +59,7 @@ class _CheckOutState extends State<CheckOut> {
                 tripCubit.paymentStatus != StripePaymentStatus.succeeded.name,
             child: IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.of(context).pop()),
+                onPressed: () => Navigator.of(context).pop(tripCubit.cost)),
           ),
         ),
         body: Column(

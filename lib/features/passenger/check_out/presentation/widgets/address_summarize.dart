@@ -11,6 +11,8 @@ import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/data/data_sources/distance_helper/distance_helper.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
+import '../../../maps/data/model/location_model.dart';
+import '../../../maps/presentation/maps_args.dart';
 
 class AddressSummarize extends StatefulWidget {
   const AddressSummarize({
@@ -48,11 +50,15 @@ class _AddressSummarizeState extends State<AddressSummarize> {
   }
 
   void _pickDestinationAddress(BuildContext context) {
-    Navigator.pushNamed(context, RoutingEndpoints.maps).then((result) {
-      if (result != null && result is Map<String, dynamic>) {
+    Navigator.pushNamed(context, RoutingEndpoints.maps,
+        arguments: MapsArgs(
+          initialLatitude: toLatLng.latitude,
+          initialLongitude: toLatLng.longitude,
+        )).then((result) {
+      if (result != null && result is LocationData) {
         setState(() {
-          toAddress = result['to'];
-          toLatLng = LatLng(result['latitude'], result['longitude']);
+          toAddress = result.address;
+          toLatLng = LatLng(result.latitude, result.longitude);
         });
         _calculateCost();
       }
@@ -124,10 +130,12 @@ class _AddressSummarizeState extends State<AddressSummarize> {
             Visibility(
               visible: widget.paymentMethod == PaymentMethod.cash.name ||
                   (widget.paymentMethod == PaymentMethod.card.name &&
-                      context.read<TripCubit>().state is TripPaymentStatusUpdated),
+                      context.read<TripCubit>().state
+                          is TripPaymentStatusUpdated),
               child: BlocBuilder<TripCubit, TripState>(
                 builder: (context, state) {
-                  if (state is TripPaymentStatusUpdated || widget.paymentMethod == PaymentMethod.cash.name) {
+                  if (state is TripPaymentStatusUpdated ||
+                      widget.paymentMethod == PaymentMethod.cash.name) {
                     return CheckOutButtons(
                       tripCubit: widget.tripCubit,
                       fromAddress: widget.fromAddress,

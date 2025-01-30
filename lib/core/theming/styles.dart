@@ -223,6 +223,11 @@ class TextStyles {
     fontWeight: FontWeightHelper.regular,
     color: AppColors.black,
   );
+  static TextStyle get font18BlackBold => TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontWeightHelper.bold,
+    color: AppColors.black,
+  );
 
   static TextStyle get font12primarySemiBold => TextStyle(
     fontSize: 12.sp,
