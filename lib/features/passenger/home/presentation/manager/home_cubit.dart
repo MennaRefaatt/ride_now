@@ -22,6 +22,17 @@ class HomeCubit extends Cubit<HomeState> {
   final fromFocusNode = FocusNode();
   final toFocusNode = FocusNode();
   LatLng? fromLatLng, toLatLng;
+  void updateCost(double newCost) {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(HomeLoaded(
+        categories: currentState.categories,
+        trips: currentState.trips,
+        cost: newCost,
+      ));
+    }
+  }
+
   Future<void> getCategoriesAndTrips() async {
     emit(HomeLoading());
     try {
@@ -32,7 +43,7 @@ class HomeCubit extends Cubit<HomeState> {
       final trips = await tripsFuture;
 
       safePrint('Categories and trips loaded successfully');
-      emit(HomeLoaded(categories: categories, trips: trips));
+      emit(HomeLoaded(categories: categories, trips: trips, cost: null));
     } catch (e) {
       safePrint('Error loading categories and trips: $e');
       emit(HomeError(message: e.toString()));
@@ -68,8 +79,7 @@ class HomeCubit extends Cubit<HomeState> {
       String fromText,
       Color backgroundColor,
       HomeCubit homeCubit,
-      final List<TripModel> trips
-      ) {
+      final List<TripModel> trips) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

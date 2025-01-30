@@ -106,8 +106,8 @@ class _WhereToBarState extends State<WhereToBar> {
                     hintText: "S().To",
                     keyboardType: TextInputType.text,
                     prefixIcon: Icon(
-                      CupertinoIcons.search,
-                      color: disappear ? AppColors.primary : Colors.black,
+                      disappear ? Icons.trip_origin : CupertinoIcons.search,
+                      color: disappear ? AppColors.red : Colors.black,
                       size: 25.sp,
                     ),
                   ),
