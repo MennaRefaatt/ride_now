@@ -9,6 +9,7 @@ import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
+import 'package:rxdart/rxdart.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
@@ -45,7 +46,8 @@ class TripCubit extends Cubit<TripState> {
     emit(TripCostUpdated(cost));
   }
 
-  Stream<DocumentSnapshot> listenToTripDetails(String tripId) {
+  Stream<DocumentSnapshot<Map<String, dynamic>>> listenToTripDetails(
+      String tripId) {
     if (tripId.isEmpty) {
       throw Exception("Trip ID is required");
     }
@@ -60,10 +62,11 @@ class TripCubit extends Cubit<TripState> {
         .collection('trips')
         .where('status', isEqualTo: TripStatus.pending.name)
         .snapshots()
+        .debounceTime(const Duration(milliseconds: 300))
         .map((querySnapshot) {
-      return querySnapshot.docs
-          .map((doc) => TripModel.fromJson(doc.data()))
-          .toList();
+      return querySnapshot.docs.map((doc) {
+        return TripModel.fromJson(doc.data());
+      }).toList();
     });
   }
 
