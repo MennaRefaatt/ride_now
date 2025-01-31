@@ -15,8 +15,8 @@ import '../manager/location_cubit.dart';
 import '../maps_args.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key,required this.mapsArgs});
- final MapsArgs mapsArgs;
+  const MapScreen({super.key, required this.mapsArgs});
+  final MapsArgs mapsArgs;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -26,14 +26,15 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _mapController;
   LatLng? _selectedLocation;
   String? _selectedAddress;
-  double markerTopPosition = 100.0;
   @override
   void initState() {
     super.initState();
-    if (widget.mapsArgs.initialLatitude != null && widget.mapsArgs.initialLongitude != null) {
-      _selectedLocation = LatLng(widget.mapsArgs.initialLatitude!, widget.mapsArgs.initialLongitude!);
+    if (widget.mapsArgs.initialLatitude != null &&
+        widget.mapsArgs.initialLongitude != null) {
+      _selectedLocation = LatLng(
+          widget.mapsArgs.initialLatitude!, widget.mapsArgs.initialLongitude!);
     } else {
-      context.read<LocationCubit>().fetchUserLocation();
+      Future.microtask(() => context.read<LocationCubit>().fetchUserLocation());
     }
   }
 
@@ -69,7 +70,7 @@ class _MapScreenState extends State<MapScreen> {
                             GoogleMap(
                               mapType: MapType.satellite,
                               initialCameraPosition: CameraPosition(
-                                target: _selectedLocation ??position,
+                                target: _selectedLocation ?? position,
                                 zoom: 15,
                               ),
                               onMapCreated: (controller) {
@@ -82,7 +83,8 @@ class _MapScreenState extends State<MapScreen> {
                                         markerId:
                                             const MarkerId('selectedLocation'),
                                         infoWindow: InfoWindow(
-                                          title:_selectedAddress ?? address.toString(),
+                                          title: _selectedAddress ??
+                                              address.toString(),
                                         ),
                                         position: _selectedLocation!,
                                         icon: BitmapDescriptor
@@ -107,7 +109,7 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                             if (_selectedLocation != null)
                               Positioned(
-                                top: markerTopPosition,
+                                top: 100,
                                 left: MediaQuery.of(context).size.width * 0.25,
                                 child: Center(
                                   child: Container(
@@ -136,7 +138,9 @@ class _MapScreenState extends State<MapScreen> {
                                   Navigator.pop(
                                     context,
                                     LocationData(
-                                      address: _selectedAddress!,
+                                      address: _selectedAddress == null
+                                          ? address.toString()
+                                          : _selectedAddress!,
                                       latitude: _selectedLocation!.latitude,
                                       longitude: _selectedLocation!.longitude,
                                     ),
@@ -233,5 +237,10 @@ class _MapScreenState extends State<MapScreen> {
         CameraUpdate.zoomOut(),
       );
     }
+  }
+ @override
+  void dispose() {
+    super.dispose();
+    _mapController.dispose();
   }
 }

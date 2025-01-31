@@ -10,9 +10,11 @@ class HomeLoading extends HomeState {}
 class HomeLoaded extends HomeState {
   final List<CategoryModel> categories;
   final List<TripModel> trips;
-  final double? cost;
 
-  HomeLoaded({required this.categories, required this.trips,required this.cost});
+  HomeLoaded({
+    required this.categories,
+    required this.trips,
+  });
 }
 
 class HomeError extends HomeState {
@@ -43,4 +45,9 @@ final class GetRecentTripsLoaded extends HomeState {
 final class GetRecentTripsError extends HomeState {
   final String message;
   GetRecentTripsError({required this.message});
+}
+
+final class CostUpdated extends HomeState {
+  final double cost;
+  CostUpdated({required this.cost});
 }

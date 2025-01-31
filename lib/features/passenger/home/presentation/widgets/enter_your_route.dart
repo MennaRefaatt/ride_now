@@ -41,9 +41,9 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
   @override
   void initState() {
     super.initState();
-    widget.cubit.fromController = TextEditingController(text: widget.fromText);
-    toAddress = widget.cubit.toController.text;
-    widget.cubit.toController = TextEditingController();
+    widget.cubit.fromController.text = widget.fromText;
+    widget.cubit.toController.text = widget.cubit.toController.text.isEmpty ? "" : widget.cubit.toController.text;
+
     if (widget.cubit.toController.text.isEmpty) {
       Future.delayed(Duration.zero, () {
         FocusScope.of(context).requestFocus(widget.toFocusNode);
@@ -54,13 +54,6 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
         FocusScope.of(context).requestFocus(widget.fromFocusNode);
       });
     }
-  }
-
-  @override
-  void dispose() {
-    widget.cubit.fromController.dispose();
-    widget.cubit.toController.dispose();
-    super.dispose();
   }
 
   void _clearTextField(TextEditingController controller, FocusNode focusNode) {
@@ -112,8 +105,8 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
   ) {
     Navigator.pushNamed(context, RoutingEndpoints.maps,
         arguments: MapsArgs(
-          initialLatitude: widget.cubit.toLatLng!.latitude,
-          initialLongitude: widget.cubit.toLatLng!.longitude,
+          initialLatitude: widget.cubit.toLatLng?.latitude,
+          initialLongitude: widget.cubit.toLatLng?.longitude,
         )).then((result) {
       if (result != null && result is LocationData) {
         setState(() {

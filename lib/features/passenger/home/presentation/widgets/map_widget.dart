@@ -56,7 +56,7 @@ class _MapWidgetState extends State<MapWidget> {
           widget.homeCubit.fromLatLng = position;
           final address = state is LocationLoaded
               ? state.address
-              : (state as LocationMarkerSet).location;
+              : (state as LocationMarkerSet).address;
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mapController != null) {

@@ -68,7 +68,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                     ),
                   ),
                   child: SingleChildScrollView(
-                    controller: scrollController, // Attach the scroll controller
+                    controller: scrollController,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -105,7 +105,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                             return const SizedBox();
                           },
                         ),
-                        SizedBox(height: 20.h), // Add spacing
+                        verticalSpacing(20),
                         CancelButton(),
                       ],
                     ),

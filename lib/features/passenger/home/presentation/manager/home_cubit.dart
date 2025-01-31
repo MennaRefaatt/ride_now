@@ -14,6 +14,8 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit({required this.homeRepoBase}) : super(HomeInitial()) {
     fromController = TextEditingController();
     toController = TextEditingController();
+    fromController.addListener(_handleFromControllerChange);
+    toController.addListener(_handleToControllerChange);
   }
   final HomeRepoBase homeRepoBase;
   late TextEditingController fromController;
@@ -22,13 +24,30 @@ class HomeCubit extends Cubit<HomeState> {
   final fromFocusNode = FocusNode();
   final toFocusNode = FocusNode();
   LatLng? fromLatLng, toLatLng;
-  void updateCost(double newCost) {
+
+  double cost = 0.0;
+
+  void updateCost(String costText) {
+    cost = double.parse(costText);
+    emit(CostUpdated(cost: cost));
+  }
+
+  void _handleFromControllerChange() {
     if (state is HomeLoaded) {
       final currentState = state as HomeLoaded;
       emit(HomeLoaded(
         categories: currentState.categories,
         trips: currentState.trips,
-        cost: newCost,
+      ));
+    }
+  }
+
+  void _handleToControllerChange() {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(HomeLoaded(
+        categories: currentState.categories,
+        trips: currentState.trips,
       ));
     }
   }
@@ -43,7 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
       final trips = await tripsFuture;
 
       safePrint('Categories and trips loaded successfully');
-      emit(HomeLoaded(categories: categories, trips: trips, cost: null));
+      emit(HomeLoaded(categories: categories, trips: trips,));
     } catch (e) {
       safePrint('Error loading categories and trips: $e');
       emit(HomeError(message: e.toString()));
