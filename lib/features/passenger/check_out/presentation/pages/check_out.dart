@@ -59,7 +59,7 @@ class _CheckOutState extends State<CheckOut> {
                 tripCubit.paymentStatus != StripePaymentStatus.succeeded.name,
             child: IconButton(
                 icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.of(context).pop(tripCubit.cost)),
+                onPressed: () => Navigator.of(context).pop()),
           ),
         ),
         body: Column(
