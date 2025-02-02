@@ -50,6 +50,9 @@ class _TripTrackingState extends State<TripTracking> {
       return;
     }
     try {
+      setState(() {
+        _polylines.clear();
+      });
       if (widget.args.tripStatus == TripStatus.pending.name && !_isAnimating) {
         _startAnimation();
       } else if (widget.args.tripStatus == TripStatus.accepted.name) {

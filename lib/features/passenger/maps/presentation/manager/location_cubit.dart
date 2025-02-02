@@ -18,6 +18,7 @@ class LocationCubit extends Cubit<LocationState> {
   final SetLocationUseCase setLocationUseCase;
   final GetRealtimeLocationUseCase getRealTimeLocationUseCase;
   LatLng? selectedLocation;
+  StreamSubscription<Position>? _positionSubscription;
 
   LocationCubit(this.getUserLocationUseCase, this.setLocationUseCase,
       this.getRealTimeLocationUseCase)
@@ -27,10 +28,7 @@ class LocationCubit extends Cubit<LocationState> {
     emit(LocationLoading());
     try {
       final position = await getUserLocationUseCase.getCurrentLocation();
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks[0];
-      final address = '${place.street}';
+      final address = await _getAddressFromCoordinates(position);
       safePrint(address);
       updateCityToFirestore(address);
       emit(LocationLoaded(position, address));
@@ -43,25 +41,33 @@ class LocationCubit extends Cubit<LocationState> {
     try {
       selectedLocation = location;
       await setLocationUseCase.setLocation(location);
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(location.latitude, location.longitude);
-      Placemark place = placemarks[2];
-      final address = '${place.street}';
-      safePrint("Address: $address");
+      final address = await _getAddressFromCoordinates(
+        Position(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          timestamp: DateTime.now(),
+          accuracy: 0,
+          altitude: 0,
+          heading: 0,
+          speed: 0,
+          speedAccuracy: 0,
+          altitudeAccuracy: 0,
+          headingAccuracy: 0,
+        ),
+      );
       emit(LocationMarkerSet(location, address));
     } catch (e) {
       safePrint(e.toString());
     }
   }
 
-  StreamSubscription<Position>? _positionSubscription;
-
   void trackDriverLocation() {
     emit(LocationLoading());
     _positionSubscription = getRealTimeLocationUseCase
         .getRealTimeLocationUpdates()
-        .listen((position) {
-      emit(LocationLoaded(position, ''));
+        .listen((position) async {
+      final address = await _getAddressFromCoordinates(position);
+      emit(LocationLoaded(position, address));
     }, onError: (e) {
       emit(LocationError("Failed to update driver location"));
     });
@@ -75,4 +81,39 @@ class LocationCubit extends Cubit<LocationState> {
     FirestoreService(sl(), sl()).updateUserCityToFirestore(city);
     SharedPref.setString(key: MySharedKeys.city, value: city);
   }
+
+  @override
+  Future<void> close() {
+    _positionSubscription?.cancel();
+    return super.close();
+  }
+}
+
+Future<String> _getAddressFromCoordinates(Position position) async {
+  return Future.microtask(() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+
+        return place.street?.isNotEmpty == true
+            ? place.street!
+            : place.subLocality?.isNotEmpty == true
+                ? place.subLocality!
+                : place.locality?.isNotEmpty == true
+                    ? place.locality!
+                    : "Unknown Address";
+      } else {
+        safePrint("Placemark list is empty");
+        return "Unknown Address";
+      }
+    } catch (e) {
+      safePrint("Error fetching address: $e");
+      return "Unknown Address";
+    }
+  });
 }
