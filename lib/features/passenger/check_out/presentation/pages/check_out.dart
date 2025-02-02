@@ -12,6 +12,7 @@ import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../widgets/address_summarize.dart';
+import '../widgets/check_out_buttons.dart';
 import '../widgets/trip_payment_method.dart';
 import '../widgets/recommended_cost.dart';
 
@@ -28,13 +29,15 @@ class CheckOut extends StatefulWidget {
 
 class _CheckOutState extends State<CheckOut> {
   final tripCubit = TripCubit(
-      acceptTripUseCase: sl(),
-      getTripsUseCase: sl(),
-      createTripUseCase: sl(),
-      getTripDetailsUseCase: sl(),
-      cancelTripUseCase: sl());
+    acceptTripUseCase: sl(),
+    getTripsUseCase: sl(),
+    createTripUseCase: sl(),
+    getTripDetailsUseCase: sl(),
+    cancelTripUseCase: sl(),
+  );
   String selectedPaymentMethod = PaymentMethod.cash.name;
   late String tripId;
+
   @override
   void initState() {
     super.initState();
@@ -48,10 +51,7 @@ class _CheckOutState extends State<CheckOut> {
       child: Scaffold(
         backgroundColor: AppColors.semiGrey.withOpacity(0.2),
         appBar: AppBar(
-          title: Text(
-            "Check Out",
-            style: TextStyles.font24BlackBold,
-          ),
+          title: Text("Check Out", style: TextStyles.font24BlackBold),
           backgroundColor: Colors.white,
           centerTitle: true,
           leading: Visibility(
@@ -118,6 +118,24 @@ class _CheckOutState extends State<CheckOut> {
               toLatLng: widget.args.toLatLng,
               paymentMethod: selectedPaymentMethod,
             ),
+            BlocBuilder<TripCubit, TripState>(
+              builder: (context, state) {
+                if ((selectedPaymentMethod == PaymentMethod.cash.name) ||
+                    (selectedPaymentMethod == PaymentMethod.card.name &&
+                        tripCubit.paymentStatus ==
+                            StripePaymentStatus.holding.name)) {
+                  return CheckOutButtons(
+                    tripCubit: tripCubit,
+                    fromAddress: widget.args.fromAddress,
+                    toAddress: widget.args.toAddress,
+                    fromLatLng: widget.args.fromLatLng,
+                    toLatLng: widget.args.toLatLng,
+                    paymentMethod: selectedPaymentMethod,
+                  );
+                }
+                return SizedBox.shrink();
+              },
+            )
           ],
         ),
       ),

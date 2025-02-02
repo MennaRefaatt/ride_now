@@ -10,8 +10,10 @@ import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
 import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
+import '../../../../../core/helpers/enums/stripe_payment_status.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/presentation/trip_tracking_args.dart';
 
@@ -226,7 +228,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                                 driverLat,
                                                 driverLong,
                                               )))
-                                      .then((_) {
+                                      .then((_) async {
                                     if (trip.tripId.isNotEmpty) {
                                       safePrint("Trip id: ${trip.tripId}");
                                       ScaffoldMessenger.of(context)
@@ -250,6 +252,26 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                                 tripStatus: trip.status,
                                               ),
                                               isPassenger: false));
+                                    }
+                                    final captureResult =
+                                        await StripePaymentManager
+                                            .capturePayment(trip.tripId);
+                                    if (captureResult == 'Payment succeeded') {
+                                      widget.tripCubit.updatePaymentStatus(
+                                          StripePaymentStatus.succeeded.name);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        backgroundColor: AppColors.primary,
+                                        content: Text(
+                                            'Payment Captured Successfully'),
+                                      ));
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        backgroundColor: AppColors.red,
+                                        content: Text(
+                                            'Payment Capture Failed: $captureResult'),
+                                      ));
                                     }
                                   });
                                 },
