@@ -17,7 +17,7 @@ import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
 
 class CheckOutButtons extends StatelessWidget {
-   CheckOutButtons(
+  CheckOutButtons(
       {super.key,
       required this.tripCubit,
       required this.fromAddress,
@@ -31,7 +31,7 @@ class CheckOutButtons extends StatelessWidget {
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
-  late  String tripId;
+  late String tripId;
   final String paymentMethod;
 
   @override
@@ -52,7 +52,7 @@ class CheckOutButtons extends StatelessWidget {
                 }
                 return AppButton(
                   text: "S().done",
-                  textStyle: TextStyles.font14BlackRegular,
+                  textStyle: TextStyles.font18BlackBold,
                   onPressed: () async {
                     try {
                       await tripCubit
@@ -70,7 +70,9 @@ class CheckOutButtons extends StatelessWidget {
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Trip id: $tripId")),
+                            SnackBar(
+                                backgroundColor: AppColors.primary,
+                                content: Text("Trip id: $tripId")),
                           );
                           Navigator.pushReplacementNamed(
                             context,
@@ -95,7 +97,11 @@ class CheckOutButtons extends StatelessWidget {
                     } catch (error) {
                       safePrint("Error creating trip: $error");
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Error creating trip: $error")),
+                        SnackBar(
+                            backgroundColor: AppColors.red,
+                            content: Text(
+                              "Error creating trip: $error",
+                            )),
                       );
                     }
                     safePrint("Order button pressed");

@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:isolate';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
@@ -6,7 +10,8 @@ import 'package:ride_now/core/services/network/api_constants.dart';
 import '../../helpers/enums/stripe_payment_status.dart';
 
 abstract class StripePaymentManager {
-  static Future<String> makePayment(double amount, String currency) async {
+  static Future<String> makePayment(
+      double amount, String currency, String tripId) async {
     try {
       String clientSecret = await _getClientSecret(
         (amount * 100).round().toString(),
@@ -14,7 +19,11 @@ abstract class StripePaymentManager {
       );
       await _initializePaymentSheet(clientSecret);
       await Stripe.instance.presentPaymentSheet();
-      return StripePaymentStatus.succeeded.name;
+      await FirebaseFirestore.instance
+          .collection('trips')
+          .doc(tripId)
+          .update({'paymentStatus': StripePaymentStatus.holding.name});
+      return StripePaymentStatus.holding.name;
     } catch (error) {
       if (error is StripeException) {
         return 'Payment failed: ${error.error.localizedMessage}';
@@ -35,6 +44,19 @@ abstract class StripePaymentManager {
   }
 
   static Future<String> _getClientSecret(String amount, String currency) async {
+    final receivePort = ReceivePort();
+    await Isolate.spawn(
+        _getClientSecretInBackground, [amount, currency, receivePort.sendPort]);
+    final result = await receivePort.first;
+
+    return result;
+  }
+
+  static void _getClientSecretInBackground(List<dynamic> params) async {
+    String amount = params[0];
+    String currency = params[1];
+    SendPort sendPort = params[2];
+
     try {
       Dio dio = Dio();
       var response = await dio.post(
@@ -52,14 +74,39 @@ abstract class StripePaymentManager {
       );
 
       if (response.statusCode == 200) {
-        return response.data["client_secret"];
+        sendPort.send(response.data["client_secret"]);
       } else {
-        throw Exception(
-            "Failed to create payment intent: ${response.statusMessage}");
+        safePrint('Error response: ${response.data}');
+        sendPort
+            .send('Failed to create payment intent: ${response.statusMessage}');
       }
     } catch (e) {
       safePrint('Error creating payment intent: $e');
-      rethrow;
+      sendPort.send('Error creating payment intent: $e');
+    }
+  }
+
+  static Future<void> capturePayment(String tripId) async {
+    try {
+      DocumentSnapshot tripSnapshot = await FirebaseFirestore.instance
+          .collection('trips')
+          .doc(tripId)
+          .get();
+
+      String clientSecret = tripSnapshot['clientSecret'];
+
+      await Stripe.instance.confirmPayment(
+        paymentIntentClientSecret: clientSecret,
+      );
+
+      await FirebaseFirestore.instance
+          .collection('trips')
+          .doc(tripId)
+          .update({'paymentStatus': StripePaymentStatus.succeeded.name});
+
+      safePrint('Payment captured successfully');
+    } catch (e) {
+      safePrint('Error capturing payment: $e');
     }
   }
 }

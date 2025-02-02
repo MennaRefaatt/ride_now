@@ -14,6 +14,8 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit({required this.homeRepoBase}) : super(HomeInitial()) {
     fromController = TextEditingController();
     toController = TextEditingController();
+    fromController.addListener(_handleFromControllerChange);
+    toController.addListener(_handleToControllerChange);
   }
   final HomeRepoBase homeRepoBase;
   late TextEditingController fromController;
@@ -22,6 +24,34 @@ class HomeCubit extends Cubit<HomeState> {
   final fromFocusNode = FocusNode();
   final toFocusNode = FocusNode();
   LatLng? fromLatLng, toLatLng;
+
+  double cost = 0.0;
+
+  void updateCost(String costText) {
+    cost = double.parse(costText);
+    emit(CostUpdated(cost: cost));
+  }
+
+  void _handleFromControllerChange() {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(HomeLoaded(
+        categories: currentState.categories,
+        trips: currentState.trips,
+      ));
+    }
+  }
+
+  void _handleToControllerChange() {
+    if (state is HomeLoaded) {
+      final currentState = state as HomeLoaded;
+      emit(HomeLoaded(
+        categories: currentState.categories,
+        trips: currentState.trips,
+      ));
+    }
+  }
+
   Future<void> getCategoriesAndTrips() async {
     emit(HomeLoading());
     try {
@@ -32,7 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
       final trips = await tripsFuture;
 
       safePrint('Categories and trips loaded successfully');
-      emit(HomeLoaded(categories: categories, trips: trips));
+      emit(HomeLoaded(categories: categories, trips: trips,));
     } catch (e) {
       safePrint('Error loading categories and trips: $e');
       emit(HomeError(message: e.toString()));
@@ -68,8 +98,7 @@ class HomeCubit extends Cubit<HomeState> {
       String fromText,
       Color backgroundColor,
       HomeCubit homeCubit,
-      final List<TripModel> trips
-      ) {
+      final List<TripModel> trips) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

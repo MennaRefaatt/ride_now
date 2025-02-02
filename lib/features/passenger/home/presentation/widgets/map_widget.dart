@@ -8,9 +8,14 @@ import 'package:ride_now/features/passenger/home/presentation/manager/home_cubit
 import '../../../maps/presentation/manager/location_cubit.dart';
 
 class MapWidget extends StatefulWidget {
-  MapWidget({super.key, required this.homeCubit, required this.isHidden});
-  late bool isHidden;
+  const MapWidget(
+      {super.key,
+      required this.homeCubit,
+      required this.isHidden,
+      required this.updateHiddenState});
+  final bool isHidden;
   final HomeCubit homeCubit;
+  final Function(bool) updateHiddenState;
   @override
   State<MapWidget> createState() => _MapWidgetState();
 }
@@ -20,15 +25,11 @@ class _MapWidgetState extends State<MapWidget> {
   LatLng? selectedLocation;
 
   void _onMapSwipe() {
-    setState(() {
-      widget.isHidden = true;
-    });
+    widget.updateHiddenState(true);
   }
 
   void _onMapStop() {
-    setState(() {
-      widget.isHidden = false;
-    });
+    widget.updateHiddenState(false);
   }
 
   void _updateCameraPosition(LatLng position) {
@@ -55,7 +56,7 @@ class _MapWidgetState extends State<MapWidget> {
           widget.homeCubit.fromLatLng = position;
           final address = state is LocationLoaded
               ? state.address
-              : (state as LocationMarkerSet).location;
+              : (state as LocationMarkerSet).address;
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mapController != null) {

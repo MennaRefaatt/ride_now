@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ride_now/core/components/app_bar.dart';
 import 'package:ride_now/core/helpers/enums/payment_method.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
 import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
 import '../../../../../core/di/di.dart';
+import '../../../../../core/helpers/shared_pref.dart';
+import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../widgets/address_summarize.dart';
@@ -33,19 +34,32 @@ class _CheckOutState extends State<CheckOut> {
       getTripDetailsUseCase: sl(),
       cancelTripUseCase: sl());
   String selectedPaymentMethod = PaymentMethod.cash.name;
-  String paymentStatus = "";
+  late String tripId;
+  @override
+  void initState() {
+    super.initState();
+    tripId = SharedPref.getString(key: MySharedKeys.currentTripId) ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => tripCubit,
       child: Scaffold(
         backgroundColor: AppColors.semiGrey.withOpacity(0.2),
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.h),
-          child: DefaultAppBar(
-            text: "S().CheckOut",
-            withDivider: false,
-            backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            "Check Out",
+            style: TextStyles.font24BlackBold,
+          ),
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          leading: Visibility(
+            visible:
+                tripCubit.paymentStatus != StripePaymentStatus.succeeded.name,
+            child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () => Navigator.of(context).pop()),
           ),
         ),
         body: Column(
@@ -73,22 +87,28 @@ class _CheckOutState extends State<CheckOut> {
                         selectedPaymentMethod = value;
                       });
                     },
-                    paymentStatus: paymentStatus,
+                    tripCubit: tripCubit,
                     cost: tripCubit.cost,
+                    tripId: tripId,
+                  );
+                }
+                if (state is TripPaymentStatusUpdated) {
+                  return Center(
+                    child: Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(10.sp),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.r),
+                        color: AppColors.primary.withOpacity(0.2),
+                      ),
+                      child: Text(tripCubit.paymentStatus,
+                          style: TextStyles.font18primaryBold),
+                    ),
                   );
                 }
                 return SizedBox.shrink();
               },
             ),
-            verticalSpacing(10.h),
-            if (paymentStatus == StripePaymentStatus.succeeded.name)
-              Center(
-                child: Container(
-                  color: AppColors.primary.withOpacity(0.2),
-                  child: Text(paymentStatus,
-                      style: TextStyles.font18primaryBold),
-                ),
-              ),
             verticalSpacing(10.h),
             AddressSummarize(
               fromAddress: widget.args.fromAddress,
@@ -97,7 +117,6 @@ class _CheckOutState extends State<CheckOut> {
               fromLatLng: widget.args.fromLatLng,
               toLatLng: widget.args.toLatLng,
               paymentMethod: selectedPaymentMethod,
-              paymentStatus: paymentStatus,
             ),
           ],
         ),

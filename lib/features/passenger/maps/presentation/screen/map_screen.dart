@@ -12,9 +12,11 @@ import '../../../../../core/utils/app_button.dart';
 import '../../../../../generated/l10n.dart';
 import '../../data/model/location_model.dart';
 import '../manager/location_cubit.dart';
+import '../maps_args.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  const MapScreen({super.key, required this.mapsArgs});
+  final MapsArgs mapsArgs;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -24,7 +26,17 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _mapController;
   LatLng? _selectedLocation;
   String? _selectedAddress;
-  double markerTopPosition = 100.0;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.mapsArgs.initialLatitude != null &&
+        widget.mapsArgs.initialLongitude != null) {
+      _selectedLocation = LatLng(
+          widget.mapsArgs.initialLatitude!, widget.mapsArgs.initialLongitude!);
+    } else {
+      Future.microtask(() => context.read<LocationCubit>().fetchUserLocation());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +70,7 @@ class _MapScreenState extends State<MapScreen> {
                             GoogleMap(
                               mapType: MapType.satellite,
                               initialCameraPosition: CameraPosition(
-                                target: position,
+                                target: _selectedLocation ?? position,
                                 zoom: 15,
                               ),
                               onMapCreated: (controller) {
@@ -71,7 +83,8 @@ class _MapScreenState extends State<MapScreen> {
                                         markerId:
                                             const MarkerId('selectedLocation'),
                                         infoWindow: InfoWindow(
-                                          title: address.toString(),
+                                          title: _selectedAddress ??
+                                              address.toString(),
                                         ),
                                         position: _selectedLocation!,
                                         icon: BitmapDescriptor
@@ -96,7 +109,7 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                             if (_selectedLocation != null)
                               Positioned(
-                                top: markerTopPosition,
+                                top: 100,
                                 left: MediaQuery.of(context).size.width * 0.25,
                                 child: Center(
                                   child: Container(
@@ -125,7 +138,9 @@ class _MapScreenState extends State<MapScreen> {
                                   Navigator.pop(
                                     context,
                                     LocationData(
-                                      address: _selectedAddress!,
+                                      address: _selectedAddress == null
+                                          ? address.toString()
+                                          : _selectedAddress!,
                                       latitude: _selectedLocation!.latitude,
                                       longitude: _selectedLocation!.longitude,
                                     ),
@@ -133,6 +148,7 @@ class _MapScreenState extends State<MapScreen> {
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
+                                        backgroundColor: AppColors.red,
                                         content:
                                             Text("Please select a location.")),
                                   );
@@ -221,5 +237,10 @@ class _MapScreenState extends State<MapScreen> {
         CameraUpdate.zoomOut(),
       );
     }
+  }
+ @override
+  void dispose() {
+    super.dispose();
+    _mapController.dispose();
   }
 }

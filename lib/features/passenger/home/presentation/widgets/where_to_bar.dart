@@ -95,7 +95,7 @@ class _WhereToBarState extends State<WhereToBar> {
                     controller: widget.cubit.toController,
                     borderRadius: BorderRadius.circular(15.r),
                     backgroundColor:
-                        disappear ? Colors.transparent : Colors.grey.shade200,
+                        disappear ? backgroundColor : Colors.grey.shade200,
                     borderColor: Colors.transparent,
                     isFilled: true,
                     withHint: true,
@@ -106,8 +106,8 @@ class _WhereToBarState extends State<WhereToBar> {
                     hintText: "S().To",
                     keyboardType: TextInputType.text,
                     prefixIcon: Icon(
-                      CupertinoIcons.search,
-                      color: disappear ? AppColors.primary : Colors.black,
+                      disappear ? Icons.trip_origin : CupertinoIcons.search,
+                      color: disappear ? AppColors.red : Colors.black,
                       size: 25.sp,
                     ),
                   ),
