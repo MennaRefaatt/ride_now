@@ -32,7 +32,7 @@ class CancelButton extends StatelessWidget {
         return Visibility(
           child: GestureDetector(
             onTap: () {
-              if (tripId != null) {
+              if (tripId != null && tripId.isNotEmpty) {
                 context
                     .read<TripCubit>()
                     .cancelTrip(tripId)

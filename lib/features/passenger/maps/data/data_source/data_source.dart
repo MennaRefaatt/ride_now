@@ -27,7 +27,9 @@ class GeolocationDataSourceImpl implements GeolocationDataSource {
     }
 
     try {
-      return await Geolocator.getCurrentPosition();
+      return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.best
+      );
     } catch (e) {
       throw Exception("Failed to get location: $e");
     }
@@ -39,13 +41,15 @@ class GeolocationDataSourceImpl implements GeolocationDataSource {
       safePrint(location.toString());
       return;
     }
-    return;
   }
 
   @override
   Stream<Position> getRealTimeLocationUpdates() {
-    final positionStream = Geolocator.getPositionStream();
-    return positionStream;
+    return Geolocator.getPositionStream(
+        locationSettings: LocationSettings(
+            accuracy: LocationAccuracy.best,
+            distanceFilter: 10
+        )
+    ).handleError((error) => throw Exception("Location stream error: $error"));
   }
-
 }

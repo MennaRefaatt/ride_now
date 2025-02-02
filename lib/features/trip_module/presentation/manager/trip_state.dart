@@ -71,3 +71,9 @@ class TripCostUpdated extends TripState {
 
   TripCostUpdated(this.cost);
 }
+
+class TripPaymentStatusUpdated extends TripState {
+  final String status;
+
+  TripPaymentStatusUpdated(this.status);
+}

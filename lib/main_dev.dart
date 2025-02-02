@@ -16,7 +16,6 @@ import 'core/services/network/api_service.dart';
 Future<void> main() async {
   Stripe.publishableKey=ApiConstants.stripePublishableKey;
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

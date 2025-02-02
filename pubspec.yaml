@@ -167,6 +167,7 @@ dependencies:
   flutter_map: ^7.0.2
   firebase_storage: ^12.4.0
   uuid: ^4.5.1
+  rxdart: ^0.28.0
 
 
 dev_dependencies:

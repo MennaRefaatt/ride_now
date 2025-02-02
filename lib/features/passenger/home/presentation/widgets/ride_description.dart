@@ -50,7 +50,7 @@ class RideDescription extends StatelessWidget {
                 color: AppColors.semiGrey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10.r),
               ),
-              child: Center(child: Text("S().ok", style: TextStyles.font18BlackRegular)),
+              child: Center(child: Text("S().ok", style: TextStyles.font18BlackBold)),
             ),
           )
         ],

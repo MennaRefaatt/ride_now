@@ -10,6 +10,7 @@ import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_h
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/pages/driver_registration.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
+import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
 import 'package:ride_now/features/profile/presentation/pages/city_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart';
 import 'package:ride_now/features/scanner.dart';
@@ -53,7 +54,8 @@ class RouteServices {
       case RoutingEndpoints.driverPendingScreen:
         return _customFadeRoute(const DPendingScreen(), routeSettings.name!);
       case RoutingEndpoints.maps:
-        return _customFadeRoute(const MapScreen(), routeSettings.name!);
+        final args = routeSettings.arguments as MapsArgs;
+        return _customFadeRoute(MapScreen(mapsArgs: args,), routeSettings.name!);
         case RoutingEndpoints.tripTracking:
           final args = routeSettings.arguments as TripTrackingRouteArgs;
           return _customFadeRoute( TripScreen(args: args,), routeSettings.name!);

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
@@ -26,20 +25,31 @@ class LastTripsListView extends StatefulWidget {
 class _LastTripsListViewState extends State<LastTripsListView> {
   @override
   Widget build(BuildContext context) {
+    List<TripModel> uniqueTrips = [];
+    Set<String> uniqueLatLngs = {};
+
+    for (var trip in widget.lastTrips) {
+      String latLngKey = '${trip.toLatLng.latitude},${trip.toLatLng.longitude}';
+      if (!uniqueLatLngs.contains(latLngKey)) {
+        uniqueTrips.add(trip);
+        uniqueLatLngs.add(latLngKey);
+      }
+    }
+
     return Visibility(
       visible: !widget.disappear,
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.05,
         width: MediaQuery.of(context).size.width * 0.6,
-        child: widget.lastTrips.length == 1
+        child: uniqueTrips.length == 1
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   GestureDetector(
                     onTap: () {
-                      widget.cubit.toController.text = widget.lastTrips[0].to;
-                      if (widget.cubit.toController.text ==
-                          widget.lastTrips[0].to) {
+                      widget.cubit.toController.text = uniqueTrips[0].to;
+                      widget.cubit.toLatLng = uniqueTrips[0].toLatLng;
+                      if (widget.cubit.toController.text == uniqueTrips[0].to) {
                         setState(() {
                           widget.disappear = true;
                         });
@@ -62,11 +72,11 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                         borderRadius: BorderRadius.circular(25.r),
                         color: AppColors.primary.withOpacity(0.5),
                       ),
-                      width: widget.lastTrips[0].to.length > 15
+                      width: uniqueTrips[0].to.length > 15
                           ? MediaQuery.of(context).size.width * 0.5
                           : MediaQuery.of(context).size.width * 0.25,
                       child: Text(
-                        widget.lastTrips[0].to,
+                        uniqueTrips[0].to,
                         style: TextStyles.font18BlackRegular,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -75,12 +85,12 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                 ],
               )
             : ListView.builder(
-                itemCount: widget.lastTrips.length,
+                itemCount: uniqueTrips.length,
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) => GestureDetector(
                   onTap: () {
-                    final selectedTrip = widget.lastTrips[index];
+                    final selectedTrip = uniqueTrips[index];
                     widget.cubit.toController.text = selectedTrip.to;
                     widget.cubit.toLatLng = selectedTrip.toLatLng;
                     widget.cubit.fromLatLng = selectedTrip.fromLatLng;
@@ -90,7 +100,6 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                       setState(() {
                         widget.disappear = true;
                       });
-
                       Navigator.pushNamed(
                         context,
                         RoutingEndpoints.checkOut,
@@ -121,11 +130,11 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                       borderRadius: BorderRadius.circular(25.r),
                       color: AppColors.primary.withOpacity(0.5),
                     ),
-                    width: widget.lastTrips[index].to.length > 15
+                    width: uniqueTrips[index].to.length > 15
                         ? MediaQuery.of(context).size.width * 0.5
                         : MediaQuery.of(context).size.width * 0.25,
                     child: Text(
-                      widget.lastTrips[index].to,
+                      uniqueTrips[index].to,
                       style: TextStyles.font18BlackRegular,
                       overflow: TextOverflow.ellipsis,
                     ),

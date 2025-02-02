@@ -1,18 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/widgets/check_out_buttons.dart';
+import '../../../../../core/helpers/enums/payment_method.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/data/data_sources/distance_helper/distance_helper.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
+import '../../../maps/data/model/location_model.dart';
+import '../../../maps/presentation/maps_args.dart';
 
 class AddressSummarize extends StatefulWidget {
-  AddressSummarize({
+  const AddressSummarize({
     super.key,
     required this.fromAddress,
     required this.toAddress,
@@ -20,15 +23,15 @@ class AddressSummarize extends StatefulWidget {
     required this.fromLatLng,
     required this.toLatLng,
     required this.paymentMethod,
-    required this.paymentStatus,
   });
+
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
   final String paymentMethod;
-  String paymentStatus;
+
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
 }
@@ -47,11 +50,15 @@ class _AddressSummarizeState extends State<AddressSummarize> {
   }
 
   void _pickDestinationAddress(BuildContext context) {
-    Navigator.pushNamed(context, RoutingEndpoints.maps).then((result) {
-      if (result != null && result is Map<String, dynamic>) {
+    Navigator.pushNamed(context, RoutingEndpoints.maps,
+        arguments: MapsArgs(
+          initialLatitude: toLatLng.latitude,
+          initialLongitude: toLatLng.longitude,
+        )).then((result) {
+      if (result != null && result is LocationData) {
         setState(() {
-          toAddress = result['to'];
-          toLatLng = LatLng(result['latitude'], result['longitude']);
+          toAddress = result.address;
+          toLatLng = LatLng(result.latitude, result.longitude);
         });
         _calculateCost();
       }
@@ -120,15 +127,28 @@ class _AddressSummarizeState extends State<AddressSummarize> {
               ],
             ),
             Spacer(),
-            if (widget.paymentStatus==StripePaymentStatus.succeeded.name)
-              CheckOutButtons(
-                tripCubit: widget.tripCubit,
-                fromAddress: widget.fromAddress,
-                toAddress: toAddress,
-                fromLatLng: widget.fromLatLng,
-                toLatLng: toLatLng,
-                paymentMethod: widget.paymentMethod,
+            Visibility(
+              visible: widget.paymentMethod == PaymentMethod.cash.name ||
+                  (widget.paymentMethod == PaymentMethod.card.name &&
+                      context.read<TripCubit>().state
+                          is TripPaymentStatusUpdated),
+              child: BlocBuilder<TripCubit, TripState>(
+                builder: (context, state) {
+                  if (state is TripPaymentStatusUpdated ||
+                      widget.paymentMethod == PaymentMethod.cash.name) {
+                    return CheckOutButtons(
+                      tripCubit: widget.tripCubit,
+                      fromAddress: widget.fromAddress,
+                      toAddress: toAddress,
+                      fromLatLng: widget.fromLatLng,
+                      toLatLng: toLatLng,
+                      paymentMethod: widget.paymentMethod,
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
               ),
+            ),
           ],
         ),
       ),

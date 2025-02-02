@@ -12,19 +12,33 @@ class RecentRide extends StatelessWidget {
       {super.key, required this.trips, required this.onAddressSelected});
   final List<TripModel> trips;
   final Function(String address, LatLng latLng) onAddressSelected;
+
   @override
   Widget build(BuildContext context) {
+    List<TripModel> uniqueTrips = [];
+    Set<String> uniqueLatLngs = {};
+
+    for (var trip in trips) {
+      String latLngKey = '${trip.toLatLng.latitude},${trip.toLatLng.longitude}';
+      if (!uniqueLatLngs.contains(latLngKey)) {
+        uniqueTrips.add(trip);
+        uniqueLatLngs.add(latLngKey);
+      }
+    }
+
     return ListView.builder(
-        itemCount: trips.length,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return Column(children: [
+      itemCount: uniqueTrips.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Column(
+          children: [
             GestureDetector(
               onTap: () {
-                safePrint(trips[index].toLatLng);
-                safePrint(trips[index].to);
-                onAddressSelected(trips[index].to, trips[index].toLatLng);
+                safePrint(uniqueTrips[index].toLatLng);
+                safePrint(uniqueTrips[index].to);
+                onAddressSelected(
+                    uniqueTrips[index].to, uniqueTrips[index].toLatLng);
               },
               child: Container(
                 margin: EdgeInsets.symmetric(vertical: 10.sp),
@@ -38,7 +52,7 @@ class RecentRide extends StatelessWidget {
                         )),
                     horizontalSpacing(10.w),
                     Expanded(
-                      child: Text(trips[index].to),
+                      child: Text(uniqueTrips[index].to),
                     ),
                   ],
                 ),
@@ -47,8 +61,10 @@ class RecentRide extends StatelessWidget {
             if (index != 1)
               Divider(
                 color: Colors.grey.shade300,
-              )
-          ]);
-        });
+              ),
+          ],
+        );
+      },
+    );
   }
 }

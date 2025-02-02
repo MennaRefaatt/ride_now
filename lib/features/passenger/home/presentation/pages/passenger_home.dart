@@ -18,8 +18,13 @@ class PassengerHome extends StatefulWidget {
 }
 
 class _PassengerHomeState extends State<PassengerHome> {
-  final bool _isHidden = false;
+  bool _isHidden = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  void _updateHiddenState(bool isHidden) {
+    setState(() {
+      _isHidden = isHidden;
+    });
+  }
 
   final homeCubit = HomeCubit(homeRepoBase: sl());
   final locationCubit = LocationCubit(sl(), sl(), sl());
@@ -42,6 +47,7 @@ class _PassengerHomeState extends State<PassengerHome> {
             MapWidget(
               homeCubit: homeCubit,
               isHidden: _isHidden,
+              updateHiddenState: _updateHiddenState,
             ),
             AnimatedPositioned(
               duration: const Duration(milliseconds: 500),
