@@ -19,22 +19,69 @@ class LocationCubit extends Cubit<LocationState> {
   final GetRealtimeLocationUseCase getRealTimeLocationUseCase;
   LatLng? selectedLocation;
   StreamSubscription<Position>? _positionSubscription;
+  Timer? _toggleTimer;
+  bool isTracking = false;
 
   LocationCubit(this.getUserLocationUseCase, this.setLocationUseCase,
       this.getRealTimeLocationUseCase)
       : super(LocationInitial());
 
-  Future<void> fetchUserLocation() async {
-    emit(LocationLoading());
-    try {
-      final position = await getUserLocationUseCase.getCurrentLocation();
-      final address = await _getAddressFromCoordinates(position);
-      safePrint(address);
-      updateCityToFirestore(address);
-      emit(LocationLoaded(position, address));
-    } catch (e) {
-      emit(LocationError("Failed to get location"));
+  void _toggleLocationUpdates(Function fetchFunction) {
+    if (_toggleTimer != null && _toggleTimer!.isActive) {
+      return;
     }
+    _toggleTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (isTracking) {
+        isTracking = false;
+        _positionSubscription?.cancel();
+        safePrint("Tracking paused for 3 seconds");
+      } else {
+        fetchFunction();
+        Future.delayed(const Duration(seconds: 2), () {
+          isTracking = true;
+          safePrint("Tracking resumed for 2 seconds");
+        });
+      }
+    });
+  }
+
+  Future<void> fetchUserLocation() async {
+    if (selectedLocation != null) {
+      safePrint("Manual selection detected, skipping fetchUserLocation");
+      return;
+    }
+
+    emit(LocationLoading());
+
+    _toggleLocationUpdates(() async {
+      try {
+        final position = await getUserLocationUseCase.getCurrentLocation();
+        final address = await _getAddressFromCoordinates(position);
+
+        safePrint("Auto-updating location: $address");
+        updateCityToFirestore(address);
+
+        if (selectedLocation == null) {
+          emit(LocationLoaded(position, address));
+        }
+      } catch (e) {
+        emit(LocationError("Failed to get location"));
+      }
+    });
+  }
+
+  void trackDriverLocation() {
+    emit(LocationLoading());
+    _toggleLocationUpdates(() {
+      _positionSubscription = getRealTimeLocationUseCase
+          .getRealTimeLocationUpdates()
+          .listen((position) async {
+        final address = await _getAddressFromCoordinates(position);
+        emit(LocationLoaded(position, address));
+      }, onError: (e) {
+        emit(LocationError("Failed to update driver location"));
+      });
+    });
   }
 
   void setMarker(LatLng location) async {
@@ -55,37 +102,31 @@ class LocationCubit extends Cubit<LocationState> {
           headingAccuracy: 0,
         ),
       );
+      safePrint(address);
       emit(LocationMarkerSet(location, address));
     } catch (e) {
       safePrint(e.toString());
     }
   }
 
-  void trackDriverLocation() {
-    emit(LocationLoading());
-    _positionSubscription = getRealTimeLocationUseCase
-        .getRealTimeLocationUpdates()
-        .listen((position) async {
-      final address = await _getAddressFromCoordinates(position);
-      emit(LocationLoaded(position, address));
-    }, onError: (e) {
-      emit(LocationError("Failed to update driver location"));
-    });
-  }
-
   void stopTrackingLocation() {
     _positionSubscription?.cancel();
+    _toggleTimer?.cancel();
+    _toggleTimer = null;
+    _positionSubscription = null;
+    isTracking = false;
+    emit(LocationInitial());
+  }
+
+  @override
+  Future<void> close() {
+    stopTrackingLocation();
+    return super.close();
   }
 
   void updateCityToFirestore(String city) {
     FirestoreService(sl(), sl()).updateUserCityToFirestore(city);
     SharedPref.setString(key: MySharedKeys.city, value: city);
-  }
-
-  @override
-  Future<void> close() {
-    _positionSubscription?.cancel();
-    return super.close();
   }
 }
 

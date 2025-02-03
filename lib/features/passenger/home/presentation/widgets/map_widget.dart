@@ -33,17 +33,17 @@ class _MapWidgetState extends State<MapWidget> {
     widget.updateHiddenState(false);
   }
 
-  void _updateCameraPosition(LatLng position) {
-    if (mapController != null) {
-      final cameraPosition = CameraPosition(
-        target: position,
-        zoom: 18,
-      );
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(cameraPosition),
-      );
-    }
-  }
+  // void _updateCameraPosition(LatLng position) {
+  //   if (mapController != null) {
+  //     final cameraPosition = CameraPosition(
+  //       target: position,
+  //       zoom: 18,
+  //     );
+  //     mapController.animateCamera(
+  //       CameraUpdate.newCameraPosition(cameraPosition),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,10 +78,13 @@ class _MapWidgetState extends State<MapWidget> {
         final address = data['address']!;
 
         widget.homeCubit.fromLatLng = position;
+        widget.homeCubit.fromController.text = address;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mapController != null && selectedLocation != null) {
-            _updateCameraPosition(selectedLocation!);
+           // _updateCameraPosition(selectedLocation!);
+            widget.homeCubit.fromController.text = address;
+            widget.homeCubit.fromLatLng = selectedLocation;
           }
         });
 
@@ -111,11 +114,11 @@ class _MapWidgetState extends State<MapWidget> {
                       ),
                     ),
                   },
-                  onCameraMove: (CameraPosition cameraPosition) {
-                    _updateCameraPosition(cameraPosition.target);
-                  },
+                  //onCameraMove: (position) => _updateCameraPosition(position.target),
                   onTap: (LatLng tappedLocation) {
                     context.read<LocationCubit>().setMarker(tappedLocation);
+                    widget.homeCubit.fromLatLng = tappedLocation;
+                    widget.homeCubit.fromController.text = address;
                   },
                 ),
                 if (selectedLocation != null)
@@ -145,5 +148,11 @@ class _MapWidgetState extends State<MapWidget> {
         );
       },
     );
+  }
+  @override
+  void dispose() {
+    mapController.dispose();
+    context.read<LocationCubit>().stopTrackingLocation();
+    super.dispose();
   }
 }

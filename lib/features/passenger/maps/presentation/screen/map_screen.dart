@@ -30,8 +30,8 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     if (widget.mapsArgs.initialLatitude != null &&
-        widget.mapsArgs.initialLongitude != null){
-       _selectedLocation = LatLng(
+        widget.mapsArgs.initialLongitude != null) {
+      _selectedLocation = LatLng(
           widget.mapsArgs.initialLatitude!, widget.mapsArgs.initialLongitude!);
     } else {
       Future.microtask(() => context.read<LocationCubit>().fetchUserLocation());
@@ -248,7 +248,8 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _mapController.dispose();
+    context.read<LocationCubit>().stopTrackingLocation();
+    super.dispose();
   }
 }
