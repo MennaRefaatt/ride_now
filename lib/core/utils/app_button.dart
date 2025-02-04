@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppButton extends StatelessWidget {
-  AppButton({
+  const AppButton({
     super.key,
     required this.text,
     required this.backgroundColor,
@@ -12,8 +12,8 @@ class AppButton extends StatelessWidget {
     this.width,
     this.borderRadius,
   });
-  double? height;
-  double? width;
+  final double? height;
+  final double? width;
   final String text;
   final Color backgroundColor;
   final void Function()? onPressed;

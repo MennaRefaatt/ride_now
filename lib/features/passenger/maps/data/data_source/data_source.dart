@@ -39,7 +39,6 @@ class GeolocationDataSourceImpl implements GeolocationDataSource {
   Future<void> setMarkerPosition(LatLng location) async {
     if (location.latitude != 0.0 && location.longitude != 0.0) {
       safePrint(location.toString());
-      return;
     }
   }
 

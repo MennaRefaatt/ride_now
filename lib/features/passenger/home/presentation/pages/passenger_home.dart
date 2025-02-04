@@ -77,4 +77,10 @@ class _PassengerHomeState extends State<PassengerHome> {
       ),
     );
   }
+  @override
+  void dispose() {
+    homeCubit.close();
+    locationCubit.close();
+    super.dispose();
+  }
 }

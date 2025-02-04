@@ -100,14 +100,9 @@ class TripCubit extends Cubit<TripState> {
   ) async {
     emit(CreateTripLoading());
     try {
-      TripHelper tripHelper = TripHelper();
-      LatLng fromCoordinates = fromLatLng;
-      LatLng toCoordinates = toLatLng;
-
+      final tripHelper = TripHelper();
       String distance = await tripHelper
-          .calculateDistance(fromCoordinates, toCoordinates, unit: 'km');
-      double distanceInKm = double.parse(distance.split(" ")[0]);
-      double tripCost = tripHelper.calculateCost(distanceInKm);
+          .calculateDistance(fromLatLng, toLatLng, unit: 'km');
 
       final tripModel = TripModel(
         tripId: "",
@@ -117,7 +112,7 @@ class TripCubit extends Cubit<TripState> {
         paymentStatus: StripePaymentStatus.holding.name,
         status: TripStatus.pending.name,
         dateTime: DateTime.now(),
-        price: tripCost.toString(),
+        price: cost.toString(),
         distance: distance,
         fromLatLng: fromLatLng,
         toLatLng: toLatLng,
