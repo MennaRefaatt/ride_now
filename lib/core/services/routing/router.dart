@@ -5,6 +5,8 @@ import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dar
 import 'package:ride_now/features/auth/login/presentation/pages/otp_screen.dart';
 import 'package:ride_now/features/auth/phone_args.dart';
 import 'package:ride_now/features/auth/phone_number_screen.dart';
+import 'package:ride_now/features/contact/audio/audio_call_screen.dart';
+import 'package:ride_now/features/contact/presentation/screen/contact_screen.dart';
 import 'package:ride_now/features/driver/d_pending/d_pending_screen.dart';
 import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_home.dart';
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
@@ -77,6 +79,12 @@ class RouteServices {
         return _customFadeRoute(DriverOnBoarding(), routeSettings.name!);
       case RoutingEndpoints.driverRegistration:
         return _customFadeRoute(DriverRegistration(), routeSettings.name!);
+      case RoutingEndpoints.contactScreen:
+        return _customFadeRoute(ContactScreen(
+          phoneNumber: routeSettings.arguments as String,
+        ), routeSettings.name!);
+      case RoutingEndpoints.audioCall:
+        return _customFadeRoute(AudioCallScreen(), routeSettings.name!);
       case RoutingEndpoints.otp:
         return _customFadeRoute(
             OTPScreen(verificationId: routeSettings.arguments as String),

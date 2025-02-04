@@ -17,7 +17,6 @@ class CancelButton extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Trip canceled successfully!')),
           );
-          Navigator.pop(context);
         } else if (state is CancelTripError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error canceling trip: ${state.message}')),
