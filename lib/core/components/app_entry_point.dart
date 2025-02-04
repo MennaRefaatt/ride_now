@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../services/routing/router.dart';
+import '../services/routing/routing_endpoints.dart';
 
 final appNavKey = GlobalKey<NavigatorState>();
 
@@ -31,7 +32,7 @@ class _AppEntryPointState extends State<AppEntryPoint> {
             navigatorKey: appNavKey,
             onGenerateRoute: RouteServices.generateRoute,
             title: 'ride_now',
-            initialRoute: widget.initialRoute,
+            initialRoute: widget.initialRoute.isNotEmpty ? widget.initialRoute : RoutingEndpoints.splash,
             debugShowCheckedModeBanner: false,
             builder: (context, child) {
               child ??= const SizedBox.shrink();

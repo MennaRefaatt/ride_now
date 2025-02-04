@@ -12,11 +12,13 @@ import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';
 
 class WhereToBar extends StatefulWidget {
-  WhereToBar(
-      {super.key,
-      required this.cubit,
-      required this.lastTrips,
-      required this.toLatLng});
+  WhereToBar({
+    super.key,
+    required this.cubit,
+    required this.lastTrips,
+    required this.toLatLng,
+  });
+
   final HomeCubit cubit;
   final List<TripModel> lastTrips;
   LatLng? toLatLng;
@@ -27,19 +29,40 @@ class WhereToBar extends StatefulWidget {
 
 class _WhereToBarState extends State<WhereToBar> {
   bool disappear = false;
+  late TextEditingController fromController;
+
+  @override
+  void initState() {
+    super.initState();
+    fromController = widget.cubit.fromController;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocationCubit, LocationState>(
-      builder: (context, state) {
-        String fromText = 'S().From';
-        Color backgroundColor = Colors.grey.shade200;
+    return BlocConsumer<LocationCubit, LocationState>(
+      listener: (context, state) {
         if (state is LocationLoaded) {
-          fromText = state.address;
-          backgroundColor = Colors.transparent;
-          widget.cubit.fromController.text = state.address;
-          widget.toLatLng =
-              LatLng(state.position.latitude, state.position.longitude);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              widget.cubit.fromController.value = TextEditingValue(
+                text: state.address,
+                selection:
+                    TextSelection.collapsed(offset: state.address.length),
+              );
+              widget.toLatLng =
+                  LatLng(state.position.latitude, state.position.longitude);
+            }
+          });
         }
+      },
+      builder: (context, state) {
+        String fromText = widget.cubit.fromController.text.isNotEmpty
+            ? widget.cubit.fromController.text
+            : 'Select a location';
+        Color backgroundColor = widget.cubit.fromController.text.isNotEmpty
+            ? Colors.transparent
+            : Colors.grey.shade200;
+
         disappear = widget.cubit.toController.text.isNotEmpty;
 
         return Column(
@@ -47,17 +70,18 @@ class _WhereToBarState extends State<WhereToBar> {
             GestureDetector(
               onTap: () {
                 widget.cubit.openEnterYourRoute(
-                    context,
-                    widget.cubit.fromFocusNode,
-                    widget.cubit.toFocusNode,
-                    fromText,
-                    backgroundColor,
-                    widget.cubit,
-                    widget.lastTrips);
+                  context,
+                  widget.cubit.fromFocusNode,
+                  widget.cubit.toFocusNode,
+                  fromText,
+                  backgroundColor,
+                  widget.cubit,
+                  widget.lastTrips,
+                );
                 widget.cubit.fromFocusNode.requestFocus();
               },
               child: AppTextFormField(
-                controller: TextEditingController(text: fromText),
+                controller: fromController,
                 borderRadius: BorderRadius.circular(15.r),
                 backgroundColor: backgroundColor,
                 borderColor: Colors.transparent,
@@ -67,7 +91,7 @@ class _WhereToBarState extends State<WhereToBar> {
                 hintStyle: TextStyles.font18BlackRegular.copyWith(
                   color: Colors.grey.shade800,
                 ),
-                hintText: "S().From",
+                hintText: "Where are you going?",
                 keyboardType: TextInputType.text,
                 prefixIcon: Icon(
                   Icons.trip_origin,
@@ -82,13 +106,14 @@ class _WhereToBarState extends State<WhereToBar> {
                 GestureDetector(
                   onTap: () {
                     widget.cubit.openEnterYourRoute(
-                        context,
-                        widget.cubit.fromFocusNode,
-                        widget.cubit.toFocusNode,
-                        fromText,
-                        backgroundColor,
-                        widget.cubit,
-                        widget.lastTrips);
+                      context,
+                      widget.cubit.fromFocusNode,
+                      widget.cubit.toFocusNode,
+                      fromText,
+                      backgroundColor,
+                      widget.cubit,
+                      widget.lastTrips,
+                    );
                     widget.cubit.toFocusNode.requestFocus();
                   },
                   child: AppTextFormField(
@@ -103,7 +128,7 @@ class _WhereToBarState extends State<WhereToBar> {
                     hintStyle: TextStyles.font18BlackRegular.copyWith(
                       color: Colors.grey.shade800,
                     ),
-                    hintText: "S().To",
+                    hintText: "Where to?",
                     keyboardType: TextInputType.text,
                     prefixIcon: Icon(
                       disappear ? Icons.trip_origin : CupertinoIcons.search,
