@@ -69,11 +69,14 @@ class CheckOutButtons extends StatelessWidget {
                             "";
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
                                 backgroundColor: AppColors.primary,
-                                content: Text("Trip id: $tripId")),
-                          );
+                                content: Text("Trip id: $tripId"),
+                              ),
+                            );
+                          }
                           Navigator.pushReplacementNamed(
                             context,
                             RoutingEndpoints.tripTracking,
@@ -84,7 +87,7 @@ class CheckOutButtons extends StatelessWidget {
                                 tripId: tripId,
                                 fromLatLng: fromLatLng,
                                 toLatLng: toLatLng,
-                                driverLatLng: toLatLng,
+                                driverLatLng: LatLng(0, 0),
                                 tripStatus: TripStatus.pending.name,
                               ),
                               isPassenger: true,
@@ -96,13 +99,16 @@ class CheckOutButtons extends StatelessWidget {
                       });
                     } catch (error) {
                       safePrint("Error creating trip: $error");
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            backgroundColor: AppColors.red,
-                            content: Text(
-                              "Error creating trip: $error",
-                            )),
-                      );
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              backgroundColor: AppColors.red,
+                              content: Text(
+                                "Error creating trip: $error",
+                              )),
+                        );
+                      }
+                      return;
                     }
                     safePrint("Order button pressed");
                   },

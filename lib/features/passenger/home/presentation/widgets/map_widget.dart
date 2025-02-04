@@ -16,6 +16,7 @@ class MapWidget extends StatefulWidget {
   final bool isHidden;
   final HomeCubit homeCubit;
   final Function(bool) updateHiddenState;
+
   @override
   State<MapWidget> createState() => _MapWidgetState();
 }
@@ -32,110 +33,126 @@ class _MapWidgetState extends State<MapWidget> {
     widget.updateHiddenState(false);
   }
 
-  void _updateCameraPosition(LatLng position) {
-    if (mapController != null) {
-      final cameraPosition = CameraPosition(
-        target: position,
-        zoom: 18,
-      );
-
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(cameraPosition),
-      );
-    }
-  }
+  // void _updateCameraPosition(LatLng position) {
+  //   if (mapController != null) {
+  //     final cameraPosition = CameraPosition(
+  //       target: position,
+  //       zoom: 18,
+  //     );
+  //     mapController.animateCamera(
+  //       CameraUpdate.newCameraPosition(cameraPosition),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocationCubit, LocationState>(
-      builder: (context, state) {
-        if (state is LocationLoaded || state is LocationMarkerSet) {
-          final position = state is LocationLoaded
-              ? LatLng(state.position.latitude, state.position.longitude)
-              : (state as LocationMarkerSet).location;
-          widget.homeCubit.fromLatLng = position;
-          final address = state is LocationLoaded
-              ? state.address
-              : (state as LocationMarkerSet).address;
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (mapController != null) {
-              _updateCameraPosition(position);
-            }
-          });
-          selectedLocation = position;
-
-          return GestureDetector(
-            onPanUpdate: (details) {
-              if (details.delta.dy < 0 || details.delta.dx != 0) {
-                _onMapSwipe();
-              }
-            },
-            onPanEnd: (_) {
-              _onMapStop();
-            },
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: [
-                  GoogleMap(
-                    mapType: MapType.satellite,
-                    initialCameraPosition: CameraPosition(
-                      target: position,
-                      zoom: 18,
-                    ),
-                    onMapCreated: (controller) {
-                      mapController = controller;
-                    },
-                    markers: {
-                      Marker(
-                        markerId: const MarkerId('selectedLocation'),
-                        infoWindow: InfoWindow(title: address.toString()),
-                        position: position,
-                        icon: BitmapDescriptor.defaultMarkerWithHue(
-                          BitmapDescriptor.hueGreen,
-                        ),
-                      ),
-                    },
-                    onCameraMove: (CameraPosition cameraPosition) {
-                      _updateCameraPosition(cameraPosition.target);
-                    },
-                    onTap: (LatLng tappedLocation) {
-                      context.read<LocationCubit>().setMarker(tappedLocation);
-                    },
-                  ),
-                  if (selectedLocation != null)
-                    Positioned(
-                      top: 100,
-                      left: MediaQuery.of(context).size.width * 0.25,
-                      child: Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          padding: EdgeInsets.all(8.sp),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.r),
-                            color: AppColors.primary,
-                          ),
-                          child: Text(
-                            address.toString(),
-                            style: TextStyles.font18WhiteRegular,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+    return BlocSelector<LocationCubit, LocationState, Map<String, dynamic>?>(
+      selector: (state) {
+        if (state is LocationLoaded) {
+          return {
+            'position':
+                LatLng(state.position.latitude, state.position.longitude),
+            'address': state.address,
+          };
+        } else if (state is LocationMarkerSet) {
+          return {
+            'position': state.location,
+            'address': state.address,
+          };
+        }
+        return null;
+      },
+      builder: (context, data) {
+        if (data == null) {
+          return GoogleMap(
+            mapType: MapType.satellite,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(30.0444, 31.2357),
+              zoom: 10,
             ),
           );
         }
-        return GoogleMap(
-          mapType: MapType.satellite,
-          initialCameraPosition:
-              CameraPosition(target: LatLng(30.0444, 31.2357), zoom: 10),
+
+        final position = data['position']!;
+        final address = data['address']!;
+
+        widget.homeCubit.fromLatLng = position;
+        widget.homeCubit.fromController.text = address;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mapController != null && selectedLocation != null) {
+           // _updateCameraPosition(selectedLocation!);
+            widget.homeCubit.fromController.text = address;
+            widget.homeCubit.fromLatLng = selectedLocation;
+          }
+        });
+
+        selectedLocation = position;
+
+        return GestureDetector(
+          onPanUpdate: (details) => _onMapSwipe(),
+          onPanEnd: (_) => _onMapStop(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: Stack(
+              children: [
+                GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    target: position,
+                    zoom: 18,
+                  ),
+                  onMapCreated: (controller) => mapController = controller,
+                  markers: {
+                    Marker(
+                      markerId: const MarkerId('selectedLocation'),
+                      infoWindow: InfoWindow(title: address),
+                      position: position,
+                      icon: BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueGreen,
+                      ),
+                    ),
+                  },
+                  //onCameraMove: (position) => _updateCameraPosition(position.target),
+                  onTap: (LatLng tappedLocation) {
+                    context.read<LocationCubit>().setMarker(tappedLocation);
+                    widget.homeCubit.fromLatLng = tappedLocation;
+                    widget.homeCubit.fromController.text = address;
+                  },
+                ),
+                if (selectedLocation != null)
+                  Positioned(
+                    top: 100,
+                    left: MediaQuery.of(context).size.width * 0.25,
+                    child: Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        padding: EdgeInsets.all(8.sp),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.r),
+                          color: AppColors.primary,
+                        ),
+                        child: Text(
+                          address,
+                          style: TextStyles.font18WhiteRegular,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         );
       },
     );
+  }
+  @override
+  void dispose() {
+    mapController.dispose();
+    context.read<LocationCubit>().stopTrackingLocation();
+    super.dispose();
   }
 }

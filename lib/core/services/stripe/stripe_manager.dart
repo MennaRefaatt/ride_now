@@ -10,6 +10,8 @@ import 'package:ride_now/core/services/network/api_constants.dart';
 import '../../helpers/enums/stripe_payment_status.dart';
 
 abstract class StripePaymentManager {
+  static final Dio _dio = Dio();
+
   static Future<String> makePayment(
       double amount, String currency, String tripId) async {
     try {
@@ -35,12 +37,17 @@ abstract class StripePaymentManager {
   }
 
   static Future<void> _initializePaymentSheet(String clientSecret) async {
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: clientSecret,
-        merchantDisplayName: "Menna",
-      ),
-    );
+    try {
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: "Menna",
+        ),
+      );
+    } catch (error) {
+      safePrint("Failed to initialize payment sheet: $error");
+      rethrow;
+    }
   }
 
   static Future<String> _getClientSecret(String amount, String currency) async {
@@ -58,8 +65,7 @@ abstract class StripePaymentManager {
     SendPort sendPort = params[2];
 
     try {
-      Dio dio = Dio();
-      var response = await dio.post(
+      var response = await _dio.post(
         'https://api.stripe.com/v1/payment_intents',
         options: Options(
           headers: {
@@ -70,6 +76,7 @@ abstract class StripePaymentManager {
         data: {
           'amount': amount,
           'currency': currency,
+          'capture_method': 'manual',
         },
       );
 
@@ -86,27 +93,29 @@ abstract class StripePaymentManager {
     }
   }
 
-  static Future<void> capturePayment(String tripId) async {
+  static Future<String> capturePayment(String paymentIntentId) async {
     try {
-      DocumentSnapshot tripSnapshot = await FirebaseFirestore.instance
-          .collection('trips')
-          .doc(tripId)
-          .get();
-
-      String clientSecret = tripSnapshot['clientSecret'];
-
-      await Stripe.instance.confirmPayment(
-        paymentIntentClientSecret: clientSecret,
+      final response = await _dio.post(
+        'https://api.stripe.com/v1/payment_intents/$paymentIntentId/capture',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer ${ApiConstants.stripeSecretKey}',
+          },
+        ),
       );
 
-      await FirebaseFirestore.instance
-          .collection('trips')
-          .doc(tripId)
-          .update({'paymentStatus': StripePaymentStatus.succeeded.name});
-
-      safePrint('Payment captured successfully');
+      if (response.statusCode == 200) {
+        return 'Payment succeeded';
+      } else {
+        safePrint('Error capturing payment: ${response.data}');
+        return 'Failed to capture payment: ${response.statusMessage}';
+      }
     } catch (e) {
       safePrint('Error capturing payment: $e');
+      return 'Error capturing payment: $e';
     }
   }
 }
+
+
+

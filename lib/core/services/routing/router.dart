@@ -36,7 +36,8 @@ class RouteServices {
         return _customFadeRoute(const OnBoardingScreen(), routeSettings.name!);
       case RoutingEndpoints.phoneNumber:
         final args = routeSettings.arguments as PhoneArgs;
-        return _customFadeRoute(PhoneNumberScreen(args: args), routeSettings.name!);
+        return _customFadeRoute(
+            PhoneNumberScreen(args: args), routeSettings.name!);
       case RoutingEndpoints.scanner:
         return _customFadeRoute(
             const LicensePlateScanner(), routeSettings.name!);
@@ -55,10 +56,18 @@ class RouteServices {
         return _customFadeRoute(const DPendingScreen(), routeSettings.name!);
       case RoutingEndpoints.maps:
         final args = routeSettings.arguments as MapsArgs;
-        return _customFadeRoute(MapScreen(mapsArgs: args,), routeSettings.name!);
-        case RoutingEndpoints.tripTracking:
-          final args = routeSettings.arguments as TripTrackingRouteArgs;
-          return _customFadeRoute( TripScreen(args: args,), routeSettings.name!);
+        return _customFadeRoute(
+            MapScreen(
+              mapsArgs: args,
+            ),
+            routeSettings.name!);
+      case RoutingEndpoints.tripTracking:
+        final args = routeSettings.arguments as TripTrackingRouteArgs;
+        return _customFadeRoute(
+            TripScreen(
+              args: args,
+            ),
+            routeSettings.name!);
       case RoutingEndpoints.checkOut:
         final args = routeSettings.arguments as CheckOutArgs;
         return _customFadeRoute(CheckOut(args: args), routeSettings.name!);
@@ -73,6 +82,7 @@ class RouteServices {
             OTPScreen(verificationId: routeSettings.arguments as String),
             routeSettings.name!);
       default:
+        safePrint('No route found for ${routeSettings.name}');
         return _errorRoute();
     }
   }
@@ -88,7 +98,7 @@ class RouteServices {
         );
       },
       transitionDuration:
-          const Duration(milliseconds: 500), // Customize duration
+          const Duration(milliseconds: 500),
     );
   }
 
@@ -98,6 +108,7 @@ class RouteServices {
         appBar: AppBar(
           title: const Text("Page Not Found"),
         ),
+        body: Center(child: Text('Route not found')),
       );
     });
   }
