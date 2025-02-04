@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/helpers/enums/trip_status.dart';
 import '../../../passenger/maps/presentation/manager/location_cubit.dart';
 import '../../data/data_sources/direction_service/direction_service.dart';
@@ -27,14 +30,35 @@ class _TripTrackingState extends State<TripTracking> {
   LatLng? _driverLatLng;
   LatLng? cameraPosition;
   Set<Marker> _markers = {};
-  Set<Polyline> _polylines = {};
+  final Set<Polyline> _polylines = {};
   bool _isAnimating = false;
+  Timer? _timer;
+  final _polylineCache = <String, List<LatLng>>{};
+  Timer? _listenTimer;
+  Timer? _pauseTimer;
+  bool _isListening = true;
 
   @override
   void initState() {
     super.initState();
     _directionService = DirectionService();
     _getLatLngFromAddress();
+    _startPeriodicUpdate();
+  }
+
+  void _startPeriodicUpdate() {
+    _listenTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+      if (_isListening) {
+        _getDirections();
+        _isListening = false;
+        _pauseTimer = Timer(const Duration(seconds: 3), () => _isListening = true);
+      }
+    });
+  }
+
+
+  void _stopPeriodicUpdate() {
+    _timer?.cancel();
   }
 
   void _moveCamera(LatLng position) {
@@ -50,61 +74,83 @@ class _TripTrackingState extends State<TripTracking> {
       return;
     }
     try {
-      if (widget.args.tripStatus == TripStatus.pending.name && !_isAnimating) {
-        _startAnimation();
-      } else if (widget.args.tripStatus == TripStatus.accepted.name) {
-        _stopAnimation();
-        List<LatLng> routeCoordinates = await _directionService
-            .getRouteCoordinates(_driverLatLng!, _fromLatLng!);
-        setState(() {
-          _polylines.add(Polyline(
-            polylineId: const PolylineId('driverToFrom'),
-            points: routeCoordinates,
-            color: Colors.blue,
-            width: 5,
-          ));
-        });
-      } else {
-        List<LatLng> routeCoordinates = await _directionService
-            .getRouteCoordinates(_fromLatLng!, _toLatLng!);
-        setState(() {
-          _polylines.add(Polyline(
-            polylineId: const PolylineId('fromTo'),
-            points: routeCoordinates,
-            color: Colors.green,
-            width: 5,
-          ));
-        });
+      final cacheKey = '${_driverLatLng!.latitude},${_driverLatLng!.longitude}'
+          '_${_fromLatLng!.latitude},${_fromLatLng!.longitude}'
+          '_${_toLatLng!.latitude},${_toLatLng!.longitude}';
+
+      if (_polylineCache.containsKey(cacheKey)) {
+        _updatePolylines(_polylineCache[cacheKey]!);
+        return;
       }
 
-      if (_driverLatLng != null && _driverLatLng == _fromLatLng) {
-        setState(() async {
-          _markers.removeWhere(
-              (marker) => marker.markerId.value == 'driverLocation');
-          _markers.add(Marker(
-            markerId: const MarkerId('sharedLocation'),
-            position: _fromLatLng!,
-            infoWindow: const InfoWindow(title: 'Driver & Passenger Location'),
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueMagenta),
-          ));
-
-          List<LatLng> finalRoute = await _directionService.getRouteCoordinates(
-              _fromLatLng!, _toLatLng!);
-          setState(() {
-            _polylines.add(Polyline(
-              polylineId: const PolylineId('driverToTo'),
-              points: finalRoute,
-              color: Colors.red,
-              width: 5,
-            ));
-          });
-        });
-      }
+      final routes = await _calculateRoutes();
+      _polylineCache[cacheKey] = routes;
+      _updatePolylines(routes);
     } catch (e) {
       safePrint('Error fetching directions: $e');
     }
   }
+
+  Future<List<LatLng>> _calculateRoutes() async {
+    List<LatLng> routeCoordinates = [];
+
+    if (widget.args.tripStatus == TripStatus.pending.name) {
+      // From -> To route
+      routeCoordinates = await _directionService.getRouteCoordinates(
+        _fromLatLng!,
+        _toLatLng!,
+        useCache: true,
+      );
+    }
+    else if (widget.args.tripStatus == TripStatus.accepted.name) {
+      if (_driverLatLng == _fromLatLng) {
+        // Driver/From -> To route
+        routeCoordinates = await _directionService.getRouteCoordinates(
+          _fromLatLng!,
+          _toLatLng!,
+          useCache: true,
+        );
+      } else {
+        // Driver -> From route
+        final driverToFrom = await _directionService.getRouteCoordinates(
+          _driverLatLng!,
+          _fromLatLng!,
+          useCache: true,
+        );
+        // From -> To route
+        final fromToTo = await _directionService.getRouteCoordinates(
+          _fromLatLng!,
+          _toLatLng!,
+          useCache: true,
+        );
+        routeCoordinates = [...driverToFrom, ...fromToTo];
+      }
+    }
+
+    return routeCoordinates;
+  }
+
+  void _updatePolylines(List<LatLng> coordinates) {
+    if (!mounted) return;
+
+    setState(() {
+      _polylines
+        ..clear()
+        ..add(Polyline(
+          polylineId: PolylineId(Uuid().v4()),
+          points: coordinates,
+          color: _getPolylineColor(),
+          width: 5,
+        ));
+    });
+  }
+
+  Color _getPolylineColor() {
+    if (widget.args.tripStatus == TripStatus.pending.name) return Colors.green;
+    if (_driverLatLng == _fromLatLng) return Colors.red;
+    return Colors.blue;
+  }
+
 
   void _startAnimation() {
     setState(() {
@@ -238,5 +284,14 @@ class _TripTrackingState extends State<TripTracking> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _listenTimer?.cancel();
+    _pauseTimer?.cancel();
+    _polylineCache.clear();
+    _mapController.dispose();
+    super.dispose();
   }
 }

@@ -29,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
 
     _audioPlayer = AudioPlayer();
+    _audioPlayer.setReleaseMode(ReleaseMode.stop);
 
     _animationController = AnimationController(
       vsync: this,
@@ -65,6 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(seconds: 2));
     _audioPlayer.play(AssetSource('sounds/car_horn.mp3'));
     await Future.delayed(const Duration(seconds: 3));
+
     bool isFirstOpen = await SharedPref.isFirstOpen();
 
     if (isFirstOpen) {

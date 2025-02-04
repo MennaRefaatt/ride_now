@@ -6,12 +6,13 @@ import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../../core/components/custom_bottom_sheet.dart';
+import '../../../../../core/helpers/enums/stripe_payment_status.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 
 class TripPaymentMethod extends StatefulWidget {
-  TripPaymentMethod({
+  const TripPaymentMethod({
     super.key,
     required this.selectedPaymentMethod,
     required this.onSelect,
@@ -20,7 +21,7 @@ class TripPaymentMethod extends StatefulWidget {
     required this.tripId,
   });
 
-  String selectedPaymentMethod;
+  final String selectedPaymentMethod;
   final Function(String) onSelect;
   final double cost;
   final TripCubit tripCubit;
@@ -31,10 +32,7 @@ class TripPaymentMethod extends StatefulWidget {
 }
 
 class _TripPaymentMethodState extends State<TripPaymentMethod> {
-  void _showPaymentMethodSheet(
-    BuildContext context,
-    String selectedPaymentMethod,
-  ) {
+  void _showPaymentMethodSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -45,70 +43,79 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
         child: ListView(
           shrinkWrap: true,
           children: [
-            _buildPaymentOption(
-              context,
-              method: PaymentMethod.cash,
-              isSelected:
-                  widget.selectedPaymentMethod == PaymentMethod.cash.name,
-            ),
-            _buildPaymentOption(
-              context,
-              method: PaymentMethod.card,
-              isSelected:
-                  widget.selectedPaymentMethod == PaymentMethod.card.name,
-            ),
+            _buildPaymentOption(context, method: PaymentMethod.cash),
+            _buildPaymentOption(context, method: PaymentMethod.card),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPaymentOption(
-    BuildContext context, {
-    required PaymentMethod method,
-    required bool isSelected,
-  }) {
+  Widget _buildPaymentOption(BuildContext context, {required PaymentMethod method}) {
     return Container(
-      color:
-          isSelected ? AppColors.primary.withOpacity(0.2) : Colors.transparent,
+      color: widget.selectedPaymentMethod == method.name
+          ? AppColors.primary.withValues(alpha: 0.2)
+          : Colors.transparent,
       child: ListTile(
         leading: Icon(
-          method == PaymentMethod.cash
-              ? Icons.wallet
-              : CupertinoIcons.creditcard,
-          color: isSelected ? AppColors.primary : AppColors.semiGrey,
+          method == PaymentMethod.cash ? Icons.wallet : CupertinoIcons.creditcard,
+          color: widget.selectedPaymentMethod == method.name
+              ? AppColors.primary
+              : AppColors.semiGrey,
         ),
         title: Text(method.name),
-        trailing:
-            isSelected ? Icon(Icons.check, color: AppColors.primary) : null,
+        trailing: widget.selectedPaymentMethod == method.name
+            ? Icon(Icons.check, color: AppColors.primary)
+            : null,
         onTap: () async {
           widget.onSelect(method.name);
           Navigator.pop(context);
           safePrint("Selected payment cost: ${widget.cost}");
-          if (method == PaymentMethod.card) {
-            if (widget.cost <= 0) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Please enter a valid amount")));
-              return;
-            }
-            if (widget.cost > 0) {
-              String paymentStatus = await StripePaymentManager.makePayment(
-                  widget.cost, "EGP", widget.tripId);
-              widget.tripCubit.updatePaymentStatus(paymentStatus);
-            }
+
+          if (method == PaymentMethod.card && widget.cost > 0) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: AppColors.primary,
+                content: Text("Processing payment...")));
+            String paymentStatus = await _processStripePayment(widget.cost, widget.tripId,context: context);
+            widget.tripCubit.updatePaymentStatus(paymentStatus);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: Colors.orange, content: Text(paymentStatus)));
+          } else if (widget.cost <= 0) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                backgroundColor: AppColors.red,
+                content: Text("Please enter a valid amount")));
           }
         },
       ),
     );
   }
 
+  Future<String> _processStripePayment(double amount, String tripId,
+      {required BuildContext context}) async {
+    try {
+      String paymentStatus =
+      await StripePaymentManager.makePayment(amount, "EGP", tripId);
+      widget.tripCubit.updatePaymentStatus(paymentStatus);
+
+      if (paymentStatus == StripePaymentStatus.holding.name) {
+        if (context.mounted) {
+          setState(() {}); // Refresh the UI
+        }
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(paymentStatus)),
+      );
+      return paymentStatus;
+    } catch (error) {
+      safePrint("Payment failed: $error");
+      return 'Payment failed: $error';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _showPaymentMethodSheet(
-        context,
-        widget.selectedPaymentMethod,
-      ),
+      onTap: () => _showPaymentMethodSheet(context),
       child: Container(
         padding: EdgeInsets.all(15.sp),
         width: double.infinity,
