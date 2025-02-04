@@ -10,6 +10,11 @@ class ApiConstants {
   static const String stripeSecretKey =
       "sk_test_51QUR44CAQYQfL0y3rRjWRWJmfWCsxPYGkPqcBCXS1QWbHMXhOiyX3fK1wNT6ufaTzzbHD5bdv9rGx8SJ528EmQhv00XsgQSea4";
 }
+class AgoraConstants {
+  static const String appId = "fb581f774f4c46c884d1a0884843a551";
+  static const String token ="007eJxTYDgz98H3aZkuCmXT+oM+1cxae/r+pb2GRkcU3m2/8NB99TZOBYa0JFMLwzRzc5M0k2QTs2QLC5MUw0QDIGVhYpxoamrorbgovSGQkaFR+S8zIwMEgvjsDEWZKal++eUMDAClHSLu";
+  static const String channelName = "rideNow";
+}
 
 class ApiErrors {
   static const String badRequestError = "badRequestError";
