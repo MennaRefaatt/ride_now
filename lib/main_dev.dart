@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:ride_now/core/services/call/call_service.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/driver/driver_status_listener.dart';
 import 'package:ride_now/firebase_options.dart';
@@ -14,7 +15,7 @@ import 'core/services/network/api_constants.dart';
 import 'core/services/network/api_service.dart';
 
 Future<void> main() async {
-  Stripe.publishableKey=ApiConstants.stripePublishableKey;
+  Stripe.publishableKey = ApiConstants.stripePublishableKey;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -33,7 +34,7 @@ Future<void> main() async {
   );
   driverStatusListener.listenToDriverStatusChanges();
   SecureStorageService();
-
+  CallService().initCallService();
   runApp(
     AppEntryPoint(initialRoute: RoutingEndpoints.splash),
   );
