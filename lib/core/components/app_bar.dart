@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
 import '../services/routing/routing_endpoints.dart';
 import '../theming/app_colors.dart';
@@ -10,23 +12,23 @@ import '../theming/styles.dart';
 import '../utils/app_button.dart';
 
 class DefaultAppBar extends StatefulWidget {
-  const DefaultAppBar({
-    super.key,
-    required this.text,
-    this.withDivider = true,
-    this.backgroundColor,
-    this.audioCallIcon = false,
-    this.phone,
-    this.imageUrl,
-  });
+  const DefaultAppBar(
+      {super.key,
+      required this.text,
+      this.withDivider = true,
+      this.backgroundColor,
+      this.audioCallIcon = false,
+      this.phone,
+      this.withProfilePicture = false,
+      this.channelId});
 
   final String text;
   final bool? withDivider;
   final Color? backgroundColor;
   final bool? audioCallIcon;
   final String? phone;
-  final String? imageUrl;
-
+  final bool? withProfilePicture;
+  final String? channelId;
   @override
   State<DefaultAppBar> createState() => _DefaultAppBarState();
 }
@@ -43,48 +45,50 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
       ),
       backgroundColor: widget.backgroundColor,
       centerTitle: true,
-
+      leadingWidth: MediaQuery.of(context).size.width * 0.3,
       leading: Scaffold.of(context).hasDrawer
           ? null
           : Padding(
-        padding: EdgeInsets.all(8.0.w),
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width*0.1,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const BackButton(color: Colors.black),
-              CircleAvatar(
-                radius: 20.r,
-                backgroundColor: AppColors.primary.withOpacity(0.3),
-                backgroundImage: widget.imageUrl != null && widget.imageUrl!.isNotEmpty
-                    ? NetworkImage(widget.imageUrl!)
-                    : null,
-                child: widget.imageUrl == null || widget.imageUrl!.isEmpty
-                    ? Icon(Icons.person, size: 24.sp, color: Colors.white)
-                    : null,
+              padding: EdgeInsets.all(2.0.sp),
+              child: Row(
+                children: [
+                  const BackButton(),
+                  CircleAvatar(
+                    radius: 30.r,
+                    backgroundColor: AppColors.primary.withOpacity(0.3),
+                    backgroundImage: (SharedPref.getString(
+                                    key: MySharedKeys.picture) !=
+                                null &&
+                            SharedPref.getString(key: MySharedKeys.picture)!
+                                .isNotEmpty)
+                        ? NetworkImage(
+                            SharedPref.getString(key: MySharedKeys.picture)!)
+                        : null,
+                    child: (SharedPref.getString(key: MySharedKeys.picture) ==
+                                null ||
+                            SharedPref.getString(key: MySharedKeys.picture)!
+                                .isEmpty)
+                        ? Icon(Icons.person, size: 24.sp, color: Colors.white)
+                        : null,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
-
+            ),
       actions: [
         widget.audioCallIcon == false
             ? const SizedBox()
             : IconButton(
-          onPressed: () {
-            _showCallOptions();
-          },
-          icon: const Icon(CupertinoIcons.phone),
-        )
+                onPressed: () {
+                  _showCallOptions();
+                },
+                icon: const Icon(CupertinoIcons.phone),
+              )
       ],
-
       bottom: widget.withDivider == true
           ? const PreferredSize(
-        preferredSize: Size.fromHeight(1),
-        child: Divider(),
-      )
+              preferredSize: Size.fromHeight(1),
+              child: Divider(),
+            )
           : null,
     );
   }
@@ -140,6 +144,7 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
   }
 
   void _startOnlineCall() {
-    Navigator.pushNamed(context, RoutingEndpoints.audioCall);
+    Navigator.pushNamed(context, RoutingEndpoints.audioCall,
+        arguments: widget.channelId);
   }
 }
