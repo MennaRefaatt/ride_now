@@ -1,6 +1,8 @@
 import 'package:ride_now/core/helpers/shared_pref.dart';
 
+import '../../../../../../core/di/di.dart';
 import '../../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../../core/services/f_c_m_service/device_token_service.dart';
 import '../../models/user.dart';
 
 abstract class DSAuthLocal {
@@ -20,6 +22,9 @@ class DSAuthLocalImpl implements DSAuthLocal {
     SharedPref.setString(key: MySharedKeys.city, value: user.city!);
     SharedPref.setString(key: MySharedKeys.type, value: user.type!);
     SharedPref.setString(key: MySharedKeys.currentTripId, value: user.currentTripId!);
+    final deviceTokenService = sl<DeviceTokenService>();
+    String? deviceToken = await deviceTokenService.getDeviceToken();
+    SharedPref.setString(key: MySharedKeys.deviceToken, value: deviceToken ?? "");
   }
 
   @override
@@ -33,6 +38,7 @@ class DSAuthLocalImpl implements DSAuthLocal {
       phoneNumber: SharedPref.getString(key: MySharedKeys.phone) ?? "",
       photoUrl: SharedPref.getString(key: MySharedKeys.picture) ?? "",
       currentTripId: SharedPref.getString(key: MySharedKeys.currentTripId) ?? "",
+      deviceToken: SharedPref.getString(key: MySharedKeys.deviceToken) ?? "", // إضافة الـ device token هنا
     );
     return user;
   }

@@ -27,13 +27,10 @@ class TripRemoteDSImpl implements TripRemoteDS {
         throw Exception('Trip ID is empty');
       }
 
-      final getTheTrip = await _firestore
-          .collection('trips')
-          .doc(tripId)
-          .get();
+      final getTheTrip = await _firestore.collection('trips').doc(tripId).get();
 
       if (getTheTrip.exists) {
-        final rawData = getTheTrip.data()as Map<String, dynamic>;
+        final rawData = getTheTrip.data() as Map<String, dynamic>;
         safePrint("Document data: $rawData");
         TripModel tripModel = TripModel.fromJson(rawData);
         safePrint("tripModel: $tripModel");
@@ -91,13 +88,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
             final tripStatus = tripDoc.data()?['status'];
             if (tripStatus == TripStatus.accepted.name ||
                 tripStatus == TripStatus.pending.name) {
-              throw Exception(
-                  "You already have an active trip. Please wait for it to finish or cancel it before creating a new one.");
-            } else {
+              tripRef.update({'status': TripStatus.canceled.name});
               userRef.update({'currentTripId': 'none'});
-              tripRef.update({'status': TripStatus.pending.name});
-              tripRef.update(tripModel.toJson());
-              safePrint("Trip updated successfully.");
             }
           }
         }
@@ -112,14 +104,20 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
       String distance = await tripHelper
           .calculateDistance(fromCoordinates, toCoordinates, unit: 'km');
-      double distanceInKm = double.parse(distance.split(" ")[0]);
-      double tripCost = tripHelper.calculateCost(distanceInKm);
+      String estimatedTime = await tripHelper.calculateEstimatedArrivalTime(
+          fromCoordinates, toCoordinates, 30);
+      double calculatedCost =
+          tripHelper.calculateCost(double.parse(distance.split(" ")[0]));
+      String formattedCost = tripHelper.formatCost(calculatedCost);
 
       final model = TripModel(
         fromLatLng: fromCoordinates,
         toLatLng: toCoordinates,
         paymentMethod: tripModel.paymentMethod,
         paymentStatus: StripePaymentStatus.holding.name,
+        estimatedTime: estimatedTime,
+        moreThan4Passengers: tripModel.moreThan4Passengers,
+        comment: tripModel.comment,
         driverData: DriverData(
           driverId: "",
           driverName: "",
@@ -128,31 +126,29 @@ class TripRemoteDSImpl implements TripRemoteDS {
           carColor: "",
           carModel: "",
           carNumber: "",
-          driverLocation: LatLng(
-            0,
-            0,
-          ),
+          driverToken: "",
+          driverLocation: LatLng(0, 0),
         ),
         passengerData: PassengerData(
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
           passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
+          passengerToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
         ),
         tripId: "",
         from: tripModel.from,
         to: tripModel.to,
         dateTime: tripModel.dateTime,
-        price: tripCost.toString(),
+        price: formattedCost,
         status: TripStatus.pending.name,
         distance: distance,
       );
+
       final tripRef = await FirebaseFirestore.instance
           .collection('trips')
           .add(model.toJson());
-
       await tripRef.update({'tripId': tripRef.id});
-       SharedPref.setString(
-          key: MySharedKeys.currentTripId, value: tripRef.id);
+      SharedPref.setString(key: MySharedKeys.currentTripId, value: tripRef.id);
       await userRef.update({'currentTripId': tripRef.id});
       safePrint("Trip created successfully.");
     } catch (e) {
@@ -176,6 +172,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
       for (var driver in availableDrivers) {
         final driverId = driver['driverId'];
+        final driverToken = driver['driverToken'];
         final driverName = driver['personalInfo']['firstName'] +
             "" +
             driver['personalInfo']['lastName'];
@@ -192,6 +189,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
             driverName: driverName,
             driverPhone: driverPhone,
             driverImage: driverImage,
+            driverToken: driverToken,
             driverLocation: LatLng(diverLat, diverLong),
             carColor: carColor,
             carModel: carModel,

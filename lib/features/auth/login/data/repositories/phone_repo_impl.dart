@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
+import '../../../../../core/services/f_c_m_service/device_token_service.dart';
 import '../../domain/repositories/phone_repo_base.dart';
 import '../data_sources/firestore_service/firestore_param.dart';
 import '../data_sources/firestore_service/firestore_service.dart';
@@ -46,6 +47,8 @@ class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {
         currentTripId: "none",
       );
       await _firestoreService.saveUserToFirestore(user, param);
+      final deviceTokenService = sl<DeviceTokenService>();
+      String? deviceToken = await deviceTokenService.getDeviceToken();
 
       final userModel = UserModel(
         city: param.city ?? '',
@@ -56,6 +59,7 @@ class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {
         photoUrl: user.photoURL ?? '',
         phoneNumber: param.phoneNumber ?? '',
         currentTripId: param.currentTripId ?? '',
+        deviceToken: deviceToken ?? '',
       );
       await _dsAuthLocal.saveDataToLocal(userModel);
 

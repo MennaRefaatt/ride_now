@@ -12,6 +12,7 @@ import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
 import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/services/f_c_m_service/device_token_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../phone_args.dart';
 import '../../domain/repositories/facebook_repo_base.dart';
@@ -45,6 +46,9 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
           type: UserType.passenger.name,
           currentTripId: "none",
         );
+        final deviceTokenService = sl<DeviceTokenService>();
+        String? deviceToken = await deviceTokenService.getDeviceToken();
+
         await _firestoreService
             .saveUserToFirestore(user, param)
             .then((value) async {
@@ -57,6 +61,7 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
             photoUrl: user.photoURL ?? '',
             phoneNumber: param.phoneNumber ?? '',
             currentTripId: param.currentTripId ?? '',
+            deviceToken:deviceToken ?? '',
           );
           await _dsAuthLocal.saveDataToLocal(userModel);
           if (user.photoURL != null) {
@@ -84,6 +89,7 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
             photoUrl: user.photoURL ?? '',
             phoneNumber: phoneNumber,
             currentTripId: userDoc.data()?['currentTripId'] ?? '',
+            deviceToken: userDoc.data()?['deviceToken'] ?? '',
           );
           await _dsAuthLocal.saveDataToLocal(userModel).then((value) async {
             final userType = SharedPref.getString(key: MySharedKeys.type);

@@ -12,7 +12,7 @@ class ApiConstants {
 }
 class AgoraConstants {
   static const String appId = "fb581f774f4c46c884d1a0884843a551";
-  static const String token ="007eJxTYDgz98H3aZkuCmXT+oM+1cxae/r+pb2GRkcU3m2/8NB99TZOBYa0JFMLwzRzc5M0k2QTs2QLC5MUw0QDIGVhYpxoamrorbgovSGQkaFR+S8zIwMEgvjsDEWZKal++eUMDAClHSLu";
+  static const String token ="007eJxTYLCTPXH2dKb2O4PP+vO65rcwhxqGLX2dnn519mPZVwbXD2YrMKQlmVoYppmbm6SZJJuYJVtYmKQYJhoAKQsT40RTU0PfmMXpDYGMDHa6cYyMDBAI4rMzFGWmpPrllzMwAADOFiAq";
   static const String channelName = "rideNow";
 }
 
