@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
+import 'package:ride_now/core/services/f_c_m_service/firebase_messaging_service.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
-import '../services/routing/routing_endpoints.dart';
+import '../services/network/api_constants.dart';
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
 import '../utils/app_button.dart';
@@ -20,7 +20,9 @@ class DefaultAppBar extends StatefulWidget {
       this.audioCallIcon = false,
       this.phone,
       this.withProfilePicture = false,
-      this.channelId});
+      this.channelId,
+      this.callerName,
+      this.receiverFCMToken});
 
   final String text;
   final bool? withDivider;
@@ -29,6 +31,8 @@ class DefaultAppBar extends StatefulWidget {
   final String? phone;
   final bool? withProfilePicture;
   final String? channelId;
+  final String? callerName;
+  final String? receiverFCMToken;
   @override
   State<DefaultAppBar> createState() => _DefaultAppBarState();
 }
@@ -45,7 +49,9 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
       ),
       backgroundColor: widget.backgroundColor,
       centerTitle: true,
-      leadingWidth: MediaQuery.of(context).size.width * 0.3,
+      leadingWidth: Scaffold.of(context).hasDrawer
+          ? MediaQuery.of(context).size.width * 0.1
+          : MediaQuery.of(context).size.width * 0.3,
       leading: Scaffold.of(context).hasDrawer
           ? null
           : Padding(
@@ -144,7 +150,15 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
   }
 
   void _startOnlineCall() {
-    Navigator.pushNamed(context, RoutingEndpoints.audioCall,
-        arguments: widget.channelId);
+    if (widget.receiverFCMToken != null &&
+        widget.callerName != null &&
+        widget.channelId != null) {
+      sendCallNotification(widget.receiverFCMToken!, widget.callerName!,
+          AgoraConstants.channelName);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Missing call parameters')),
+      );
+    }
   }
 }

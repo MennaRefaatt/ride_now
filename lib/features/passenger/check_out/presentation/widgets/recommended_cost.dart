@@ -6,8 +6,16 @@ import '../../../../../core/theming/styles.dart';
 class RecommendedCost extends StatelessWidget {
   const RecommendedCost({super.key, required this.costText});
   final String costText;
+
   @override
   Widget build(BuildContext context) {
+    // Convert costText to double
+    double cost = double.tryParse(costText) ?? 0.0;
+
+    // Check if the cost is a whole number
+    String formattedCost =
+    (cost == cost.toInt()) ? cost.toInt().toString() : cost.toStringAsFixed(2);
+
     return Container(
       padding: EdgeInsets.all(15.sp),
       width: double.infinity,
@@ -27,29 +35,30 @@ class RecommendedCost extends StatelessWidget {
           ),
           verticalSpacing(10.h),
           RichText(
-              text: TextSpan(children: [
-            TextSpan(
-              text: "EGP ",
-              style: TextStyles.font32BlueBold.copyWith(
-                color: Colors.grey,
-              ),
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: "EGP ",
+                  style: TextStyles.font32BlueBold.copyWith(
+                    color: Colors.grey,
+                  ),
+                ),
+                TextSpan(
+                  text: formattedCost,
+                  style: TextStyles.font32BlueBold.copyWith(color: Colors.black),
+                ),
+              ],
             ),
-            TextSpan(
-              text: costText,
-              style: TextStyles.font32BlueBold.copyWith(color: Colors.black),
-            ),
-          ])),
+          ),
           Divider(),
           Row(
             children: [
               Icon(Icons.account_balance_wallet),
               horizontalSpacing(10.w),
               Text("Recommended fare:",
-                  style: TextStyles.font18BlackRegular
-                      .copyWith(fontWeight: FontWeight.bold)),
-              Text("EGP $costText",
-                  style: TextStyles.font18BlackRegular
-                      .copyWith(fontWeight: FontWeight.bold)),
+                  style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
+              Text("EGP $formattedCost",
+                  style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
         ],

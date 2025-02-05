@@ -41,6 +41,8 @@ class DriverTripDetails extends StatelessWidget {
                   children: [
                     ContactCall(
                       phone: tripModel.passengerData.passengerPhone,
+                      callerName: tripModel.driverData.driverName,
+                      receiverFCMToken: tripModel.passengerData.passengerToken,
                     ),
                     horizontalSpacing(10.w),
                     Text(

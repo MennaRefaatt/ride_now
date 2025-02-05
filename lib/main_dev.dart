@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:ride_now/core/services/call/call_service.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/driver/driver_status_listener.dart';
 import 'package:ride_now/firebase_options.dart';
@@ -11,6 +10,8 @@ import 'core/helpers/safe_print.dart';
 import 'core/helpers/secure_storage/secure_storage.dart';
 import 'core/helpers/shared_pref.dart';
 import 'core/helpers/shared_pref_keys.dart';
+import 'core/services/f_c_m_service/device_token_service.dart';
+import 'core/services/f_c_m_service/firebase_messaging_service.dart';
 import 'core/services/network/api_constants.dart';
 import 'core/services/network/api_service.dart';
 
@@ -20,7 +21,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  FirebaseMessagingService.initialize();
   ApiService.init();
   await init();
   await SharedPref.init();
@@ -29,12 +30,18 @@ Future<void> main() async {
   safePrint(SharedPref.getString(key: MySharedKeys.userName));
   safePrint(SharedPref.getString(key: MySharedKeys.picture));
   safePrint(SharedPref.getString(key: MySharedKeys.type));
+  final deviceTokenService = sl<DeviceTokenService>();
+  String? deviceToken = await deviceTokenService.getDeviceToken();
+  safePrint(deviceToken);
+  if (deviceToken != null) {
+    SharedPref.setString(key: MySharedKeys.deviceToken, value: deviceToken);
+  }
+
   DriverStatusListener driverStatusListener = DriverStatusListener(
     userId: userId!,
   );
   driverStatusListener.listenToDriverStatusChanges();
   SecureStorageService();
-  CallService().initCallService();
   runApp(
     AppEntryPoint(initialRoute: RoutingEndpoints.splash),
   );
