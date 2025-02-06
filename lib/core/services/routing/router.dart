@@ -87,11 +87,7 @@ class RouteServices {
             ),
             routeSettings.name!);
       case RoutingEndpoints.audioCall:
-        return _customFadeRoute(
-            AudioCallScreen(
-              channelId: routeSettings.arguments as String,
-            ),
-            routeSettings.name!);
+        return _customFadeRoute(AudioCallScreen(), routeSettings.name!);
       case RoutingEndpoints.otp:
         return _customFadeRoute(
             OTPScreen(verificationId: routeSettings.arguments as String),

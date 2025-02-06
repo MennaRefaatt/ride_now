@@ -91,10 +91,10 @@ class _TripScreenState extends State<TripScreen> {
                       );
                       return Stack(
                         children: [
-                          TripTracking(
-                            args: updatedArgs,
-                            driverLatLng: driverLocation!,
-                          ),
+                          // TripTracking(
+                          //   args: updatedArgs,
+                          //   driverLatLng: driverLocation!,
+                          // ),
                           if (tripStatus == TripStatus.accepted.name &&
                               driverData["driverId"] != "" &&
                               paymentStatus ==
@@ -105,7 +105,7 @@ class _TripScreenState extends State<TripScreen> {
                             ),
                           if (tripStatus != TripStatus.accepted.name &&
                               driverData["driverId"] == "")
-                            WaitingForDriver(),
+                            WaitingForDriver(isPassenger: true,),
                         ],
                       );
                     }
