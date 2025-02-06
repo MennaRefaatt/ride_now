@@ -7,9 +7,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
 import '../services/network/api_constants.dart';
+import '../services/routing/routing_endpoints.dart';
 import '../theming/app_colors.dart';
 import '../theming/styles.dart';
 import '../utils/app_button.dart';
+import 'app_entry_point.dart';
 
 class DefaultAppBar extends StatefulWidget {
   const DefaultAppBar(
@@ -20,7 +22,6 @@ class DefaultAppBar extends StatefulWidget {
       this.audioCallIcon = false,
       this.phone,
       this.withProfilePicture = false,
-      this.channelId,
       this.callerName,
       this.receiverFCMToken});
 
@@ -30,7 +31,6 @@ class DefaultAppBar extends StatefulWidget {
   final bool? audioCallIcon;
   final String? phone;
   final bool? withProfilePicture;
-  final String? channelId;
   final String? callerName;
   final String? receiverFCMToken;
   @override
@@ -150,15 +150,14 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
   }
 
   void _startOnlineCall() {
-    if (widget.receiverFCMToken != null &&
-        widget.callerName != null &&
-        widget.channelId != null) {
-      sendCallNotification(widget.receiverFCMToken!, widget.callerName!,
-          AgoraConstants.channelName);
+    if (widget.receiverFCMToken != null && widget.callerName != null) {
+      sendCallNotification(widget.receiverFCMToken!, widget.callerName!, AgoraConstants.channelId);
+      appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Missing call parameters')),
       );
     }
   }
+
 }

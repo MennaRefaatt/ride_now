@@ -8,7 +8,8 @@ import 'cancel_button.dart';
 class YourCurrentTrip extends StatelessWidget {
   final String from;
   final String to;
-  const YourCurrentTrip({super.key, required this.from, required this.to});
+  final bool isPassenger;
+  const YourCurrentTrip({super.key, required this.from, required this.to, required this.isPassenger});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -57,7 +58,9 @@ class YourCurrentTrip extends StatelessWidget {
           ],
         ),
         verticalSpacing(20.h),
-        CancelButton(),
+        CancelButton(
+          isPassenger:isPassenger,
+        ),
       ],
     );
   }

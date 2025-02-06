@@ -172,7 +172,6 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
       for (var driver in availableDrivers) {
         final driverId = driver['driverId'];
-        final driverToken = driver['driverToken'];
         final driverName = driver['personalInfo']['firstName'] +
             "" +
             driver['personalInfo']['lastName'];
@@ -189,7 +188,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
             driverName: driverName,
             driverPhone: driverPhone,
             driverImage: driverImage,
-            driverToken: driverToken,
+            driverToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
             driverLocation: LatLng(diverLat, diverLong),
             carColor: carColor,
             carModel: carModel,
