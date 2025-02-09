@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/components/app_text_form_field.dart';
 import '../../../../../core/theming/app_colors.dart';
+import '../../../../../generated/l10n.dart';
 
 class TextFormEntry extends StatelessWidget {
   const TextFormEntry({
@@ -43,7 +44,7 @@ class TextFormEntry extends StatelessWidget {
       controllerTextColor: AppColors.black,
       textInputAction: textInputAction ?? TextInputAction.next,
       borderRadius: BorderRadius.circular(10.r),
-      backgroundColor: AppColors.semiGrey.withOpacity(0.2),
+      backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
       isFilled: true,
       maxLength: maxLength,
       inputFormatters: inputFormatters,
@@ -55,12 +56,12 @@ class TextFormEntry extends StatelessWidget {
 class DateValidator {
   static String? validateDate(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your date of birth';
+      return S().pleaseEnterDate;
     }
 
     final parts = value.split('/');
     if (parts.length != 3) {
-      return 'Date format must be DD/MM/YYYY';
+      return S().invalidDateFormat;
     }
 
     final day = int.tryParse(parts[0]);
@@ -69,28 +70,28 @@ class DateValidator {
     final currentYear = DateTime.now().year;
 
     if (day == null || month == null || year == null) {
-      return 'Invalid date';
+      return S().invalidDate;
     }
 
     if (day < 1 || day > 31) {
-      return 'Day must be between 01 and 31';
+      return S().invalidDay;
     }
 
     if (month < 1 || month > 12) {
-      return 'Month must be between 01 and 12';
+      return S().invalidMonth;
     }
 
     if (year < 1950 || year > currentYear) {
-      return 'Year must be between 1950 and $currentYear';
+      return S().invalidYear;
     }
 
     try {
       final date = DateTime(year, month, day);
       if (date.year != year || date.month != month || date.day != day) {
-        return 'Invalid date (e.g., 31st Feb is not valid)';
+        return S().invalidDate;
       }
     } catch (e) {
-      return 'Invalid date';
+      return S().invalidDate;
     }
 
     return null;
@@ -197,26 +198,26 @@ class ExpiryDateInputFormatter extends TextInputFormatter {
 class LicenseNumberValidator {
   static String? validateLicenseNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your license number';
+      return S().pleaseEnterLicenseNumber;
     }
 
     if (value.length != 14) {
-      return 'License number must be 14 characters long';
+      return S().licenseNumberMustBe14Characters;
     }
 
     if (!RegExp(r'^[A-Za-z]').hasMatch(value[0])) {
-      return 'License number should start with a letter';
+      return S().licenseNumberMustStartWithLetter;
     }
 
     if (!RegExp(r'^\d{13}$').hasMatch(value.substring(1))) {
-      return 'License number should have 13 digits following the first letter';
+      return S().licenseNumberMustHave13Digits;
     }
 
     final year = int.tryParse(value.substring(1, 5));
     final currentYear = DateTime.now().year;
 
     if (year != null && (year < 1950 || year > currentYear)) {
-      return 'Year in license number is not valid';
+      return S().invalidLicenseYear;
     }
 
     return null;
@@ -226,19 +227,19 @@ class LicenseNumberValidator {
 class NationalIdValidator {
   static String? validateNationalId(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter your National ID';
+      return S().pleaseEnterNationalId;
     }
 
     if (value.length != 14) {
-      return 'National ID must be 14 digits long';
+      return S().nationalIdMustBe14Digits;
     }
 
     if (!RegExp(r'^\d{14}$').hasMatch(value)) {
-      return 'National ID must contain only digits';
+      return S().nationalIdMustContainOnlyDigits;
     }
 
     if (!_isValidChecksum(value)) {
-      return 'Invalid National ID checksum';
+      return S().invalidNationalIdChecksum;
     }
     final birthYear = int.parse(value.substring(1, 3));
     final birthMonth = int.parse(value.substring(3, 5));
@@ -246,11 +247,11 @@ class NationalIdValidator {
     final currentMonth = DateTime.now().month;
 
     if (birthMonth < 1 || birthMonth > 12) {
-      return 'Invalid birth month';
+      return S().invalidBirthMonth;
     }
     if (birthYear > currentYear ||
         (birthYear == currentYear && birthMonth > currentMonth)) {
-      return 'Birth date cannot be in the future';
+      return S().birthDateCannotBeInFuture;
     }
 
     return null;
@@ -270,12 +271,12 @@ class NationalIdValidator {
 class ExpiryDateValidator {
   static String? validateExpiryDate(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter the expiry date';
+      return S().pleaseEnterExpiryDate;
     }
 
     final parts = value.split('/');
     if (parts.length != 3) {
-      return 'Date format must be DD/MM/YYYY';
+      return S().dateFormatMustBeDDMMYYYY;
     }
 
     final day = int.tryParse(parts[0]);
@@ -283,37 +284,37 @@ class ExpiryDateValidator {
     final year = int.tryParse(parts[2]);
 
     if (day == null || month == null || year == null) {
-      return 'Invalid date';
+      return S().invalidDate;
     }
 
     final currentDate = DateTime.now();
     final currentYear = currentDate.year;
 
     if (day < 1 || day > 31) {
-      return 'Day must be between 01 and 31';
+      return S().dayMustBeBetween01And31;
     }
 
     if (month < 1 || month > 12) {
-      return 'Month must be between 01 and 12';
+      return S().monthMustBeBetween01And12;
     }
 
     if (year < currentYear || year > currentYear + 10) {
-      return 'Year must be within the next 10 years';
+      return S().yearMustBeWithinNext10Years;
     }
 
     try {
       final expiryDate = DateTime(year, month, day);
       if (expiryDate.isBefore(currentDate)) {
-        return 'Expiry date cannot be in the past';
+        return S().expiryDateCannotBeInPast;
       }
 
       if (expiryDate.year != year ||
           expiryDate.month != month ||
           expiryDate.day != day) {
-        return 'Invalid date (e.g., 31st Feb is not valid)';
+        return S().invalidDate;
       }
     } catch (e) {
-      return 'Invalid date';
+      return S().invalidDate;
     }
 
     return null;
@@ -323,11 +324,11 @@ class ExpiryDateValidator {
 class VehiclePlateValidator {
   static String? validatePlateNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Please enter a vehicle plate number';
+      return S().pleaseEnterVehiclePlateNumber;
     }
     final platePattern = RegExp(r'^[A-Za-z]{1,2}\d{4,6}[A-Za-z0-9]?$');
     if (!platePattern.hasMatch(value)) {
-      return 'Invalid plate number format. Example: C12345 or A1234E';
+      return S().invalidPlateNumberFormat;
     }
     return null;
   }

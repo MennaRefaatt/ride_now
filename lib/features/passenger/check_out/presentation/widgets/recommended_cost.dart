@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 
 class RecommendedCost extends StatelessWidget {
   const RecommendedCost({super.key, required this.costText});
@@ -9,10 +10,7 @@ class RecommendedCost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Convert costText to double
     double cost = double.tryParse(costText) ?? 0.0;
-
-    // Check if the cost is a whole number
     String formattedCost =
     (cost == cost.toInt()) ? cost.toInt().toString() : cost.toStringAsFixed(2);
 
@@ -30,7 +28,7 @@ class RecommendedCost extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "S().The cost of the order will be",
+            S().theCostOfTheOrderWillBe,
             style: TextStyles.font18BlackRegular,
           ),
           verticalSpacing(10.h),
@@ -55,7 +53,7 @@ class RecommendedCost extends StatelessWidget {
             children: [
               Icon(Icons.account_balance_wallet),
               horizontalSpacing(10.w),
-              Text("Recommended fare:",
+              Text(S().recommendedFare,
                   style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
               Text("EGP $formattedCost",
                   style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),

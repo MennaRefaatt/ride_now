@@ -6,6 +6,7 @@ import 'package:ride_now/core/utils/app_image.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/contact_call.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/your_current_trip.dart';
 import '../../../../core/helpers/spacing.dart';
+import '../../../../generated/l10n.dart';
 
 class PassengerTripDetails extends StatelessWidget {
   const PassengerTripDetails({super.key, required this.tripModel, required this.isPassenger});
@@ -71,7 +72,7 @@ class PassengerTripDetails extends StatelessWidget {
                     ),
                     horizontalSpacing(10.w),
                     Text(
-                      "Contact Driver",
+                     S().contactDriver,
                       style: TextStyles.font18BlackRegular,
                     ),
                   ],

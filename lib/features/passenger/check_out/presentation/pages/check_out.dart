@@ -12,6 +12,7 @@ import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../widgets/address_summarize.dart';
 import '../widgets/check_out_buttons.dart';
 import '../widgets/trip_payment_method.dart';
@@ -55,7 +56,7 @@ class _CheckOutState extends State<CheckOut> {
       child: Scaffold(
         backgroundColor: AppColors.semiGrey.withOpacity(0.2),
         appBar: AppBar(
-          title: Text("Check Out", style: TextStyles.font24BlackBold),
+          title: Text(S().checkout, style: TextStyles.font24BlackBold),
           backgroundColor: Colors.white,
           centerTitle: true,
           leading: Visibility(

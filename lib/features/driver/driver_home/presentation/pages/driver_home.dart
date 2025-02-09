@@ -6,6 +6,7 @@ import 'package:ride_now/core/components/drawer_items.dart';
 import 'package:ride_now/features/driver/driver_home/presentation/widgets/trip_request_dialogue.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/theming/app_colors.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 
 class DriverHome extends StatefulWidget {
@@ -30,7 +31,7 @@ class _DriverHomeState extends State<DriverHome> {
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.h),
             child: DefaultAppBar(
-              text: "Passengers Requests",
+              text: S().passengerRequests,
               withDivider: false,
             )),
         drawer: DrawerItems(),

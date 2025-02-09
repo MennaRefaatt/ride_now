@@ -10,6 +10,7 @@ import 'package:ride_now/features/passenger/check_out/presentation/check_out_arg
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../core/utils/app_button.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';
@@ -30,7 +31,7 @@ class _HomeBodyState extends State<HomeBody> {
   void openEnterYourRouteFromOrderButton(BuildContext context) {
     final locationState = context.read<LocationCubit>().state;
     final homeState = context.read<HomeCubit>().state;
-    String fromText = 'S().From';
+    String fromText = S().fromWhere;
     Color backgroundColor = Colors.grey.shade200;
     List<TripModel> trips = [];
 
@@ -128,7 +129,7 @@ class _HomeBodyState extends State<HomeBody> {
                         ),
                         Expanded(
                           child: AppButton(
-                            text: "Order",
+                            text:S().order,
                             textStyle: TextStyles.font18BlackBold,
                             onPressed: () async {
                               if (widget

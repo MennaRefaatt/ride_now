@@ -5,6 +5,7 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../../core/components/app_network_image.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 
 class RideDescription extends StatelessWidget {
    const RideDescription(
@@ -50,7 +51,7 @@ class RideDescription extends StatelessWidget {
                 color: AppColors.semiGrey.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10.r),
               ),
-              child: Center(child: Text("S().ok", style: TextStyles.font18BlackBold)),
+              child: Center(child: Text(S().ok, style: TextStyles.font18BlackBold)),
             ),
           )
         ],

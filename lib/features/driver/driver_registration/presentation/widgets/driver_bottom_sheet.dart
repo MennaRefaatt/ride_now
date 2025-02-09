@@ -6,6 +6,7 @@ import 'package:ride_now/features/driver/driver_registration/presentation/widget
 import '../../../../../core/di/di.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../manager/driver_registration_cubit.dart';
 
 class DriverBottomSheet extends StatefulWidget {
@@ -85,7 +86,7 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
                   ),
                   TextFormEntry(
                     controller: searchController,
-                    hintText: "S().search",
+                    hintText: S().search,
                     onChanged: (value) {
                       setState(() {
                         filteredItems = filteredItems
@@ -147,11 +148,11 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
   String _getTitle() {
     switch (widget.type) {
       case 'model':
-        return "S().selectModel";
+        return S().selectModel;
       case 'brand':
-        return "S().selectBrand";
+        return S().selectBrand;
       case 'color':
-        return "S().selectColor";
+        return S().selectColor;
       default:
         return '';
     }

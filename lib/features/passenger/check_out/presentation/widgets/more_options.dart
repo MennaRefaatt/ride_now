@@ -8,6 +8,7 @@ import 'package:ride_now/core/utils/app_button.dart';
 
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 
 class MoreOptions extends StatefulWidget {
   final Function(bool, String) onApply;
@@ -60,7 +61,7 @@ class _MoreOptionsState extends State<MoreOptions> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "S().Options",
+                                  S().options,
                                   style: TextStyles.font24BlackBold,
                                   textAlign: TextAlign.center,
                                 ),
@@ -85,7 +86,7 @@ class _MoreOptionsState extends State<MoreOptions> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  "S().moreThan4Passengers",
+                                  S().moreThan4Passengers,
                                   style: TextStyles.font18BlackRegular,
                                 ),
                               ),
@@ -106,7 +107,7 @@ class _MoreOptionsState extends State<MoreOptions> {
 
                           // Comment Input Field
                           AppTextFormField(
-                            hintText: "S().comment",
+                            hintText: S().comment,
                             withHint: true,
                             controller: widget.commentController,
                             borderRadius: BorderRadius.circular(15.r),
@@ -122,7 +123,7 @@ class _MoreOptionsState extends State<MoreOptions> {
 
                           // Apply Button
                           AppButton(
-                            text: "S().apply",
+                            text: S().apply,
                             width: double.infinity,
                             backgroundColor: AppColors.primary,
                             borderRadius: 15.r,

@@ -6,6 +6,7 @@ import 'package:ride_now/features/driver/driver_registration/presentation/widget
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/text_form_entry.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../manager/driver_registration_cubit.dart';
 import 'image_type_enum.dart';
 
@@ -40,10 +41,10 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Personal Information', style: TextStyles.font24BlackBold),
+            Text(S().personalInformation, style: TextStyles.font24BlackBold),
             verticalSpacing(20.h),
             PickImage(
-              text: "Pick your personal picture",
+              text: S().pickYourPersonalPicture,
               image: widget.cubit.personalImage ?? '',
               onTap: () async {
                 await widget.cubit.pickImage(ImageType.personalImage);
@@ -52,7 +53,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
             ),
             verticalSpacing(20.h),
             TextFormEntry(
-              hintText: "First Name",
+              hintText: S().firstName,
               controller: firstNameController,
               textInputAction: TextInputAction.next,
               onChanged: (value) => widget.cubit.updatePersonalInfo(
@@ -63,7 +64,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your first name';
+                  return S().pleaseEnterYourFirstName;
                 }
                 return null;
               },
@@ -73,7 +74,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
             ),
             verticalSpacing(10.h),
             TextFormEntry(
-              hintText: "Last Name",
+              hintText: S().lastName,
               textInputAction: TextInputAction.next,
               controller: lastNameController,
               onChanged: (value) => widget.cubit.updatePersonalInfo(
@@ -84,7 +85,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter your last name';
+                  return S().pleaseEnterYourLastName;
                 }
                 return null;
               },
@@ -94,7 +95,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
             ),
             verticalSpacing(10.h),
             TextFormEntry(
-              hintText: "Date of Birth",
+              hintText: S().dateOfBirth,
               textInputAction: TextInputAction.done,
               controller: dateOfBirthController,
               keyboardType: TextInputType.datetime,

@@ -6,6 +6,7 @@ import 'package:ride_now/features/driver/driver_registration/presentation/widget
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/text_form_entry.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../manager/driver_registration_cubit.dart';
 import 'image_type_enum.dart';
 
@@ -61,7 +62,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('S().vehicleInformation', style: TextStyles.font24BlackBold),
+            Text(S().vehicleInformation, style: TextStyles.font24BlackBold),
             verticalSpacing(20.h),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -69,14 +70,14 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   PickImage(
-                      text: "S().vehicle Picture",
+                      text: S().vehiclePicture,
                       image: widget.cubit.vehicleImage ?? '',
                       onTap: () async {
                         await widget.cubit.pickImage(ImageType.vehicleImage);
                         setState(() {});
                       }),
                   PickImage(
-                    text: "S().vehicle Registration Certificate",
+                    text: S().vehicleRegistrationCertificate,
                     image: widget.cubit.registrationCertificate ?? '',
                     onTap: () async {
                       await widget.cubit
@@ -85,7 +86,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                     },
                   ),
                   PickImage(
-                    text: "S().backSide Of Certificate",
+                    text: S().backSideOfCertificate,
                     image: widget.cubit.backOfCertificate ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.backOfCertificate);
@@ -103,7 +104,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 itemsFuture: widget.cubit.fetchBrands(),
               ),
               child: TextFormEntry(
-                hintText: "S().vehicleBrand",
+                hintText: S().vehicleBrand,
                 controller: _brandController,
                 enable: false,
                 onChanged: (value) => widget.cubit.updateVehicleInfo(
@@ -119,7 +120,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "S().requiredField";
+                    return S().requiredField;
                   }
                   return null;
                 },
@@ -134,7 +135,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 itemsFuture: widget.cubit.fetchModels(),
               ),
               child: TextFormEntry(
-                hintText: "S().vehicleModel",
+                hintText: S().vehicleModel,
                 controller: _modelController,
                 enable: false,
                 onChanged: (value) => widget.cubit.updateVehicleInfo(
@@ -150,7 +151,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "S().requiredField";
+                    return S().requiredField;
                   }
                   return null;
                 },
@@ -165,7 +166,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                       itemsFuture: widget.cubit.fetchColors(),
                     ),
                 child: TextFormEntry(
-                  hintText: "S().vehicleColor",
+                  hintText: S().vehicleColor,
                   enable: false,
                   controller: _colorController,
                   onChanged: (value) => widget.cubit.updateVehicleInfo(
@@ -181,14 +182,14 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "S().requiredField";
+                      return S().requiredField;
                     }
                     return null;
                   },
                 )),
             verticalSpacing(10.h),
             TextFormEntry(
-              hintText: "S().productionYear",
+              hintText: S().productionYear,
               controller: _productionYearController,
               onChanged: (value) => widget.cubit.updateVehicleInfo(
                 brand: _brandController.text,
@@ -220,7 +221,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
             ),
             verticalSpacing(10.h),
             TextFormEntry(
-                hintText: "S().plateNumber",
+                hintText: S().vehiclePlateNumber,
                 controller: _plateNumberController,
                 onChanged: (value) => widget.cubit.updateVehicleInfo(
                       brand: _brandController.text,

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/services/f_c_m_service/firebase_messaging_service.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../generated/l10n.dart';
 import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
 import '../services/network/api_constants.dart';
@@ -109,10 +110,10 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Choose Call Type", style: TextStyles.font24BlackBold),
+              Text( S().chooseCallType, style: TextStyles.font24BlackBold),
               verticalSpacing(20.h),
               AppButton(
-                text: "Regular Call",
+                text:  S().regularCall,
                 backgroundColor: AppColors.primary,
                 onPressed: () {
                   Navigator.pop(context);
@@ -121,7 +122,7 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                 textStyle: TextStyles.font18BlackRegular,
               ),
               AppButton(
-                text: "Online Call (Audio)",
+                text:  S().audioCall,
                 backgroundColor: AppColors.semiGrey,
                 onPressed: () {
                   Navigator.pop(context);
