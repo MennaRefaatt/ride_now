@@ -13,6 +13,7 @@ class UserModel {
   final String? city;
   final String? type;
   final String? currentTripId;
+  final String? deviceToken;
 
   UserModel({
     required this.phoneNumber,
@@ -23,6 +24,7 @@ class UserModel {
     required this.type,
     required this.photoUrl,
     required this.currentTripId,
+    required this.deviceToken
   });
 
   factory UserModel.fromDocument(DocumentSnapshot doc) {

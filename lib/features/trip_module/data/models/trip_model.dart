@@ -10,11 +10,15 @@ class TripModel {
   final String paymentStatus;
   final DateTime dateTime;
   final String price;
+  final String estimatedTime;
   final String distance;
   final LatLng fromLatLng;
   final LatLng toLatLng;
   final DriverData driverData;
   final PassengerData passengerData;
+  final bool moreThan4Passengers;
+  final String comment;
+
   TripModel({
     required this.tripId,
     required this.from,
@@ -29,6 +33,9 @@ class TripModel {
     required this.passengerData,
     required this.paymentMethod,
     required this.paymentStatus,
+    required this.estimatedTime,
+    required this.moreThan4Passengers,
+    required this.comment,
   });
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
@@ -38,7 +45,10 @@ class TripModel {
       paymentMethod: json['paymentMethod'],
       from: json['from'],
       to: json['to'],
+      moreThan4Passengers: json['moreThan4Passengers'],
+      comment: json['comment'],
       status: json['status'],
+      estimatedTime: json['estimatedTime'],
       fromLatLng: json['fromLatLng'] is Map<String, dynamic>
           ? LatLng(
               json['fromLatLng']['latitude']?.toDouble() ?? 0.0,
@@ -78,6 +88,9 @@ class TripModel {
       'paymentMethod': paymentMethod,
       'from': from,
       'to': to,
+      'moreThan4Passengers': moreThan4Passengers,
+      'comment': comment,
+      'estimatedTime': estimatedTime,
       "fromLatLng": {
         "latitude": fromLatLng.latitude,
         "longitude": fromLatLng.longitude
@@ -110,6 +123,7 @@ class DriverData {
   final String carModel;
   final String carNumber;
   final LatLng driverLocation;
+  final String driverToken;
   DriverData({
     required this.driverId,
     required this.driverName,
@@ -119,6 +133,7 @@ class DriverData {
     required this.carModel,
     required this.carNumber,
     required this.driverLocation,
+    required this.driverToken,
   });
 
   factory DriverData.fromJson(Map<String, dynamic> json) {
@@ -130,6 +145,7 @@ class DriverData {
       carColor: json['carColor'],
       carModel: json['carModel'],
       carNumber: json['carNumber'],
+      driverToken: json['driverToken'],
       driverLocation: LatLng(json['driverLocation']['latitude'] ?? 0.0,
           json['driverLocation']['longitude'] ?? 0.0),
     );
@@ -143,6 +159,7 @@ class DriverData {
         'carColor': carColor,
         'carModel': carModel,
         'carNumber': carNumber,
+        'driverToken': driverToken,
         'driverLocation': {
           'latitude': driverLocation.latitude,
           'longitude': driverLocation.longitude,
@@ -154,10 +171,12 @@ class PassengerData {
   final String passengerId;
   final String passengerName;
   final String passengerPhone;
+  final String passengerToken;
   PassengerData({
     required this.passengerId,
     required this.passengerName,
     required this.passengerPhone,
+    required this.passengerToken,
   });
 
   factory PassengerData.fromJson(Map<String, dynamic> json) {
@@ -165,6 +184,7 @@ class PassengerData {
       passengerId: json['passengerId'],
       passengerName: json['passengerName'],
       passengerPhone: json['passengerPhone'],
+      passengerToken: json['passengerToken'],
     );
   }
 
@@ -172,5 +192,6 @@ class PassengerData {
         'passengerId': passengerId,
         'passengerName': passengerName,
         'passengerPhone': passengerPhone,
+        'passengerToken': passengerToken,
       };
 }

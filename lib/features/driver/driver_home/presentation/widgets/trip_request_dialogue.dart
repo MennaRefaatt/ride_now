@@ -169,7 +169,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                   horizontalSpacing(5.w),
                                   Expanded(
                                     child: Text(
-                                        "${trip.dateTime.hour}:${trip.dateTime.minute}",
+                                        "Estimated time: ${trip.estimatedTime}",
                                         style: TextStyles.font18BlackRegular),
                                   ),
                                   Text(trip.distance,
@@ -212,6 +212,8 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       key: MySharedKeys.carNumber)!;
                                   final carColor = SharedPref.getString(
                                       key: MySharedKeys.carColor)!;
+                                  final driverToken = SharedPref.getString(
+                                      key: MySharedKeys.deviceToken)!;
                                   safePrint("driverId: $driverId");
                                   widget.tripCubit
                                       .acceptTrip(
@@ -224,6 +226,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                               carModel: carModel,
                                               carColor: carColor,
                                               carNumber: carNumber,
+                                              driverToken: driverToken,
                                               driverLocation: LatLng(
                                                 driverLat,
                                                 driverLong,

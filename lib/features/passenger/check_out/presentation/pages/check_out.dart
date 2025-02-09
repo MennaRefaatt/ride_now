@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/enums/payment_method.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
@@ -37,7 +38,10 @@ class _CheckOutState extends State<CheckOut> {
   );
   String selectedPaymentMethod = PaymentMethod.cash.name;
   late String tripId;
-
+  String newToAddress = "";
+  LatLng newToLatLng = LatLng(0.0, 0.0);
+  double newCost = 0.0;
+  bool newPickedToAddress = false;
   @override
   void initState() {
     super.initState();
@@ -117,6 +121,10 @@ class _CheckOutState extends State<CheckOut> {
               fromLatLng: widget.args.fromLatLng,
               toLatLng: widget.args.toLatLng,
               paymentMethod: selectedPaymentMethod,
+              newCost: newCost,
+              newToAddress: newToAddress,
+              newToLatLng: newToLatLng,
+              newPickedToAddress: newPickedToAddress,
             ),
             BlocBuilder<TripCubit, TripState>(
               builder: (context, state) {
@@ -124,13 +132,23 @@ class _CheckOutState extends State<CheckOut> {
                     (selectedPaymentMethod == PaymentMethod.card.name &&
                         tripCubit.paymentStatus ==
                             StripePaymentStatus.holding.name)) {
-                  return CheckOutButtons(
-                    tripCubit: tripCubit,
-                    fromAddress: widget.args.fromAddress,
-                    toAddress: widget.args.toAddress,
-                    fromLatLng: widget.args.fromLatLng,
-                    toLatLng: widget.args.toLatLng,
-                    paymentMethod: selectedPaymentMethod,
+                  return Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.all(15.sp),
+                    child: CheckOutButtons(
+                      tripCubit: tripCubit,
+                      fromAddress: widget.args.fromAddress,
+                      toAddress: newPickedToAddress == true
+                          ? newToAddress
+                          : widget.args.toAddress,
+                      fromLatLng: widget.args.fromLatLng,
+                      toLatLng: newPickedToAddress == true
+                          ? newToLatLng
+                          : widget.args.toLatLng,
+                      paymentMethod: selectedPaymentMethod,
+                      cost:
+                          newPickedToAddress == true ? newCost : tripCubit.cost,
+                    ),
                   );
                 }
                 return SizedBox.shrink();

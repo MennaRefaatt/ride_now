@@ -7,8 +7,8 @@ import '../../../../../core/theming/app_colors.dart';
 import '../manager/trip_cubit.dart';
 
 class CancelButton extends StatelessWidget {
-  const CancelButton({super.key});
-
+  const CancelButton({super.key, required this.isPassenger});
+  final bool isPassenger;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TripCubit, TripState>(
@@ -17,7 +17,6 @@ class CancelButton extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Trip canceled successfully!')),
           );
-          Navigator.pop(context);
         } else if (state is CancelTripError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error canceling trip: ${state.message}')),
@@ -38,7 +37,9 @@ class CancelButton extends StatelessWidget {
                     .cancelTrip(tripId)
                     .then((value) => Navigator.pushReplacementNamed(
                           context,
-                          RoutingEndpoints.passengerHome,
+                          isPassenger
+                              ? RoutingEndpoints.passengerHome
+                              : RoutingEndpoints.driverHome,
                         ));
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(

@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:ride_now/core/services/network/api_constants.dart';
-
 import '../../../../../core/helpers/safe_print.dart';
 
 class DirectionService {
@@ -30,9 +28,9 @@ class DirectionService {
   }
 
   Future<List<LatLng>> _fetchRouteWithRetry(
-    LatLng origin,
-    LatLng destination,
-  ) async {
+      LatLng origin,
+      LatLng destination,
+      ) async {
     int retryCount = 0;
     const maxRetries = 3;
 
@@ -40,15 +38,20 @@ class DirectionService {
       try {
         final response = await http.get(_buildUrl(origin, destination));
         if (response.statusCode == 200) return _parseResponse(response);
-        if (response.statusCode == 429) await _handleRateLimit(retryCount);
+        if (response.statusCode == 429) await _handleRateLimit();
         retryCount++;
       } catch (e) {
         retryCount++;
-        if (retryCount >= maxRetries) rethrow;
+        if (retryCount >= maxRetries) {
+          safePrint('Error fetching directions: Exception: Failed after $maxRetries attempts');
+          await _handleRateLimit();
+          rethrow;
+        }
       }
     }
     throw Exception('Failed after $maxRetries attempts');
   }
+
 
   Uri _buildUrl(LatLng origin, LatLng destination) =>
       Uri.parse('$openRouteServiceBaseUrl$openRouteServiceApiKey&'
@@ -62,9 +65,10 @@ class DirectionService {
         .toList();
   }
 
-  Future<void> _handleRateLimit(int retryCount) async {
-    final delay = pow(2, retryCount + 1).toInt();
+  Future<void> _handleRateLimit() async {
+    const int delay = 5;
     safePrint('Rate limited. Retrying in $delay seconds...');
-    await Future.delayed(Duration(seconds: delay));
+    await Future.delayed(const Duration(seconds: delay));
   }
+
 }

@@ -51,9 +51,13 @@ class _TripDetailsState extends State<TripDetails> {
                   topLeft: Radius.circular(40.r),
                 ),
               ),
-              child: widget.isPassenger?
-              PassengerTripDetails(tripModel: widget.tripModel)
-              : DriverTripDetails(tripModel: widget.tripModel),
+              child: widget.isPassenger
+                  ? PassengerTripDetails(
+                      isPassenger: widget.isPassenger,
+                      tripModel: widget.tripModel)
+                  : DriverTripDetails(
+                      isPassenger: widget.isPassenger,
+                      tripModel: widget.tripModel),
             ),
           ),
         );

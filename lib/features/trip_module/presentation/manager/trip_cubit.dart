@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:meta/meta.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
@@ -92,23 +91,29 @@ class TripCubit extends Cubit<TripState> {
   }
 
   Future<void> createTrip(
-    String from,
-    LatLng fromLatLng,
-    String to,
-    LatLng toLatLng,
-    String paymentMethod,
-  ) async {
+      String from,
+      LatLng fromLatLng,
+      String to,
+      LatLng toLatLng,
+      String paymentMethod,
+      bool moreThan4Passengers,
+      String comment,
+      double cost,
+      ) async {
     emit(CreateTripLoading());
     try {
       final tripHelper = TripHelper();
-      String distance = await tripHelper
-          .calculateDistance(fromLatLng, toLatLng, unit: 'km');
+      String distance = await tripHelper.calculateDistance(fromLatLng, toLatLng, unit: 'km');
+      String estimatedTime = await tripHelper.calculateEstimatedArrivalTime(fromLatLng, toLatLng, 30);
 
       final tripModel = TripModel(
-        tripId: "",
+        tripId: "", // TripId will be generated after creating the trip
         from: from,
+        moreThan4Passengers: moreThan4Passengers,
+        comment: comment,
         paymentMethod: paymentMethod,
         to: to,
+        estimatedTime: estimatedTime,
         paymentStatus: StripePaymentStatus.holding.name,
         status: TripStatus.pending.name,
         dateTime: DateTime.now(),
@@ -124,12 +129,14 @@ class TripCubit extends Cubit<TripState> {
           carColor: "",
           carModel: "",
           carNumber: "",
+          driverToken: "",
           driverLocation: LatLng(0, 0),
         ),
         passengerData: PassengerData(
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
           passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
+          passengerToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
         ),
       );
       await createTripUseCase.call(tripModel);

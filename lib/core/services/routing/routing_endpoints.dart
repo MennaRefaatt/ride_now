@@ -17,6 +17,8 @@ class RoutingEndpoints {
   static const driverOnBoarding = '/driverOnBoarding';
   static const driverRegistration = '/driverRegistration';
   static const driverPendingScreen = '/driverPendingScreen';
+  static const audioCall = '/audioCall';
+  static const contactScreen = '/contactScreen';
 
 
 }
