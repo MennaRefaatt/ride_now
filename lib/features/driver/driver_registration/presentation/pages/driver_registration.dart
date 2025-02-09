@@ -7,6 +7,7 @@ import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../manager/driver_registration_cubit.dart';
 import '../widgets/drive_licence.dart';
 import '../widgets/personal_document.dart';
@@ -17,7 +18,7 @@ class DriverRegistration extends StatefulWidget {
   const DriverRegistration({super.key});
 
   @override
-  _DriverRegistration createState() => _DriverRegistration();
+  State<DriverRegistration>createState() => _DriverRegistration();
 }
 
 class _DriverRegistration extends State<DriverRegistration>
@@ -54,10 +55,10 @@ class _DriverRegistration extends State<DriverRegistration>
   }
 
   final List<Map<String, String>> onboardingData = [
-    {"title": "Personal Information"},
-    {"title": "Driver License"},
-    {"title": "Personal Documents"},
-    {"title": "Vehicle Information"},
+    {"title": S().personalInformation},
+    {"title": S().driverLicence},
+    {"title": S().personalDocuments},
+    {"title": S().vehicleInformation},
   ];
 
   final driverCubit = DriverRegistrationCubit(
@@ -73,7 +74,7 @@ class _DriverRegistration extends State<DriverRegistration>
       create: (context) => driverCubit,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("S().driverRegistration",
+          title: Text(S().driverRegistration,
               style: TextStyles.font18BlackRegular),
           leading: Container(),
           centerTitle: true,
@@ -82,7 +83,7 @@ class _DriverRegistration extends State<DriverRegistration>
               onPressed: () {
                 Navigator.pushNamed(context, RoutingEndpoints.driverOnBoarding);
               },
-              child: Text("S().close", style: TextStyles.font18BlackRegular),
+              child: Text(S().close, style: TextStyles.font18BlackRegular),
             ),
           ],
         ),
@@ -176,8 +177,8 @@ class _DriverRegistration extends State<DriverRegistration>
                       width: MediaQuery.of(context).size.width * 0.3,
                       textStyle: TextStyles.font18BlackRegular,
                       text: _currentPage == onboardingData.length - 1
-                          ? "S().finish"
-                          : "S().next",
+                          ? S().finish
+                          : S().next,
                       onPressed: () async {
                         if (_formKeys[_currentPage].currentState?.validate() ??
                             false) {
@@ -197,15 +198,14 @@ class _DriverRegistration extends State<DriverRegistration>
                                 SnackBar(
                                   backgroundColor: Colors.green,
                                   content:
-                                      Text("Driver Registered Successfully"),
+                                      Text(S().registrationSuccessful),
                                 ),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.red,
-                                  content: Text(
-                                      "Registration Failed. Please try again."),
+                                  content: Text(S().registrationFailed),
                                 ),
                               );
                             }

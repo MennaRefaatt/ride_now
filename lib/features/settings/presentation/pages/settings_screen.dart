@@ -18,7 +18,10 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
-          child: DefaultAppBar(text: 'S().Settings')),
+          child: DefaultAppBar(
+            text: S().settings,
+            withDivider: false,
+          )),
       drawer: const DrawerItems(),
       body: Container(
         margin: EdgeInsets.all(10.sp),
@@ -28,7 +31,7 @@ class SettingsScreen extends StatelessWidget {
               text: S().phone,
               onTap: () {},
               returnedValue: SharedPref.getString(key: MySharedKeys.phone) == ""
-                  ? 'S().Missing Phone Number'
+                  ? S().missingPhoneNumber
                   : SharedPref.getString(key: MySharedKeys.phone),
             ),
             settingsItems(
@@ -39,10 +42,10 @@ class SettingsScreen extends StatelessWidget {
             settingsItems(
               text: S().appLanguage,
               onTap: () => _showBottomSheet(context, 'language'),
-              returnedValue: SharedPref.getString(key: MySharedKeys.language),
+              returnedValue: SharedPref.getString(key: MySharedKeys.currentLanguage),
             ),
             settingsItems(
-              text: "S().appTheme",
+              text: S().appTheme,
               onTap: () => _showBottomSheet(context, 'theme'),
               returnedValue: SharedPref.getString(key: MySharedKeys.theme),
             ),

@@ -91,8 +91,9 @@ class _DrawerItemsState extends State<DrawerItems> {
                 ],
               ),
             ),
+            verticalSpacing(20),
             Expanded(
-              child: ListView(
+              child: Column(
                 children: [
                   drawerItem(
                     context: context,
@@ -121,7 +122,7 @@ class _DrawerItemsState extends State<DrawerItems> {
             ),
             const Divider(),
             AppButton(
-              text: isDriverMode! ? "Passenger Mode" : "Driver Mode",
+              text: isDriverMode! ? S().passengerMode : S().driverMode,
               backgroundColor: AppColors.primary,
               onPressed: () {
                 setState(() {

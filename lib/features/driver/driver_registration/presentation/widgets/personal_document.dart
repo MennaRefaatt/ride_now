@@ -6,6 +6,7 @@ import 'package:ride_now/features/driver/driver_registration/presentation/widget
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/text_form_entry.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import 'image_type_enum.dart';
 
 class PersonalDocumentsPage extends StatefulWidget {
@@ -33,17 +34,17 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Personal Documents',
+              S().personalDocuments,
               style: TextStyles.font24BlackBold,
             ),
-            verticalSpacing(20.h),
+            verticalSpacing(20),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   PickImage(
-                    text: "National ID",
+                    text: S().nationalId,
                     image: widget.cubit.nationalIdImage ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.nationalIdImage);
@@ -51,7 +52,7 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
                     },
                   ),
                   PickImage(
-                    text: "Back Side Of ID",
+                    text: S().backSideOfId,
                     image: widget.cubit.backOfIdImage ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.backOfIdImage);
@@ -59,7 +60,7 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
                     },
                   ),
                   PickImage(
-                    text: "Criminal Status Record",
+                    text: S().criminalStatus,
                     image: widget.cubit.criminalStatusImage ?? '',
                     onTap: () async {
                       await widget.cubit
@@ -70,7 +71,7 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
                 ],
               ),
             ),
-            verticalSpacing(20.h),
+            verticalSpacing(20),
             TextFormEntry(
               onChanged: (value) => widget.cubit.updateDocumentsInfo(
                 idNumber: value,
@@ -78,7 +79,7 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
                 backOfIdImage: widget.cubit.backOfIdImage ?? '',
                 criminalStatusImage: widget.cubit.criminalStatusImage ?? '',
               ),
-              hintText: "ID Number",
+              hintText: S().idNumber,
               maxLength: 14,
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],

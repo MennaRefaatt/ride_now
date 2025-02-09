@@ -9,6 +9,7 @@ import '../../../../../core/components/custom_bottom_sheet.dart';
 import '../../../../../core/helpers/enums/stripe_payment_status.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 
 class TripPaymentMethod extends StatefulWidget {
@@ -39,9 +40,8 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       builder: (_) => CustomBottomSheet(
-        title: "Select Payment Method",
-        child: ListView(
-          shrinkWrap: true,
+        title: S().paymentMethod,
+        child: Column(
           children: [
             _buildPaymentOption(context, method: PaymentMethod.cash),
             _buildPaymentOption(context, method: PaymentMethod.card),

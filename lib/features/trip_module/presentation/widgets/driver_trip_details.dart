@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/contact_call.dart';
 import 'package:ride_now/features/trip_module/presentation/widgets/your_current_trip.dart';
 import '../../../../core/helpers/spacing.dart';
+import '../../../../generated/l10n.dart';
 
 class DriverTripDetails extends StatelessWidget {
   const DriverTripDetails({
@@ -48,7 +49,7 @@ class DriverTripDetails extends StatelessWidget {
                     ),
                     horizontalSpacing(10.w),
                     Text(
-                      "Contact Passenger",
+                      S().contactPassenger,
                       style: TextStyles.font18BlackRegular,
                     ),
                   ],

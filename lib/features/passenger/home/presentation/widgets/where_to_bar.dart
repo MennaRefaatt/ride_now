@@ -7,6 +7,7 @@ import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/features/passenger/home/presentation/widgets/last_trips_list_view.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';
@@ -91,7 +92,7 @@ class _WhereToBarState extends State<WhereToBar> {
                 hintStyle: TextStyles.font18BlackRegular.copyWith(
                   color: Colors.grey.shade800,
                 ),
-                hintText: "Where are you going?",
+                hintText: S().fromWhere,
                 keyboardType: TextInputType.text,
                 prefixIcon: Icon(
                   Icons.trip_origin,
@@ -128,7 +129,7 @@ class _WhereToBarState extends State<WhereToBar> {
                     hintStyle: TextStyles.font18BlackRegular.copyWith(
                       color: Colors.grey.shade800,
                     ),
-                    hintText: "Where to?",
+                    hintText: S().whereTo,
                     keyboardType: TextInputType.text,
                     prefixIcon: Icon(
                       disappear ? Icons.trip_origin : CupertinoIcons.search,
