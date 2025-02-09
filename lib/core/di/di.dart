@@ -41,6 +41,7 @@ import '../../features/trip_module/data/data_sources/trip_remote_ds.dart';
 import '../../features/trip_module/data/repositories/trip_repo_impl.dart';
 import '../../features/trip_module/domain/repositories/trip_repo_base.dart';
 import '../../features/trip_module/presentation/manager/trip_cubit.dart';
+import '../services/f_c_m_service/device_token_service.dart';
 import '../services/network/api_service.dart';
 
 final sl = GetIt.instance;
@@ -68,6 +69,9 @@ Future<void> init() async {
 
   // Register Firebase Storage
   sl.registerLazySingleton<FirebaseStorage>(() => FirebaseStorage.instance);
+
+  // Register Firebase Messaging
+  sl.registerLazySingleton<DeviceTokenService>(() => DeviceTokenService());
 
   ///profile
   // Register Data Sources

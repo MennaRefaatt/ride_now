@@ -9,8 +9,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../manager/trip_cubit.dart';
 
 class WaitingForDriver extends StatefulWidget {
-  const WaitingForDriver({super.key});
-
+  const WaitingForDriver({super.key, required this.isPassenger});
+final bool isPassenger;
   @override
   State<WaitingForDriver> createState() => _WaitingForDriverState();
 }
@@ -106,7 +106,9 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                           },
                         ),
                         verticalSpacing(20),
-                        CancelButton(),
+                        CancelButton(
+                          isPassenger: widget.isPassenger,
+                        ),
                       ],
                     ),
                   ),

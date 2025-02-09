@@ -16,23 +16,33 @@ import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
 
-class CheckOutButtons extends StatelessWidget {
-  CheckOutButtons(
-      {super.key,
-      required this.tripCubit,
-      required this.fromAddress,
-      required this.toAddress,
-      required this.fromLatLng,
-      required this.paymentMethod,
-      required this.toLatLng});
-
+class CheckOutButtons extends StatefulWidget {
   final TripCubit tripCubit;
   final String fromAddress;
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
-  late String tripId;
   final String paymentMethod;
+  final double cost;
+  const CheckOutButtons({
+    super.key,
+    required this.tripCubit,
+    required this.fromAddress,
+    required this.toAddress,
+    required this.fromLatLng,
+    required this.toLatLng,
+    required this.paymentMethod,
+    required this.cost,
+  });
+
+  @override
+  State<CheckOutButtons> createState() => _CheckOutButtonsState();
+}
+
+class _CheckOutButtonsState extends State<CheckOutButtons> {
+  bool moreThan4Passengers = false;
+  final TextEditingController commentController = TextEditingController();
+  late String tripId;
 
   @override
   Widget build(BuildContext context) {
@@ -55,17 +65,19 @@ class CheckOutButtons extends StatelessWidget {
                   textStyle: TextStyles.font18BlackBold,
                   onPressed: () async {
                     try {
-                      await tripCubit
-                          .createTrip(
-                        fromAddress,
-                        fromLatLng,
-                        toAddress,
-                        toLatLng,
-                        paymentMethod,
-                      )
-                          .then((_) {
+                      safePrint(widget.toAddress);
+                      await widget.tripCubit.createTrip(
+                        widget.fromAddress,
+                        widget.fromLatLng,
+                        widget.toAddress,
+                        widget.toLatLng,
+                        widget.paymentMethod,
+                        moreThan4Passengers,
+                        commentController.text,
+                        widget.cost,
+                      ).then((_) {
                         tripId = SharedPref.getString(
-                                key: MySharedKeys.currentTripId) ??
+                            key: MySharedKeys.currentTripId) ??
                             "";
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
@@ -82,16 +94,16 @@ class CheckOutButtons extends StatelessWidget {
                             RoutingEndpoints.tripTracking,
                             arguments: TripTrackingRouteArgs(
                               tripTrackingArgs: TripTrackingArgs(
-                                fromAddress: fromAddress,
-                                toAddress: toAddress,
+                                fromAddress: widget.fromAddress,
+                                toAddress: widget.toAddress,
                                 tripId: tripId,
-                                fromLatLng: fromLatLng,
-                                toLatLng: toLatLng,
+                                fromLatLng: widget.fromLatLng,
+                                toLatLng: widget.toLatLng,
                                 driverLatLng: LatLng(0, 0),
                                 tripStatus: TripStatus.pending.name,
                               ),
-                              isPassenger: true,
-                            ),
+                                isPassenger: true,
+                              ),
                           );
                         } else {
                           throw Exception("Trip ID is missing after creation");
@@ -119,7 +131,15 @@ class CheckOutButtons extends StatelessWidget {
             ),
           ),
           horizontalSpacing(10.w),
-          MoreOptions(),
+          MoreOptions(
+            onApply: (bool morePassengers, String comment) {
+              setState(() {
+                moreThan4Passengers = morePassengers;
+                commentController.text = comment;
+              });
+            },
+            commentController: commentController,
+          ),
         ],
       ),
     );

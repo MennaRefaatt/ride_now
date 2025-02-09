@@ -47,11 +47,11 @@ class _TripTrackingState extends State<TripTracking> {
   }
 
   void _startPeriodicUpdate() {
-    _listenTimer = Timer.periodic(const Duration(seconds: 2), (_) {
+    _listenTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (_isListening) {
-        _getDirections();
+       // _getDirections();
         _isListening = false;
-        _pauseTimer = Timer(const Duration(seconds: 3), () => _isListening = true);
+        _pauseTimer = Timer(const Duration(seconds: 5), () => _isListening = true);
       }
     });
   }
@@ -69,27 +69,27 @@ class _TripTrackingState extends State<TripTracking> {
     }
   }
 
-  Future<void> _getDirections() async {
-    if (_fromLatLng == null || _toLatLng == null || _driverLatLng == null) {
-      return;
-    }
-    try {
-      final cacheKey = '${_driverLatLng!.latitude},${_driverLatLng!.longitude}'
-          '_${_fromLatLng!.latitude},${_fromLatLng!.longitude}'
-          '_${_toLatLng!.latitude},${_toLatLng!.longitude}';
-
-      if (_polylineCache.containsKey(cacheKey)) {
-        _updatePolylines(_polylineCache[cacheKey]!);
-        return;
-      }
-
-      final routes = await _calculateRoutes();
-      _polylineCache[cacheKey] = routes;
-      _updatePolylines(routes);
-    } catch (e) {
-      safePrint('Error fetching directions: $e');
-    }
-  }
+  // Future<void> _getDirections() async {
+  //   if (_fromLatLng == null || _toLatLng == null || _driverLatLng == null) {
+  //     return;
+  //   }
+  //   try {
+  //     final cacheKey = '${_driverLatLng!.latitude},${_driverLatLng!.longitude}'
+  //         '_${_fromLatLng!.latitude},${_fromLatLng!.longitude}'
+  //         '_${_toLatLng!.latitude},${_toLatLng!.longitude}';
+  //
+  //     if (_polylineCache.containsKey(cacheKey)) {
+  //       _updatePolylines(_polylineCache[cacheKey]!);
+  //       return;
+  //     }
+  //
+  //     final routes = await _calculateRoutes();
+  //     _polylineCache[cacheKey] = routes;
+  //     _updatePolylines(routes);
+  //   } catch (e) {
+  //     safePrint('Error fetching directions: $e');
+  //   }
+  // }
 
   Future<List<LatLng>> _calculateRoutes() async {
     List<LatLng> routeCoordinates = [];
@@ -201,7 +201,7 @@ class _TripTrackingState extends State<TripTracking> {
           ));
         }
       });
-      await _getDirections();
+     // await _getDirections();
     } catch (e) {
       safePrint('Error fetching coordinates: $e');
     }
@@ -234,7 +234,7 @@ class _TripTrackingState extends State<TripTracking> {
                       icon: BitmapDescriptor.defaultMarkerWithHue(
                           BitmapDescriptor.hueBlue),
                     ));
-                    _getDirections();
+                   // _getDirections();
                   });
                 }
               }

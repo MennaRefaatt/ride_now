@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
@@ -12,7 +13,7 @@ import '../../../maps/data/model/location_model.dart';
 import '../../../maps/presentation/maps_args.dart';
 
 class AddressSummarize extends StatefulWidget {
-  const AddressSummarize({
+  AddressSummarize({
     super.key,
     required this.fromAddress,
     required this.toAddress,
@@ -20,7 +21,14 @@ class AddressSummarize extends StatefulWidget {
     required this.fromLatLng,
     required this.toLatLng,
     required this.paymentMethod,
-  });
+    required this.newToAddress,
+    required this.newToLatLng,
+    required this.newCost,
+    required this.newPickedToAddress,
+  }) {
+    newToAddress = toAddress;
+    newToLatLng = toLatLng;
+  }
 
   final TripCubit tripCubit;
   final String fromAddress;
@@ -28,34 +36,36 @@ class AddressSummarize extends StatefulWidget {
   final LatLng fromLatLng;
   final LatLng toLatLng;
   final String paymentMethod;
+  String newToAddress = "";
+  LatLng newToLatLng = const LatLng(0.0, 0.0);
+  double newCost = 0.0;
+  bool newPickedToAddress = false;
 
   @override
   State<AddressSummarize> createState() => _AddressSummarizeState();
 }
 
 class _AddressSummarizeState extends State<AddressSummarize> {
-  late String toAddress;
-  late String tripId;
-  late LatLng toLatLng;
-
   @override
   void initState() {
     super.initState();
-    toAddress = widget.toAddress;
-    toLatLng = widget.toLatLng;
+    widget.newToAddress = widget.toAddress;
+    widget.newToLatLng = widget.toLatLng;
     _calculateCost();
   }
 
   void _pickDestinationAddress(BuildContext context) {
     Navigator.pushNamed(context, RoutingEndpoints.maps,
         arguments: MapsArgs(
-          initialLatitude: toLatLng.latitude,
-          initialLongitude: toLatLng.longitude,
+          initialLatitude: widget.newToLatLng.latitude,
+          initialLongitude: widget.newToLatLng.longitude,
         )).then((result) {
       if (result != null && result is LocationData) {
         setState(() {
-          toAddress = result.address;
-          toLatLng = LatLng(result.latitude, result.longitude);
+          widget.newPickedToAddress = true;
+          safePrint("New destination selected: ${result.address}");
+          widget.newToAddress = result.address;
+          widget.newToLatLng = LatLng(result.latitude, result.longitude);
         });
         _calculateCost();
       }
@@ -65,11 +75,11 @@ class _AddressSummarizeState extends State<AddressSummarize> {
   void _calculateCost() async {
     final distanceText = await TripHelper().calculateDistance(
       widget.fromLatLng,
-      toLatLng,
+      widget.newToLatLng,
     );
     final distanceInKm = double.parse(distanceText.split(' ')[0]);
-    final cost = TripHelper().calculateCost(distanceInKm);
-    widget.tripCubit.updateCost(cost.toStringAsFixed(2));
+    widget.newCost = TripHelper().calculateCost(distanceInKm);
+    widget.tripCubit.updateCost(widget.newCost.toStringAsFixed(2));
   }
 
   @override
@@ -110,7 +120,7 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                 horizontalSpacing(10.w),
                 Expanded(
                   child: Text(
-                    toAddress,
+                    widget.newToAddress,
                     style: TextStyles.font18BlackRegular.copyWith(
                       fontWeight: FontWeight.bold,
                       overflow: TextOverflow.ellipsis,

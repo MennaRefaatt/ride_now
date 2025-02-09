@@ -76,9 +76,18 @@ class DriverStatusListener {
       throw Exception('Location services are disabled');
     }
 
-    LocationPermission permission = await Geolocator.requestPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
     if (permission == LocationPermission.deniedForever) {
       throw Exception('Location permission is permanently denied');
+    }
+
+    if (permission == LocationPermission.denied) {
+      throw Exception('Location permission is denied.');
     }
 
     return await Geolocator.getCurrentPosition(

@@ -10,8 +10,10 @@ class DriverTripDetails extends StatelessWidget {
   const DriverTripDetails({
     super.key,
     required this.tripModel,
+    required this.isPassenger,
   });
   final TripModel tripModel;
+  final bool isPassenger;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -41,6 +43,8 @@ class DriverTripDetails extends StatelessWidget {
                   children: [
                     ContactCall(
                       phone: tripModel.passengerData.passengerPhone,
+                      callerName: tripModel.driverData.driverName,
+                      receiverFCMToken: tripModel.passengerData.passengerToken,
                     ),
                     horizontalSpacing(10.w),
                     Text(
@@ -70,7 +74,9 @@ class DriverTripDetails extends StatelessWidget {
             verticalSpacing(10.h),
             Divider(),
             verticalSpacing(10.h),
-            YourCurrentTrip(to: tripModel.to, from: tripModel.from),
+            YourCurrentTrip(
+                isPassenger: isPassenger,
+                to: tripModel.to, from: tripModel.from),
           ],
         ),
       ],

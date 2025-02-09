@@ -5,11 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/features/auth/login/data/data_sources/firestore_service/firestore_param.dart';
+import '../../../../../../core/di/di.dart';
 import '../../../../../../core/helpers/enums/user_type.dart';
+import '../../../../../../core/services/f_c_m_service/device_token_service.dart';
 import '../../models/user.dart';
 
 class FirestoreService {
-  final FirebaseFirestore _db ;
+  final FirebaseFirestore _db;
   final FirebaseStorage _storage;
   FirestoreService(this._db, this._storage);
 
@@ -17,6 +19,9 @@ class FirestoreService {
     try {
       final userDoc = await _db.collection('users').doc(user.uid).get();
       if (!userDoc.exists) {
+        final deviceTokenService = sl<DeviceTokenService>();
+        String? deviceToken = await deviceTokenService.getDeviceToken();
+
         final appUser = UserModel(
           phoneNumber: param.phoneNumber ?? '',
           uid: user.uid,
@@ -26,6 +31,7 @@ class FirestoreService {
           city: param.city ?? '',
           type: param.type ?? '',
           currentTripId: param.currentTripId ?? '',
+          deviceToken: deviceToken ?? '',
         );
         await _db.collection('users').doc(user.uid).set(appUser.toJson());
       } else {
@@ -35,6 +41,7 @@ class FirestoreService {
       throw Exception("Error saving user data to Firestore: $e");
     }
   }
+
   Future<void> saveUserModeToFirestore(String mode) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -47,6 +54,7 @@ class FirestoreService {
       throw Exception("Error saving user mode to Firestore: $e");
     }
   }
+
   Future<void> updatePhoneNumberToFirestore(String phoneNumber) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -70,6 +78,7 @@ class FirestoreService {
       throw Exception("Error saving user phone number to Firestore: $e");
     }
   }
+
   Future<void> uploadProfileImage(File image) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -92,17 +101,17 @@ class FirestoreService {
       safePrint("Error uploading profile image: $e");
     }
   }
-    Future<void> updateUserCityToFirestore(String city) async {
-      try {
-        final user = FirebaseAuth.instance.currentUser;
-        if (user != null) {
-          await _db.collection('users').doc(user.uid).update({
-            'city': city,
-          });
-        }
-      } catch (e) {
-        throw Exception("Error saving user city to Firestore: $e");
 
+  Future<void> updateUserCityToFirestore(String city) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await _db.collection('users').doc(user.uid).update({
+          'city': city,
+        });
+      }
+    } catch (e) {
+      throw Exception("Error saving user city to Firestore: $e");
     }
   }
 }

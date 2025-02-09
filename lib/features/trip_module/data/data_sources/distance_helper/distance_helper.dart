@@ -23,14 +23,34 @@ class TripHelper {
 
     final double distance = radius * c;
 
-    return "${distance.toStringAsFixed(2)} $unit";
+    return "${distance.toStringAsFixed(1)} $unit";
   }
 
   double radians(double degrees) {
     return degrees * (pi / 180);
   }
+  String formatCost(double cost) {
+    return cost % 1 == 0 ? cost.toInt().toString() : cost.toString();
+  }
 
   double calculateCost(double distanceInKm, {double ratePerKm = 10}) {
-    return distanceInKm * ratePerKm;
+    double cost = distanceInKm * ratePerKm;
+    return cost.truncateToDouble();
+  }
+
+
+  Future<String> calculateEstimatedArrivalTime(LatLng from, LatLng to, double speedInKmh) async {
+    String distance = await calculateDistance(from, to, unit: 'km');
+    double distanceInKm = double.parse(distance.split(" ")[0]);
+
+    double timeInHours = distanceInKm / speedInKmh;
+    int timeInMinutes = (timeInHours * 60).round();
+    if (timeInMinutes >= 60) {
+      int hours = timeInMinutes ~/ 60;
+      int minutes = timeInMinutes % 60;
+      return "$hours hours $minutes min";
+    } else {
+      return "$timeInMinutes min";
+    }
   }
 }

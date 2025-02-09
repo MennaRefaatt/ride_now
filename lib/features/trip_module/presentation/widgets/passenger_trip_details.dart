@@ -8,8 +8,9 @@ import 'package:ride_now/features/trip_module/presentation/widgets/your_current_
 import '../../../../core/helpers/spacing.dart';
 
 class PassengerTripDetails extends StatelessWidget {
-  const PassengerTripDetails({super.key, required this.tripModel});
+  const PassengerTripDetails({super.key, required this.tripModel, required this.isPassenger});
   final TripModel tripModel;
+  final bool isPassenger;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -65,6 +66,8 @@ class PassengerTripDetails extends StatelessWidget {
                   children: [
                     ContactCall(
                       phone: tripModel.driverData.driverPhone,
+                      callerName: tripModel.passengerData.passengerName,
+                      receiverFCMToken: tripModel.driverData.driverToken,
                     ),
                     horizontalSpacing(10.w),
                     Text(
@@ -94,7 +97,9 @@ class PassengerTripDetails extends StatelessWidget {
             verticalSpacing(10.h),
             Divider(),
             verticalSpacing(10.h),
-            YourCurrentTrip(to: tripModel.to, from: tripModel.from),
+            YourCurrentTrip(
+              isPassenger: isPassenger,
+                to: tripModel.to, from: tripModel.from),
           ],
         ),
       ],
