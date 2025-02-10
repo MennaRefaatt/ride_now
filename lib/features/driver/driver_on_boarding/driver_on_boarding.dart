@@ -72,7 +72,7 @@ class DriverOnBoarding extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(CupertinoIcons.car_detailed),
-                    horizontalSpacing(10.w),
+                    horizontalSpacing(10),
                     Expanded(
                       child: Text(
                         S().driver,

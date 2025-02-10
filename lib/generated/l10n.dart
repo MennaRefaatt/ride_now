@@ -1420,9 +1420,9 @@ class S {
     );
   }
 
-  /// `From Where`
+  /// `From Where?`
   String get fromWhere {
-    return Intl.message('From Where', name: 'fromWhere', desc: '', args: []);
+    return Intl.message('From Where?', name: 'fromWhere', desc: '', args: []);
   }
 
   /// `Passenger`
@@ -2665,6 +2665,41 @@ class S {
     return Intl.message(
       'Choose Call Type',
       name: 'chooseCallType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Theme`
+  String get theme {
+    return Intl.message('Theme', name: 'theme', desc: '', args: []);
+  }
+
+  /// `Please complete your registration or wait for approval.`
+  String get pleaseCompleteYourRegistration {
+    return Intl.message(
+      'Please complete your registration or wait for approval.',
+      name: 'pleaseCompleteYourRegistration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are not eligible to access driver mode.`
+  String get youAreNotEligible {
+    return Intl.message(
+      'You are not eligible to access driver mode.',
+      name: 'youAreNotEligible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Denied`
+  String get accessDenied {
+    return Intl.message(
+      'Access Denied',
+      name: 'accessDenied',
       desc: '',
       args: [],
     );

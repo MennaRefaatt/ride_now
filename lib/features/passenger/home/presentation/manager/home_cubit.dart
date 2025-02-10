@@ -80,12 +80,16 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+
   Future<void> getTrips() async {
     emit(GetRecentTripsLoading());
     try {
-      final trips = await homeRepoBase.getRecentTrips();
+      // Correctly retrieve the list of TripModel objects
+      final List<TripModel> trips = await homeRepoBase.getRecentTrips();
+
       emit(GetRecentTripsLoaded(trips: trips));
     } catch (e) {
+      safePrint("Error fetching trips: $e");
       emit(GetRecentTripsError(message: e.toString()));
     }
   }

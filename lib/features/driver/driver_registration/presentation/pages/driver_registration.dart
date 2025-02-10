@@ -18,7 +18,7 @@ class DriverRegistration extends StatefulWidget {
   const DriverRegistration({super.key});
 
   @override
-  State<DriverRegistration>createState() => _DriverRegistration();
+  State<DriverRegistration> createState() => _DriverRegistration();
 }
 
 class _DriverRegistration extends State<DriverRegistration>
@@ -136,8 +136,11 @@ class _DriverRegistration extends State<DriverRegistration>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${_currentPage + 1} of ${onboardingData.length}",
-                            style: TextStyles.font24BlackBold),
+                        Text(
+                          "${_currentPage + 1} of ${onboardingData.length}",
+                          style: TextStyles.font24BlackBold,
+                          textDirection: TextDirection.ltr,
+                        ),
                         verticalSpacing(10.h),
                         AnimatedBuilder(
                           animation: _progressAnimation,
@@ -192,13 +195,12 @@ class _DriverRegistration extends State<DriverRegistration>
                             final success =
                                 await driverCubit.submitRegistration();
                             if (success) {
-                              Navigator.pushNamed(
-                                  context, RoutingEndpoints.driverPendingScreen);
+                              Navigator.pushNamed(context,
+                                  RoutingEndpoints.driverPendingScreen);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.green,
-                                  content:
-                                      Text(S().registrationSuccessful),
+                                  content: Text(S().registrationSuccessful),
                                 ),
                               );
                             } else {

@@ -309,5 +309,12 @@
   "gallery": "المعرض",
   "pickImage": "اختر صورة",
   "missingPhoneNumber": "يرجى التحقق من رقم الهاتف",
-  "chooseCallType": "اختر نوع الاتصال"
+  "chooseCallType": "اختر نوع الاتصال",
+  "fromWhere": "من اين؟",
+  "theme": "الثيم",
+  "checkout": "الدفع",
+  "driver": "السائق",
+  "pleaseCompleteYourRegistration": "يرجى تسجيل عنوان بريدك الإلكتروني أدناه.",
+  "youAreNotEligible":  "أنت غير مؤهل للوصول إلى وضع السائق.",
+  "accessDenied": "تم رفض الوصول"
 }

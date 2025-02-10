@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your Request Has Been Sent Successfully",
     ),
     "accept": MessageLookupByLibrary.simpleMessage("Accept"),
+    "accessDenied": MessageLookupByLibrary.simpleMessage("Access Denied"),
     "addAddress": MessageLookupByLibrary.simpleMessage("Add Address"),
     "addMore": MessageLookupByLibrary.simpleMessage("Add More"),
     "addNewAddress": MessageLookupByLibrary.simpleMessage("Add New Address"),
@@ -204,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flexibleHours": MessageLookupByLibrary.simpleMessage("Flexible Hours"),
     "forgetPassword": MessageLookupByLibrary.simpleMessage(" Forget Password?"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("Forgot Password?"),
-    "fromWhere": MessageLookupByLibrary.simpleMessage("From Where"),
+    "fromWhere": MessageLookupByLibrary.simpleMessage("From Where?"),
     "fullName": MessageLookupByLibrary.simpleMessage("Full Name"),
     "gallery": MessageLookupByLibrary.simpleMessage("Gallery"),
     "getIncomeWithUs": MessageLookupByLibrary.simpleMessage(
@@ -409,6 +410,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "pickYourPersonalPicture": MessageLookupByLibrary.simpleMessage(
       "Pick Your Personal Picture",
     ),
+    "pleaseCompleteYourRegistration": MessageLookupByLibrary.simpleMessage(
+      "Please complete your registration or wait for approval.",
+    ),
     "pleaseEnterConfirmPassword": MessageLookupByLibrary.simpleMessage(
       "Please Enter Confirm Password",
     ),
@@ -562,6 +566,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "theCostOfTheOrderWillBe": MessageLookupByLibrary.simpleMessage(
       "The Cost Of The Order Will Be",
     ),
+    "theme": MessageLookupByLibrary.simpleMessage("Theme"),
     "total": MessageLookupByLibrary.simpleMessage("Total"),
     "updateAccount": MessageLookupByLibrary.simpleMessage("Update Account"),
     "vat": MessageLookupByLibrary.simpleMessage("VAT: "),
@@ -588,6 +593,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Year must be within the next 10 years",
     ),
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
+    "youAreNotEligible": MessageLookupByLibrary.simpleMessage(
+      "You are not eligible to access driver mode.",
+    ),
     "yourBalance": MessageLookupByLibrary.simpleMessage("Your Balance"),
     "yourOrderHasBeenPlacedSuccessfullyProcessedAndIsOnItsWayToYouSoon":
         MessageLookupByLibrary.simpleMessage(
