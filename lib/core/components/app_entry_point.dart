@@ -42,8 +42,12 @@ class _AppEntryPointState extends State<AppEntryPoint> {
                         onGenerateRoute: RouteServices.generateRoute,
                         title: 'ride_now',
                         supportedLocales: S.delegate.supportedLocales,
-                        localizationsDelegates:
-                            GlobalMaterialLocalizations.delegates,
+                        localizationsDelegates: [
+                          S.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
+                        ],
                         key: ValueKey(SharedPref.getCurrentLanguage()),
                         locale: Locale(SharedPref.getCurrentLanguage()),
                         debugShowCheckedModeBanner: false,
