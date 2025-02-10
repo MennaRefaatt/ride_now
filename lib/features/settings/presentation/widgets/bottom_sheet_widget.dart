@@ -19,9 +19,9 @@ class BottomSheetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLanguage = type == 'language';
-    final isLogout = type == 'logout';
-    final isTheme = type == 'theme';
+    final isLanguage = type == S().language;
+    final isLogout = type == S().logout;
+    final isTheme = type == S().theme;
 
     return CustomBottomSheet(
       title: type,
@@ -40,8 +40,7 @@ class BottomSheetWidget extends StatelessWidget {
   List<Widget> _buildLanguageOptions(BuildContext context) {
     final languages = [S().english, S().arabic];
     final languageCubit = context.read<LanguageCubit>();
-    final currentLanguage =
-        SharedPref.getCurrentLanguage();
+    final currentLanguage = SharedPref.getCurrentLanguage();
 
     return languages.map((lang) {
       bool isSelected = (lang == S().english && currentLanguage == 'en') ||
@@ -53,7 +52,7 @@ class BottomSheetWidget extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             color: isSelected
-                ? AppColors.primary.withOpacity(0.2)
+                ? AppColors.primary.withValues(alpha: 0.2)
                 : Colors.transparent,
           ),
           child: Text(lang, style: TextStyles.font18BlackRegular),
@@ -95,32 +94,37 @@ class BottomSheetWidget extends StatelessWidget {
 
   List<Widget> _buildLogoutOptions(BuildContext context) {
     final options = [S().yes, S().no];
-    return options
-        .map(
-          (option) => ListTile(
-            title: Container(
-                padding: EdgeInsets.all(10.sp),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.r),
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                ),
-                child: Text(option, style: TextStyles.font18BlackRegular)),
-            onTap: () async {
-              if (option == S().yes) {
-                await _logout().then((value) {
-                  Navigator.pushReplacementNamed(
-                      context, RoutingEndpoints.login);
-                  safePrint("Logged out successfully");
-                  SharedPref.clear();
-                  SharedPref.clearUserData();
-                });
-              } else {
-                Navigator.pop(context);
-              }
-            },
+
+    return options.map(
+      (option) {
+        final bool yesIsSelected = option == S().yes;
+
+        return ListTile(
+          title: Container(
+            padding: EdgeInsets.symmetric(vertical: 10.sp, horizontal: 16.sp),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.r),
+              color: yesIsSelected
+                  ? AppColors.red.withValues(alpha: 0.2)
+                  : AppColors.primary.withValues(alpha: 0.2),
+            ),
+            child: Text(option, style: TextStyles.font18BlackRegular),
           ),
-        )
-        .toList();
+          onTap: () async {
+            if (yesIsSelected) {
+              await _logout().then((value) {
+                Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
+                safePrint("Logged out successfully");
+                SharedPref.clear();
+                SharedPref.clearUserData();
+              });
+            } else {
+              Navigator.pop(context);
+            }
+          },
+        );
+      },
+    ).toList();
   }
 
   Future<void> _logout() async {

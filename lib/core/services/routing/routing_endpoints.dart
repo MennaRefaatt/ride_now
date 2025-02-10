@@ -19,6 +19,7 @@ class RoutingEndpoints {
   static const driverPendingScreen = '/driverPendingScreen';
   static const audioCall = '/audioCall';
   static const contactScreen = '/contactScreen';
+  static const driverNotEligibleScreen = '/driverNotEligibleScreen';
 
 
 }

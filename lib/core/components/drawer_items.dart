@@ -51,7 +51,7 @@ class _DrawerItemsState extends State<DrawerItems> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            verticalSpacing(20.h),
+            verticalSpacing(20),
             InkWell(
               onTap: () => Navigator.pushReplacementNamed(
                   context, RoutingEndpoints.profile),
@@ -71,7 +71,7 @@ class _DrawerItemsState extends State<DrawerItems> {
                       ),
                     ),
                   ),
-                  horizontalSpacing(10.w),
+                  horizontalSpacing(10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,14 +101,49 @@ class _DrawerItemsState extends State<DrawerItems> {
                     icon: CupertinoIcons.car_detailed,
                     destination: RoutingEndpoints.passengerHome,
                     isActive: currentRoute == RoutingEndpoints.passengerHome,
-                    onTap: () => SharedPref.getString(key: MySharedKeys.type) ==
-                            UserType.driver.name
-                        ? Navigator.pushReplacementNamed(
-                            context, RoutingEndpoints.driverHome)
-                        : Navigator.pushReplacementNamed(
-                            context, RoutingEndpoints.passengerHome),
+                onTap: () async {
+                  if (isDriverMode!) {
+                    String? userId = SharedPref.getString(key: MySharedKeys.userId);
+                    if (userId == null) {
+                      Navigator.pushReplacementNamed(
+                          context, RoutingEndpoints.driverNotEligibleScreen);
+                      return;
+                    }
+
+                    try {
+                      DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
+                          .collection("drivers")
+                          .doc(userId)
+                          .get();
+
+                      if (!driverSnapshot.exists) {
+                        Navigator.pushReplacementNamed(
+                            context, RoutingEndpoints.driverNotEligibleScreen);
+                        return;
+                      }
+
+                      DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
+                          driverSnapshot.data() as Map<String, dynamic>);
+
+                      if (driver.driverStatus != DriverStatus.accepted.name) {
+                        Navigator.pushReplacementNamed(
+                            context, RoutingEndpoints.driverNotEligibleScreen);
+                        return;
+                      }
+
+                      Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
+                    } catch (e) {
+                      safePrint("Error checking driver status: $e");
+                      Navigator.pushReplacementNamed(
+                          context, RoutingEndpoints.driverNotEligibleScreen);
+                    }
+                  } else {
+                    Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
+                  }
+                },
                   ),
-                  drawerItem(
+
+                drawerItem(
                     context: context,
                     title: S().settings,
                     icon: CupertinoIcons.settings,
@@ -128,17 +163,12 @@ class _DrawerItemsState extends State<DrawerItems> {
                 setState(() {
                   isDriverMode = !isDriverMode!;
                 });
-                saveModeToFirestore(isDriverMode!
-                    ? UserType.driver.name
-                    : UserType.passenger.name);
+                saveModeToFirestore(isDriverMode! ? UserType.driver.name : UserType.passenger.name);
 
                 if (isDriverMode!) {
                   navigateBasedOnDriverStatus();
                 } else {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    RoutingEndpoints.passengerHome,
-                  );
+                  Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
                 }
               },
               borderRadius: 10.r,
@@ -171,7 +201,7 @@ class _DrawerItemsState extends State<DrawerItems> {
         padding: EdgeInsets.all(15.sp),
         decoration: BoxDecoration(
           color: isActive
-              ? AppColors.primary.withOpacity(0.2)
+              ? AppColors.primary.withValues(alpha: 0.2)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8.r),
         ),
@@ -195,7 +225,7 @@ class _DrawerItemsState extends State<DrawerItems> {
   void navigateBasedOnDriverStatus() async {
     String? userId = SharedPref.getString(key: MySharedKeys.userId);
     if (userId == null) {
-      safePrint("User ID not found in SharedPreferences.");
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
       return;
     }
 
@@ -205,27 +235,24 @@ class _DrawerItemsState extends State<DrawerItems> {
           .doc(userId)
           .get();
 
-      if (driverSnapshot.exists) {
-        DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
-          driverSnapshot.data() as Map<String, dynamic>,
-        );
+      if (!driverSnapshot.exists) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
+        return;
+      }
 
-        if (driver.driverStatus == DriverStatus.pending.name) {
-          Navigator.pushReplacementNamed(
-              context, RoutingEndpoints.driverPendingScreen);
-        } else if (driver.driverStatus == DriverStatus.accepted.name) {
-          Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
-        } else if (driver.driverStatus == DriverStatus.rejected.name) {
-          Navigator.pushReplacementNamed(
-              context, RoutingEndpoints.driverOnBoarding);
-        }
+      DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
+          driverSnapshot.data() as Map<String, dynamic>);
+
+      if (driver.driverStatus == DriverStatus.pending.name) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverPendingScreen);
+      } else if (driver.driverStatus == DriverStatus.accepted.name) {
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
       } else {
-        safePrint("Driver not found in Firestore.");
-        Navigator.pushReplacementNamed(
-            context, RoutingEndpoints.driverOnBoarding);
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
       }
     } catch (e) {
       safePrint("Error fetching driver status: $e");
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
     }
   }
 }

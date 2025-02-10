@@ -171,7 +171,7 @@
   "rideTime": "Ride Time",
   "rideType": "Ride Type",
   "rideDistance": "Ride Distance",
-  "fromWhere": "From Where",
+  "fromWhere": "From Where?",
   "passenger": "Passenger",
   "driver": "Driver",
   "passengerMode": "Passenger Mode",
@@ -310,5 +310,9 @@
   "gallery": "Gallery",
   "pickImage": "Pick Image",
   "missingPhoneNumber": "Missing Phone Number",
-  "chooseCallType": "Choose Call Type"
+  "chooseCallType": "Choose Call Type",
+  "theme": "Theme",
+  "pleaseCompleteYourRegistration": "Please complete your registration or wait for approval.",
+  "youAreNotEligible":  "You are not eligible to access driver mode.",
+  "accessDenied": "Access Denied"
 }

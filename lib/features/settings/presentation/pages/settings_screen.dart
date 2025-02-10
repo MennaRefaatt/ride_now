@@ -41,18 +41,18 @@ class SettingsScreen extends StatelessWidget {
             ),
             settingsItems(
               text: S().appLanguage,
-              onTap: () => _showBottomSheet(context, 'language'),
+              onTap: () => _showBottomSheet(context, S().language),
               returnedValue: SharedPref.getString(key: MySharedKeys.currentLanguage),
             ),
             settingsItems(
               text: S().appTheme,
-              onTap: () => _showBottomSheet(context, 'theme'),
+              onTap: () => _showBottomSheet(context, S().theme),
               returnedValue: SharedPref.getString(key: MySharedKeys.theme),
             ),
             AppButton(
               text: S().logout,
               backgroundColor: AppColors.primary,
-              onPressed: () => _showBottomSheet(context, 'logout'),
+              onPressed: () => _showBottomSheet(context, S().logout),
               textStyle: TextStyles.font14BlackRegular,
               borderRadius: 10.r,
             ),

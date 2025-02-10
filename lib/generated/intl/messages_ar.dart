@@ -30,6 +30,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تم ارسال طلبك بنجاح",
     ),
     "accept": MessageLookupByLibrary.simpleMessage("قبول"),
+    "accessDenied": MessageLookupByLibrary.simpleMessage("تم رفض الوصول"),
     "addAddress": MessageLookupByLibrary.simpleMessage("اضافة عنوان"),
     "addMore": MessageLookupByLibrary.simpleMessage("اضافة المزيد"),
     "addNewAddress": MessageLookupByLibrary.simpleMessage("اضافة عنوان جديد"),
@@ -81,6 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "changeLanguage": MessageLookupByLibrary.simpleMessage(" تغيير اللغة"),
     "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
     "chats": MessageLookupByLibrary.simpleMessage("المحادثات"),
+    "checkout": MessageLookupByLibrary.simpleMessage("الدفع"),
     "chooseCallType": MessageLookupByLibrary.simpleMessage("اختر نوع الاتصال"),
     "chooseOnMap": MessageLookupByLibrary.simpleMessage("اختر على الخريطة"),
     "city": MessageLookupByLibrary.simpleMessage("المدينة"),
@@ -118,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "details": MessageLookupByLibrary.simpleMessage("التفاصيل"),
     "done": MessageLookupByLibrary.simpleMessage("تم"),
     "dontHaveAnAccount": MessageLookupByLibrary.simpleMessage("ليس لديك حساب؟"),
+    "driver": MessageLookupByLibrary.simpleMessage("السائق"),
     "driverLicence": MessageLookupByLibrary.simpleMessage("رخصة القيادة"),
     "driverMode": MessageLookupByLibrary.simpleMessage("وضع السائق"),
     "driverRegistration": MessageLookupByLibrary.simpleMessage("تسجيل السائق"),
@@ -195,6 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "flexibleHours": MessageLookupByLibrary.simpleMessage("ساعات عمل مرنة"),
     "forgetPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
     "forgotPassword": MessageLookupByLibrary.simpleMessage("نسيت كلمة المرور؟"),
+    "fromWhere": MessageLookupByLibrary.simpleMessage("من اين؟"),
     "fullName": MessageLookupByLibrary.simpleMessage("الاسم الكامل"),
     "gallery": MessageLookupByLibrary.simpleMessage("المعرض"),
     "getIncomeWithUs": MessageLookupByLibrary.simpleMessage(
@@ -408,6 +412,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "pickYourPersonalPicture": MessageLookupByLibrary.simpleMessage(
       "اختر صورتك الشخصية",
     ),
+    "pleaseCompleteYourRegistration": MessageLookupByLibrary.simpleMessage(
+      "يرجى تسجيل عنوان بريدك الإلكتروني أدناه.",
+    ),
     "pleaseEnterConfirmPassword": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل تأكيد كلمة المرور",
     ),
@@ -525,6 +532,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "theCostOfTheOrderWillBe": MessageLookupByLibrary.simpleMessage(
       "تكلفة الطلب ستكون",
     ),
+    "theme": MessageLookupByLibrary.simpleMessage("الثيم"),
     "total": MessageLookupByLibrary.simpleMessage("المجموع"),
     "updateAccount": MessageLookupByLibrary.simpleMessage("تحديث الحساب"),
     "vat": MessageLookupByLibrary.simpleMessage("ضريبة القيمة المضافة"),
@@ -551,6 +559,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "يجب أن يكون العام ضمن السنوات العشر القادمة",
     ),
     "yes": MessageLookupByLibrary.simpleMessage("نعم"),
+    "youAreNotEligible": MessageLookupByLibrary.simpleMessage(
+      "أنت غير مؤهل للوصول إلى وضع السائق.",
+    ),
     "yourBalance": MessageLookupByLibrary.simpleMessage("رصيدك"),
     "yourOrderHasBeenPlacedSuccessfullyProcessedAndIsOnItsWayToYouSoon":
         MessageLookupByLibrary.simpleMessage(
