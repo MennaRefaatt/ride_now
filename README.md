@@ -1,13 +1,16 @@
 - animated splash ✅
 - firebase auth ✅
-- riverpod
-- ui
+- riverpod ✅
 - google maps ✅
-- license plate scanner
+- license plate scanner ✅
 - payment ✅
-- animations
+- animations ✅
 - chat
-- audio & video calls
+- audio call ✅
+- real time tracking
+- fix colors, brands, and models bug
+- hide api keys
+- firebase storage for profile image
 ===========================================================
 - Users => Client, Driver, Admin
 - Driver => driver data, car data,Reviews, wallet data, charge,rides.
@@ -43,5 +46,6 @@ Trip
 - driver data ✅
 - passenger data ✅
 - trip payment method ✅ 
-- trip payment status
+- trip payment status ✅
+- trip estimated time ✅
 ==============================================================
