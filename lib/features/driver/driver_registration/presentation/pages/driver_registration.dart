@@ -43,6 +43,7 @@ class _DriverRegistration extends State<DriverRegistration>
     _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+    driverCubit.fetchColorsBrandsModels();
   }
 
   void _animateProgress(int nextPage) {
@@ -71,7 +72,7 @@ class _DriverRegistration extends State<DriverRegistration>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => driverCubit,
+      create: (context) => driverCubit..fetchColorsBrandsModels(),
       child: Scaffold(
         appBar: AppBar(
           title: Text(S().driverRegistration,
@@ -150,7 +151,7 @@ class _DriverRegistration extends State<DriverRegistration>
                               child: LinearProgressIndicator(
                                 value: _progressAnimation.value,
                                 backgroundColor:
-                                    AppColors.semiGrey.withOpacity(0.2),
+                                    AppColors.semiGrey.withValues(alpha: 0.2),
                                 color: AppColors.primary,
                                 borderRadius: BorderRadius.circular(10.r),
                                 minHeight: 10.h,
@@ -163,7 +164,7 @@ class _DriverRegistration extends State<DriverRegistration>
                   ),
                   if (_currentPage != 0)
                     FloatingActionButton(
-                      backgroundColor: AppColors.semiGrey.withOpacity(0.2),
+                      backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
                       onPressed: () {
                         _pageController.previousPage(
                             duration: Duration(milliseconds: 300),

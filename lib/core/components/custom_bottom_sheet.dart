@@ -56,7 +56,7 @@ class CustomBottomSheet extends StatelessWidget {
                         onTap: () => Navigator.pop(context),
                         child: CircleAvatar(
                           radius: 20.r,
-                          backgroundColor: AppColors.semiGrey.withOpacity(0.3),
+                          backgroundColor: AppColors.semiGrey.withValues(alpha: 0.3),
                           child: Icon(
                             CupertinoIcons.xmark,
                             color: Colors.black,
