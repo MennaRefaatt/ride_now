@@ -73,7 +73,8 @@ class _SplashScreenState extends State<SplashScreen>
     bool isFirstOpen = await SharedPref.isFirstOpen();
 
     if (isFirstOpen) {
-      Navigator.pushReplacementNamed(context, RoutingEndpoints.onBoardingScreen);
+      Navigator.pushReplacementNamed(
+          context, RoutingEndpoints.onBoardingScreen);
       return;
     }
 
@@ -93,22 +94,29 @@ class _SplashScreenState extends State<SplashScreen>
             .get();
 
         if (!driverSnapshot.exists) {
-          Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverNotEligibleScreen);
           return;
         }
 
         DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
             driverSnapshot.data() as Map<String, dynamic>);
 
-        if (driver.driverStatus != DriverStatus.accepted.name) {
-          Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
+        if (driver.driverStatus == DriverStatus.pending.name) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverPendingScreen);
+          return;
+        } else if (driver.driverStatus == DriverStatus.rejected.name) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverNotEligibleScreen);
           return;
         }
 
         Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
       } catch (e) {
         safePrint("Error checking driver status: $e");
-        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
+        Navigator.pushReplacementNamed(
+            context, RoutingEndpoints.driverNotEligibleScreen);
       }
     } else {
       Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
@@ -176,5 +184,4 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
-
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/driver_bottom_sheet.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/pick_image.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/text_form_entry.dart';
@@ -38,21 +40,23 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
     required BuildContext context,
     required String type,
     required TextEditingController controller,
-    required Future<void> itemsFuture,
   }) {
+    final cubit = context.read<DriverRegistrationCubit>();
+
+    if (type == "brand") cubit.fetchBrands();
+    if (type == "model") cubit.fetchModels();
+    if (type == "color") cubit.fetchColors();
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => DriverBottomSheet(
-        type: type,
-        controller: controller,
-        itemsFuture: itemsFuture,
-      ),
+      builder: (_) => DriverBottomSheet(type: type, controller: controller),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,19 +67,35 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(S().vehicleInformation, style: TextStyles.font24BlackBold),
-            verticalSpacing(20.h),
+            verticalSpacing(20),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   PickImage(
-                      text: S().vehiclePicture,
-                      image: widget.cubit.vehicleImage ?? '',
-                      onTap: () async {
-                        await widget.cubit.pickImage(ImageType.vehicleImage);
-                        setState(() {});
-                      }),
+                    text: S().vehiclePicture,
+                    image: widget.cubit.vehicleImage ?? '',
+                    onTap: () async {
+                      await widget.cubit.pickImage(ImageType.vehicleImage);
+                      if (widget.cubit.vehicleImage != null && widget.cubit.vehicleImage!.isNotEmpty) {
+                        String extractedPlate = await scanPlateNumber(widget.cubit.vehicleImage!);
+                        setState(() {
+                          _plateNumberController.text = extractedPlate;
+                          widget.cubit.updateVehicleInfo(
+                            plateNumber: extractedPlate,
+                            brand: _brandController.text,
+                            model: _modelController.text,
+                            color: _colorController.text,
+                            productionYear: _productionYearController.text,
+                            vehicleImage: widget.cubit.vehicleImage ?? '',
+                            vehicleRegistrationCertificate: widget.cubit.registrationCertificate ?? '',
+                            backOfCertificate: widget.cubit.backOfCertificate ?? '',
+                          );
+                        });
+                      }
+                    },
+                  ),
                   PickImage(
                     text: S().vehicleRegistrationCertificate,
                     image: widget.cubit.registrationCertificate ?? '',
@@ -96,12 +116,32 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 ],
               ),
             ),
+            // BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
+            //   builder: (context, state) {
+            //     if (state is DriverRegistrationDataFetched) {
+            //       return DropdownButton<String>(
+            //         value: _brandController.text.isNotEmpty ? _brandController.text : null,
+            //         items: state.brands
+            //             .map((brand) => DropdownMenuItem<String>(
+            //           value: brand.name,
+            //           child: Text(brand.name),
+            //         ))
+            //             .toList(),
+            //         onChanged: (value) {
+            //           setState(() {
+            //             _brandController.text = value!;
+            //           });
+            //         },
+            //       );
+            //     }
+            //     return CircularProgressIndicator();
+            //   },
+            // ),
             InkWell(
               onTap: () => _showBottomSheet(
                 context: context,
                 type: "brand",
                 controller: _brandController,
-                itemsFuture: widget.cubit.fetchBrands(),
               ),
               child: TextFormEntry(
                 hintText: S().vehicleBrand,
@@ -126,13 +166,12 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 },
               ),
             ),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             InkWell(
               onTap: () => _showBottomSheet(
                 context: context,
                 type: "model",
                 controller: _modelController,
-                itemsFuture: widget.cubit.fetchModels(),
               ),
               child: TextFormEntry(
                 hintText: S().vehicleModel,
@@ -157,13 +196,12 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 },
               ),
             ),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             InkWell(
                 onTap: () => _showBottomSheet(
                       context: context,
                       type: "color",
                       controller: _colorController,
-                      itemsFuture: widget.cubit.fetchColors(),
                     ),
                 child: TextFormEntry(
                   hintText: S().vehicleColor,
@@ -187,7 +225,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                     return null;
                   },
                 )),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             TextFormEntry(
               hintText: S().productionYear,
               controller: _productionYearController,
@@ -219,7 +257,7 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
               maxLength: 4,
               keyboardType: TextInputType.number,
             ),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             TextFormEntry(
                 hintText: S().vehiclePlateNumber,
                 controller: _plateNumberController,
@@ -240,4 +278,39 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
       ),
     );
   }
+  Future<String> scanPlateNumber(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final textRecognizer = TextRecognizer();
+    try {
+      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+      String plateNumber = extractPlateNumber(recognizedText);
+      return plateNumber.isNotEmpty ? plateNumber : "لم يتم التعرف على رقم اللوحة";
+    } catch (e) {
+      return "حدث خطأ أثناء المسح: $e";
+    } finally {
+      textRecognizer.close();
+    }
+  }
+  String extractPlateNumber(RecognizedText recognizedText) {
+    List<String> plateParts = [];
+
+    for (TextBlock block in recognizedText.blocks) {
+      for (TextLine line in block.lines) {
+        String text = line.text.trim(); // إزالة الفراغات الزائدة
+        plateParts.add(text);
+      }
+    }
+
+    // تجميع النص كما هو بدون أي تعديلات
+    String plateNumber = plateParts.join(' ');
+
+    return plateNumber.isNotEmpty ? plateNumber : "لم يتم التعرف على رقم اللوحة";
+  }
+  String convertNumbersToArabic(String input) {
+    const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return input.replaceAllMapped(RegExp(r'[0-9]'), (match) {
+      return arabicNumbers[int.parse(match.group(0)!)];
+    });
+  }
+
 }

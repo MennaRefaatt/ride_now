@@ -17,7 +17,6 @@ import 'package:ride_now/features/on_boarding_screen.dart';
 import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
 import 'package:ride_now/features/profile/presentation/pages/city_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart';
-import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/settings/presentation/pages/settings_screen.dart';
 import 'package:ride_now/features/splash.dart';
 import 'package:ride_now/features/trip_module/presentation/pages/trip_screen.dart';
@@ -42,9 +41,6 @@ class RouteServices {
         final args = routeSettings.arguments as PhoneArgs;
         return _customFadeRoute(
             PhoneNumberScreen(args: args), routeSettings.name!);
-      case RoutingEndpoints.scanner:
-        return _customFadeRoute(
-            const LicensePlateScanner(), routeSettings.name!);
       case RoutingEndpoints.login:
         return _customFadeRoute(
             ProviderScope(child: const LoginScreen()), routeSettings.name!);

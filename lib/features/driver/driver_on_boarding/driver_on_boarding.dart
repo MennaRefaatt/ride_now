@@ -21,7 +21,7 @@ class DriverOnBoarding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.semiGrey.withOpacity(0.1),
+      backgroundColor: AppColors.semiGrey.withValues(alpha: 0.1),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50.h),
         child: DefaultAppBar(
@@ -32,72 +32,74 @@ class DriverOnBoarding extends StatelessWidget {
       drawer: DrawerItems(),
       body: Container(
         margin: EdgeInsets.all(10.sp),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(20.sp),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    S().getIncomeWithUs,
-                    style: TextStyles.font24BlackBold,
-                  ),
-                  verticalSpacing(20),
-                  getIncomeWithUs(S().flexibleHours),
-                  verticalSpacing(10),
-                  getIncomeWithUs(S().yourPrices),
-                  verticalSpacing(10),
-                  getIncomeWithUs(S().lowServicePayments),
-                ],
-              ),
-            ),
-            verticalSpacing(20),
-            InkWell(
-              onTap: () => Navigator.pushReplacementNamed(
-                  context, RoutingEndpoints.driverRegistration),
-              child: Container(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(20.sp),
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.r),
+                  color: AppColors.primary.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(20.r),
                 ),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(CupertinoIcons.car_detailed),
-                    horizontalSpacing(10),
-                    Expanded(
-                      child: Text(
-                        S().driver,
-                        style: TextStyles.font18BlackRegular,
-                      ),
+                    Text(
+                      S().getIncomeWithUs,
+                      style: TextStyles.font24BlackBold,
                     ),
-                    Icon(Icons.navigate_next),
+                    verticalSpacing(20),
+                    getIncomeWithUs(S().flexibleHours),
+                    verticalSpacing(10),
+                    getIncomeWithUs(S().yourPrices),
+                    verticalSpacing(10),
+                    getIncomeWithUs(S().lowServicePayments),
                   ],
                 ),
               ),
-            ),
-            verticalSpacing(20),
-            AppButton(
-              text: S().goToPassengerMode,
-              backgroundColor: AppColors.primary,
-              width: MediaQuery.of(context).size.width,
-              borderRadius: 10.r,
-              onPressed: () {
-                saveModeToFirestore(UserType.passenger.name);
-                Navigator.pushReplacementNamed(
-                    context, RoutingEndpoints.passengerHome);
-              },
-              textStyle: TextStyles.font18WhiteBold,
-            ),
-          ],
+              verticalSpacing(20),
+              InkWell(
+                onTap: () => Navigator.pushReplacementNamed(
+                    context, RoutingEndpoints.driverRegistration),
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(20.sp),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(CupertinoIcons.car_detailed),
+                      horizontalSpacing(10),
+                      Expanded(
+                        child: Text(
+                          S().driver,
+                          style: TextStyles.font18BlackRegular,
+                        ),
+                      ),
+                      Icon(Icons.navigate_next),
+                    ],
+                  ),
+                ),
+              ),
+              verticalSpacing(20),
+              AppButton(
+                text: S().goToPassengerMode,
+                backgroundColor: AppColors.primary,
+                width: MediaQuery.of(context).size.width,
+                borderRadius: 10.r,
+                onPressed: () {
+                  saveModeToFirestore(UserType.passenger.name);
+                  Navigator.pushReplacementNamed(
+                      context, RoutingEndpoints.passengerHome);
+                },
+                textStyle: TextStyles.font18WhiteBold,
+              ),
+            ],
+          ),
         ),
       ),
     );

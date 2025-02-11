@@ -236,7 +236,7 @@ class _DrawerItemsState extends State<DrawerItems> {
           .get();
 
       if (!driverSnapshot.exists) {
-        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverOnBoarding);
         return;
       }
 
@@ -248,7 +248,7 @@ class _DrawerItemsState extends State<DrawerItems> {
       } else if (driver.driverStatus == DriverStatus.accepted.name) {
         Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
       } else {
-        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverNotEligibleScreen);
+        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverOnBoarding);
       }
     } catch (e) {
       safePrint("Error fetching driver status: $e");

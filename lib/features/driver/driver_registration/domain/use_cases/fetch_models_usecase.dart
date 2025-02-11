@@ -1,3 +1,4 @@
+import 'package:ride_now/features/driver/driver_registration/data/models/model_model.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/repositories/d_repo_base.dart';
 
 class FetchModelsUseCase {
@@ -5,5 +6,5 @@ class FetchModelsUseCase {
 
   FetchModelsUseCase(this.repository);
 
-  Future<List<Map<String, dynamic>>> call() => repository.fetchModels();
+  Future<List<ModelModel>> call() => repository.fetchModels();
 }

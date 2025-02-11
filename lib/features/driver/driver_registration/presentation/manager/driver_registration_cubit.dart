@@ -7,6 +7,9 @@ import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import '../../../../../core/helpers/enums/driver_status.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../data/models/brand_model.dart';
+import '../../data/models/color_model.dart';
+import '../../data/models/model_model.dart';
 import '../../domain/use_cases/d_fetch_colors_usecase.dart';
 import '../../domain/use_cases/fetch_brands_usecase.dart';
 import '../../domain/use_cases/fetch_models_usecase.dart';
@@ -44,51 +47,50 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       backOfCertificate;
 
   List<String> images = [];
+  Future<void> fetchColorsBrandsModels() async {
+    emit(DriverRegistrationLoading());
+    try {
+      final colorsFuture = fetchColorsUseCase();
+      final brandsFuture = fetchBrandsUseCase();
+      final modelsFuture = fetchModelsUseCase();
+
+      final colors = await colorsFuture;
+      final brands = await brandsFuture;
+      final models = await modelsFuture;
+
+      emit(DriverRegistrationDataFetched(colors, brands, models));
+    } catch (e) {
+      emit(DriverRegistrationFailure(error: e.toString()));
+    }
+  }
 
   Future<void> fetchColors() async {
-    emit(DriverRegistrationLoading());
+    emit(DriverRegistrationColorsLoading());
     try {
       final colors = await fetchColorsUseCase();
       emit(DriverRegistrationColorsFetched(colors));
     } catch (e) {
-      emit(DriverRegistrationFailure(error: e.toString()));
+      emit(DriverRegistrationColorsFailure(error: e.toString()));
     }
   }
 
   Future<void> fetchBrands() async {
-    emit(DriverRegistrationLoading());
+    emit(DriverRegistrationBrandsLoading());
     try {
       final brands = await fetchBrandsUseCase();
       emit(DriverRegistrationBrandsFetched(brands));
     } catch (e) {
-      emit(DriverRegistrationFailure(error: e.toString()));
+      emit(DriverRegistrationBrandsFailure(error: e.toString()));
     }
   }
 
   Future<void> fetchModels() async {
-    emit(DriverRegistrationLoading());
+    emit(DriverRegistrationModelsLoading());
     try {
       final models = await fetchModelsUseCase();
       emit(DriverRegistrationModelsFetched(models));
     } catch (e) {
-      emit(DriverRegistrationFailure(error: e.toString()));
-    }
-  }
-
-  Future<void> fetchItemsForType(String type) async {
-    emit(DriverRegistrationLoading());
-    try {
-      if (type == 'color') {
-        await fetchColors();
-      } else if (type == 'brand') {
-        await fetchBrands();
-      } else if (type == 'model') {
-        await fetchModels();
-      } else {
-        throw Exception('Invalid type');
-      }
-    } catch (e) {
-      emit(DriverRegistrationFailure(error: e.toString()));
+      emit(DriverRegistrationModelsFailure(error: e.toString()));
     }
   }
 
@@ -201,20 +203,20 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       if (isSuccess) {
         emit(DriverRegistrationSuccess());
         safePrint("Driver Registration Successful");
-        return true; // تأكيد الإرجاع
+        return true;
       } else {
         emit(DriverRegistrationFailure(error: "Registration failed"));
-        return false; // تأكيد الإرجاع
+        return false;
       }
     } catch (e) {
       emit(DriverRegistrationFailure(error: e.toString()));
-      return false; // إرجاع قيمة في حالة حدوث خطأ
+      return false;
     }
   }
 
   Future<void> pickImage(ImageType type) async {
     final ImagePicker picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.camera);
+    final image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       emit(DriverRegistrationLoading());
 
@@ -249,9 +251,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
         case ImageType.backOfCertificate:
           backOfCertificate = image.path;
           break;
-        default:
-          break;
-      }
+        }
 
       emit(DriverRegistrationDocumentsUpdated());
     } else {
