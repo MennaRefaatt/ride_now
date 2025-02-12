@@ -5,16 +5,16 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
 import 'package:rxdart/rxdart.dart';
-import '../../../../core/helpers/enums/trip_status.dart';
-import '../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/helpers/enums/trip_status.dart';
+import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
 import '../../data/models/trip_model.dart';
+import '../../domain/use_cases/accept_trip_usecase.dart';
 import '../../domain/use_cases/cancel_trip_usecase.dart';
+import '../../domain/use_cases/create_trip_usecase.dart';
 import '../../domain/use_cases/get_trip_details_usecase.dart';
+import '../../domain/use_cases/get_trips_usecase.dart';
 
 part 'trip_state.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../core/components/app_bar.dart';
-import '../../../../core/components/drawer_items.dart';
+import '../../../../core/components/drawer/drawer_items.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../core/utils/app_button.dart';

@@ -5,7 +5,7 @@ import 'package:ride_now/features/connection_lost.dart';
 import 'package:ride_now/features/passenger/home/presentation/widgets/home_body.dart';
 import 'package:ride_now/features/passenger/home/presentation/widgets/map_widget.dart';
 import '../../../../../core/components/app_icon.dart';
-import '../../../../../core/components/drawer_items.dart';
+import '../../../../../core/components/drawer/drawer_items.dart';
 import '../../../../../core/di/di.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';

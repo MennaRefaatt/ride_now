@@ -6,13 +6,13 @@ import 'package:ride_now/core/helpers/enums/payment_method.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
-import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
 import '../widgets/address_summarize.dart';
 import '../widgets/check_out_buttons.dart';
 import '../widgets/trip_payment_method.dart';
@@ -54,7 +54,7 @@ class _CheckOutState extends State<CheckOut> {
     return BlocProvider(
       create: (context) => tripCubit,
       child: Scaffold(
-        backgroundColor: AppColors.semiGrey.withOpacity(0.2),
+        backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
         appBar: AppBar(
           title: Text(S().checkout, style: TextStyles.font24BlackBold),
           backgroundColor: Colors.white,
@@ -104,7 +104,7 @@ class _CheckOutState extends State<CheckOut> {
                       padding: EdgeInsets.all(10.sp),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30.r),
-                        color: AppColors.primary.withOpacity(0.2),
+                        color: AppColors.primary.withValues(alpha: 0.2),
                       ),
                       child: Text(tripCubit.paymentStatus,
                           style: TextStyles.font18primaryBold),

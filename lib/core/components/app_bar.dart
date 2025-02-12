@@ -156,8 +156,14 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
 
   void _startOnlineCall() {
     if (widget.receiverFCMToken != null && widget.callerName != null) {
-      sendCallNotification(widget.receiverFCMToken!, widget.callerName!,
-          AgoraConstants.channelId);
+      sendNotification(
+        fcmToken: widget.receiverFCMToken!,
+        title: "Incoming Call",
+        body: "Driver is calling...",
+        callerName: widget.callerName,
+        channelId: AgoraConstants.channelId,
+      );
+
       appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

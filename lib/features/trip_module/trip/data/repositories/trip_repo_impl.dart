@@ -1,8 +1,7 @@
 import 'package:ride_now/core/helpers/safe_print.dart';
-import 'package:ride_now/features/trip_module/data/data_sources/trip_remote_ds.dart';
-import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
-
 import '../../domain/repositories/trip_repo_base.dart';
+import '../data_sources/trip_remote_ds.dart';
+import '../models/trip_model.dart';
 
 class TripRepoImpl implements TripRepoBase {
   TripRemoteDS tripRemoteDS;

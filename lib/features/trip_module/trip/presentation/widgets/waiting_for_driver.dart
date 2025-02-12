@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/styles.dart';
-import 'package:ride_now/features/trip_module/presentation/widgets/cancel_button.dart';
 import '../../../../../core/theming/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../manager/trip_cubit.dart';
+import 'cancel_button.dart';
 
 class WaitingForDriver extends StatefulWidget {
   const WaitingForDriver({super.key, required this.isPassenger});
@@ -19,7 +19,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
     with TickerProviderStateMixin {
   final DraggableScrollableController _controller =
   DraggableScrollableController();
-  double _childSize = 0.4;
+  final double _childSize = 0.4;
 
   @override
   Widget build(BuildContext context) {

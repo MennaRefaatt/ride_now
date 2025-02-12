@@ -11,7 +11,7 @@ import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../core/utils/app_button.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
 import '../manager/home_cubit.dart';
 import '../widgets/ride_categories.dart';
@@ -102,7 +102,8 @@ class _HomeBodyState extends State<HomeBody> {
                                 padding: EdgeInsets.all(10.sp),
                                 margin: EdgeInsets.all(10.sp),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.2),
+                                  color:
+                                      AppColors.primary.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
                                 child: Row(
@@ -129,7 +130,7 @@ class _HomeBodyState extends State<HomeBody> {
                         ),
                         Expanded(
                           child: AppButton(
-                            text:S().order,
+                            text: S().order,
                             textStyle: TextStyles.font18BlackBold,
                             onPressed: () async {
                               if (widget

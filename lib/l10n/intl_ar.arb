@@ -316,5 +316,14 @@
   "driver": "السائق",
   "pleaseCompleteYourRegistration": "يرجى تسجيل عنوان بريدك الإلكتروني أدناه.",
   "youAreNotEligible":  "أنت غير مؤهل للوصول إلى وضع السائق.",
-  "accessDenied": "تم رفض الوصول"
+  "accessDenied": "تم رفض الوصول",
+  "help": "مساعدة",
+  "notifications": "الاشعارات",
+  "privacyPolicy": "سياسة الخصوصية",
+  "myTrips": "الرحلات الخاصة بي",
+  "wallet": "المحفظة",
+  "payment": "الدفع",
+  "chargeWallet": "شحن المحفظة",
+  "pay": "ادفع",
+  "lastUpdated": "اخر تحديث"
 }
