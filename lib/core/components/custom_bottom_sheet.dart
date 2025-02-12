@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
 
 import '../theming/app_colors.dart';
 
@@ -55,7 +56,7 @@ class CustomBottomSheet extends StatelessWidget {
                         onTap: () => Navigator.pop(context),
                         child: CircleAvatar(
                           radius: 20.r,
-                          backgroundColor: AppColors.semiGrey.withOpacity(0.3),
+                          backgroundColor: AppColors.semiGrey.withValues(alpha: 0.3),
                           child: Icon(
                             CupertinoIcons.xmark,
                             color: Colors.black,
@@ -66,7 +67,7 @@ class CustomBottomSheet extends StatelessWidget {
                     ),
                 ],
               ),
-            const SizedBox(height: 10),
+            verticalSpacing(10),
             child,
           ],
         ),

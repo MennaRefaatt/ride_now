@@ -7,6 +7,7 @@ import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../manager/driver_registration_cubit.dart';
 import '../widgets/drive_licence.dart';
 import '../widgets/personal_document.dart';
@@ -17,7 +18,7 @@ class DriverRegistration extends StatefulWidget {
   const DriverRegistration({super.key});
 
   @override
-  _DriverRegistration createState() => _DriverRegistration();
+  State<DriverRegistration> createState() => _DriverRegistration();
 }
 
 class _DriverRegistration extends State<DriverRegistration>
@@ -42,6 +43,7 @@ class _DriverRegistration extends State<DriverRegistration>
     _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
+    driverCubit.fetchColorsBrandsModels();
   }
 
   void _animateProgress(int nextPage) {
@@ -54,10 +56,10 @@ class _DriverRegistration extends State<DriverRegistration>
   }
 
   final List<Map<String, String>> onboardingData = [
-    {"title": "Personal Information"},
-    {"title": "Driver License"},
-    {"title": "Personal Documents"},
-    {"title": "Vehicle Information"},
+    {"title": S().personalInformation},
+    {"title": S().driverLicence},
+    {"title": S().personalDocuments},
+    {"title": S().vehicleInformation},
   ];
 
   final driverCubit = DriverRegistrationCubit(
@@ -70,10 +72,10 @@ class _DriverRegistration extends State<DriverRegistration>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => driverCubit,
+      create: (context) => driverCubit..fetchColorsBrandsModels(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("S().driverRegistration",
+          title: Text(S().driverRegistration,
               style: TextStyles.font18BlackRegular),
           leading: Container(),
           centerTitle: true,
@@ -82,7 +84,7 @@ class _DriverRegistration extends State<DriverRegistration>
               onPressed: () {
                 Navigator.pushNamed(context, RoutingEndpoints.driverOnBoarding);
               },
-              child: Text("S().close", style: TextStyles.font18BlackRegular),
+              child: Text(S().close, style: TextStyles.font18BlackRegular),
             ),
           ],
         ),
@@ -135,8 +137,11 @@ class _DriverRegistration extends State<DriverRegistration>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("${_currentPage + 1} of ${onboardingData.length}",
-                            style: TextStyles.font24BlackBold),
+                        Text(
+                          "${_currentPage + 1} of ${onboardingData.length}",
+                          style: TextStyles.font24BlackBold,
+                          textDirection: TextDirection.ltr,
+                        ),
                         verticalSpacing(10.h),
                         AnimatedBuilder(
                           animation: _progressAnimation,
@@ -146,7 +151,7 @@ class _DriverRegistration extends State<DriverRegistration>
                               child: LinearProgressIndicator(
                                 value: _progressAnimation.value,
                                 backgroundColor:
-                                    AppColors.semiGrey.withOpacity(0.2),
+                                    AppColors.semiGrey.withValues(alpha: 0.2),
                                 color: AppColors.primary,
                                 borderRadius: BorderRadius.circular(10.r),
                                 minHeight: 10.h,
@@ -159,7 +164,7 @@ class _DriverRegistration extends State<DriverRegistration>
                   ),
                   if (_currentPage != 0)
                     FloatingActionButton(
-                      backgroundColor: AppColors.semiGrey.withOpacity(0.2),
+                      backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
                       onPressed: () {
                         _pageController.previousPage(
                             duration: Duration(milliseconds: 300),
@@ -176,8 +181,8 @@ class _DriverRegistration extends State<DriverRegistration>
                       width: MediaQuery.of(context).size.width * 0.3,
                       textStyle: TextStyles.font18BlackRegular,
                       text: _currentPage == onboardingData.length - 1
-                          ? "S().finish"
-                          : "S().next",
+                          ? S().finish
+                          : S().next,
                       onPressed: () async {
                         if (_formKeys[_currentPage].currentState?.validate() ??
                             false) {
@@ -191,21 +196,19 @@ class _DriverRegistration extends State<DriverRegistration>
                             final success =
                                 await driverCubit.submitRegistration();
                             if (success) {
-                              Navigator.pushNamed(
-                                  context, RoutingEndpoints.driverPendingScreen);
+                              Navigator.pushNamed(context,
+                                  RoutingEndpoints.driverPendingScreen);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.green,
-                                  content:
-                                      Text("Driver Registered Successfully"),
+                                  content: Text(S().registrationSuccessful),
                                 ),
                               );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.red,
-                                  content: Text(
-                                      "Registration Failed. Please try again."),
+                                  content: Text(S().registrationFailed),
                                 ),
                               );
                             }

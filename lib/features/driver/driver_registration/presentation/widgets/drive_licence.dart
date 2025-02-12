@@ -7,6 +7,7 @@ import 'package:ride_now/features/driver/driver_registration/presentation/widget
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/text_form_entry.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 
 class DriverLicensePage extends StatefulWidget {
   const DriverLicensePage({super.key, required this.cubit});
@@ -36,7 +37,7 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Driver License',
+              S().driverLicence,
               style: TextStyles.font24BlackBold,
             ),
             verticalSpacing(20.h),
@@ -46,7 +47,7 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   PickImage(
-                    text: "Driver License",
+                    text: S().driverLicence,
                     image: widget.cubit.driverLicenseImage ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.driverLicense);
@@ -54,7 +55,7 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
                     },
                   ),
                   PickImage(
-                    text: "Back Side Of License",
+                    text: S().backSideOfLicence,
                     image: widget.cubit.backLicenseImage ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.backLicense);
@@ -62,7 +63,7 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
                     },
                   ),
                   PickImage(
-                    text: "Selfie With License",
+                    text: S().selfieWithLicence,
                     image: widget.cubit.selfieWithLicenseImage ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.selfieWithLicense);
@@ -83,14 +84,14 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
                     widget.cubit.selfieWithLicenseImage ?? "",
               ),
               maxLength: 14,
-              hintText: "License Number",
+              hintText: S().licenceNumber,
               controller: _licenseNumberController,
               textInputAction: TextInputAction.next,
               validator:LicenseNumberValidator.validateLicenseNumber,
             ),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             TextFormEntry(
-              hintText: "Expiry Date",
+              hintText: S().expiryDate,
               onChanged: (value) => widget.cubit.updateLicenseInfo(
                 licenseNumber: _licenseNumberController.text,
                 expiryDate: value,

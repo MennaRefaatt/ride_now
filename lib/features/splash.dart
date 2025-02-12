@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/core/utils/app_image.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import '../core/helpers/enums/driver_status.dart';
 import '../core/helpers/enums/user_type.dart';
+import '../core/helpers/safe_print.dart';
 import '../core/helpers/shared_pref.dart';
 import '../core/helpers/shared_pref_keys.dart';
+import 'driver/driver_registration/data/models/driver_registration_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -56,7 +60,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _startAnimation() async {
     await Future.delayed(const Duration(seconds: 1));
-
     setState(() {
       _opacity = 1.0;
     });
@@ -72,17 +75,51 @@ class _SplashScreenState extends State<SplashScreen>
     if (isFirstOpen) {
       Navigator.pushReplacementNamed(
           context, RoutingEndpoints.onBoardingScreen);
-    } else {
-      final userType = SharedPref.getString(key: MySharedKeys.type);
-      final userId = SharedPref.getString(key: MySharedKeys.userId);
+      return;
+    }
 
-      if (userId == null) {
-        Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
-      } else if (userType == UserType.driver.name) {
+    final userType = SharedPref.getString(key: MySharedKeys.type);
+    final userId = SharedPref.getString(key: MySharedKeys.userId);
+
+    if (userId == null) {
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.login);
+      return;
+    }
+
+    if (userType == UserType.driver.name) {
+      try {
+        DocumentSnapshot driverSnapshot = await FirebaseFirestore.instance
+            .collection("drivers")
+            .doc(userId)
+            .get();
+
+        if (!driverSnapshot.exists) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverNotEligibleScreen);
+          return;
+        }
+
+        DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
+            driverSnapshot.data() as Map<String, dynamic>);
+
+        if (driver.driverStatus == DriverStatus.pending.name) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverPendingScreen);
+          return;
+        } else if (driver.driverStatus == DriverStatus.rejected.name) {
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverNotEligibleScreen);
+          return;
+        }
+
         Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
-      } else {
-        Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
+      } catch (e) {
+        safePrint("Error checking driver status: $e");
+        Navigator.pushReplacementNamed(
+            context, RoutingEndpoints.driverNotEligibleScreen);
       }
+    } else {
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.passengerHome);
     }
   }
 
@@ -96,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green.withOpacity(0.2),
+      backgroundColor: Colors.green.withValues(alpha: 0.2),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -113,30 +150,35 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SlideTransition(
-                position: _slideAnimationRide,
-                child: Text(
-                  "𝚁𝚒𝚍𝚎",
-                  style: TextStyle(
+          Directionality(
+            textDirection: TextDirection.ltr,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SlideTransition(
+                  position: _slideAnimationRide,
+                  child: Text(
+                    "𝚁𝚒𝚍𝚎",
+                    style: TextStyle(
                       fontSize: 30.sp,
                       fontWeight: FontWeight.w900,
-                      color: Colors.green),
+                      color: Colors.green,
+                    ),
+                  ),
                 ),
-              ),
-              SlideTransition(
-                position: _slideAnimationNow,
-                child: Text(
-                  "𝙽𝚘𝚠",
-                  style: TextStyle(
+                SlideTransition(
+                  position: _slideAnimationNow,
+                  child: Text(
+                    "𝙽𝚘𝚠",
+                    style: TextStyle(
                       fontSize: 30.sp,
                       fontWeight: FontWeight.w900,
-                      color: Colors.green),
+                      color: Colors.green,
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

@@ -7,6 +7,7 @@ import '../../../../core/helpers/spacing.dart';
 import '../../../../core/theming/styles.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import '../../../../generated/l10n.dart';
 import '../../data/models/profile_model.dart';
 import '../manager/profile_cubit.dart';
 
@@ -24,16 +25,16 @@ class _UserImageState extends State<UserImage> {
     final ImagePicker picker = ImagePicker();
     final pickedFile = await showDialog<XFile?>(context: context, builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Pick an Image'),
+        title:  Text(S().pickImage),
         actions: <Widget>[
           TextButton(onPressed: () async {
             final file = await picker.pickImage(source: ImageSource.camera);
             Navigator.pop(context, file);
-          }, child: Text("Camera")),
+          }, child: Text(S().camera)),
           TextButton(onPressed: () async {
             final file = await picker.pickImage(source: ImageSource.gallery);
             Navigator.pop(context, file);
-          }, child: Text('Gallery')),
+          }, child: Text(S().gallery)),
         ],
       );
     });
@@ -89,7 +90,7 @@ class _UserImageState extends State<UserImage> {
 
             horizontalSpacing(20.w),
             Text(
-              "S().addProfilePicture",
+              S().addProfilePicture,
               style: TextStyles.font18BlackRegular,
             ),
           ],

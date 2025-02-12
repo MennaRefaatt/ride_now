@@ -1175,7 +1175,10 @@ class S {
     return Intl.message('Old', name: 'old', desc: '', args: []);
   }
 
-  // skipped getter for the 'current' key
+  /// `Current`
+  String get currentt {
+    return Intl.message('Current', name: 'currentt', desc: '', args: []);
+  }
 
   /// `Order Placed!`
   String get orderPlaced {
@@ -1417,9 +1420,1289 @@ class S {
     );
   }
 
-  /// `From Where`
+  /// `From Where?`
   String get fromWhere {
-    return Intl.message('From Where', name: 'fromWhere', desc: '', args: []);
+    return Intl.message('From Where?', name: 'fromWhere', desc: '', args: []);
+  }
+
+  /// `Passenger`
+  String get passenger {
+    return Intl.message('Passenger', name: 'passenger', desc: '', args: []);
+  }
+
+  /// `Driver`
+  String get driver {
+    return Intl.message('Driver', name: 'driver', desc: '', args: []);
+  }
+
+  /// `Passenger Mode`
+  String get passengerMode {
+    return Intl.message(
+      'Passenger Mode',
+      name: 'passengerMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Driver Mode`
+  String get driverMode {
+    return Intl.message('Driver Mode', name: 'driverMode', desc: '', args: []);
+  }
+
+  /// `Get Income With Us`
+  String get getIncomeWithUs {
+    return Intl.message(
+      'Get Income With Us',
+      name: 'getIncomeWithUs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Flexible Hours`
+  String get flexibleHours {
+    return Intl.message(
+      'Flexible Hours',
+      name: 'flexibleHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Prices`
+  String get yourPrices {
+    return Intl.message('Your Prices', name: 'yourPrices', desc: '', args: []);
+  }
+
+  /// `Low Service Payments`
+  String get lowServicePayments {
+    return Intl.message(
+      'Low Service Payments',
+      name: 'lowServicePayments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go To Passenger Mode`
+  String get goToPassengerMode {
+    return Intl.message(
+      'Go To Passenger Mode',
+      name: 'goToPassengerMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Driver Registration`
+  String get driverRegistration {
+    return Intl.message(
+      'Driver Registration',
+      name: 'driverRegistration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Close`
+  String get close {
+    return Intl.message('Close', name: 'close', desc: '', args: []);
+  }
+
+  /// `Personal Information`
+  String get personalInformation {
+    return Intl.message(
+      'Personal Information',
+      name: 'personalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick Your Personal Picture`
+  String get pickYourPersonalPicture {
+    return Intl.message(
+      'Pick Your Personal Picture',
+      name: 'pickYourPersonalPicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `First Name`
+  String get firstName {
+    return Intl.message('First Name', name: 'firstName', desc: '', args: []);
+  }
+
+  /// `Last Name`
+  String get lastName {
+    return Intl.message('Last Name', name: 'lastName', desc: '', args: []);
+  }
+
+  /// `Date Of Birth`
+  String get dateOfBirth {
+    return Intl.message(
+      'Date Of Birth',
+      name: 'dateOfBirth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your First Name`
+  String get enterYourFirstName {
+    return Intl.message(
+      'Enter Your First Name',
+      name: 'enterYourFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Last Name`
+  String get enterYourLastName {
+    return Intl.message(
+      'Enter Your Last Name',
+      name: 'enterYourLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Date Of Birth`
+  String get enterYourDateOfBirth {
+    return Intl.message(
+      'Enter Your Date Of Birth',
+      name: 'enterYourDateOfBirth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Personal Image`
+  String get enterYourPersonalImage {
+    return Intl.message(
+      'Enter Your Personal Image',
+      name: 'enterYourPersonalImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Licence Number`
+  String get licenceNumber {
+    return Intl.message(
+      'Licence Number',
+      name: 'licenceNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiry Date`
+  String get expiryDate {
+    return Intl.message('Expiry Date', name: 'expiryDate', desc: '', args: []);
+  }
+
+  /// `Driver Licence`
+  String get driverLicence {
+    return Intl.message(
+      'Driver Licence',
+      name: 'driverLicence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back Side Of Licence`
+  String get backSideOfLicence {
+    return Intl.message(
+      'Back Side Of Licence',
+      name: 'backSideOfLicence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Selfie With Licence`
+  String get selfieWithLicence {
+    return Intl.message(
+      'Selfie With Licence',
+      name: 'selfieWithLicence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next`
+  String get next {
+    return Intl.message('Next', name: 'next', desc: '', args: []);
+  }
+
+  /// `ID Number`
+  String get idNumber {
+    return Intl.message('ID Number', name: 'idNumber', desc: '', args: []);
+  }
+
+  /// `National ID`
+  String get nationalId {
+    return Intl.message('National ID', name: 'nationalId', desc: '', args: []);
+  }
+
+  /// `Back Side Of ID`
+  String get backSideOfId {
+    return Intl.message(
+      'Back Side Of ID',
+      name: 'backSideOfId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Criminal Status`
+  String get criminalStatus {
+    return Intl.message(
+      'Criminal Status',
+      name: 'criminalStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Personal Documents`
+  String get personalDocuments {
+    return Intl.message(
+      'Personal Documents',
+      name: 'personalDocuments',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Information`
+  String get vehicleInformation {
+    return Intl.message(
+      'Vehicle Information',
+      name: 'vehicleInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Picture`
+  String get vehiclePicture {
+    return Intl.message(
+      'Vehicle Picture',
+      name: 'vehiclePicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Registration Certificate`
+  String get vehicleRegistrationCertificate {
+    return Intl.message(
+      'Vehicle Registration Certificate',
+      name: 'vehicleRegistrationCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Back Side Of Certificate`
+  String get backSideOfCertificate {
+    return Intl.message(
+      'Back Side Of Certificate',
+      name: 'backSideOfCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Brand`
+  String get vehicleBrand {
+    return Intl.message(
+      'Vehicle Brand',
+      name: 'vehicleBrand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Model`
+  String get vehicleModel {
+    return Intl.message(
+      'Vehicle Model',
+      name: 'vehicleModel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Color`
+  String get vehicleColor {
+    return Intl.message(
+      'Vehicle Color',
+      name: 'vehicleColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Production Year`
+  String get productionYear {
+    return Intl.message(
+      'Production Year',
+      name: 'productionYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vehicle Plate Number`
+  String get vehiclePlateNumber {
+    return Intl.message(
+      'Vehicle Plate Number',
+      name: 'vehiclePlateNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Vehicle Picture`
+  String get enterYourVehiclePicture {
+    return Intl.message(
+      'Enter Your Vehicle Picture',
+      name: 'enterYourVehiclePicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Vehicle Registration Certificate`
+  String get enterYourVehicleRegistrationCertificate {
+    return Intl.message(
+      'Enter Your Vehicle Registration Certificate',
+      name: 'enterYourVehicleRegistrationCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Back Side Of Certificate`
+  String get enterYourBackSideOfCertificate {
+    return Intl.message(
+      'Enter Your Back Side Of Certificate',
+      name: 'enterYourBackSideOfCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Vehicle Brand`
+  String get enterYourVehicleBrand {
+    return Intl.message(
+      'Enter Your Vehicle Brand',
+      name: 'enterYourVehicleBrand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Vehicle Model`
+  String get enterYourVehicleModel {
+    return Intl.message(
+      'Enter Your Vehicle Model',
+      name: 'enterYourVehicleModel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Vehicle Color`
+  String get enterYourVehicleColor {
+    return Intl.message(
+      'Enter Your Vehicle Color',
+      name: 'enterYourVehicleColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Production Year`
+  String get enterYourProductionYear {
+    return Intl.message(
+      'Enter Your Production Year',
+      name: 'enterYourProductionYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Vehicle Plate Number`
+  String get enterYourVehiclePlateNumber {
+    return Intl.message(
+      'Enter Your Vehicle Plate Number',
+      name: 'enterYourVehiclePlateNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add Profile Picture`
+  String get addProfilePicture {
+    return Intl.message(
+      'Add Profile Picture',
+      name: 'addProfilePicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Typing`
+  String get startTyping {
+    return Intl.message(
+      'Start Typing',
+      name: 'startTyping',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The Cost Of The Order Will Be`
+  String get theCostOfTheOrderWillBe {
+    return Intl.message(
+      'The Cost Of The Order Will Be',
+      name: 'theCostOfTheOrderWillBe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recommended Fare`
+  String get recommendedFare {
+    return Intl.message(
+      'Recommended Fare',
+      name: 'recommendedFare',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cash`
+  String get cash {
+    return Intl.message('Cash', name: 'cash', desc: '', args: []);
+  }
+
+  /// `Card`
+  String get card {
+    return Intl.message('Card', name: 'card', desc: '', args: []);
+  }
+
+  /// `Comment`
+  String get comment {
+    return Intl.message('Comment', name: 'comment', desc: '', args: []);
+  }
+
+  /// `More Than 4 Passengers`
+  String get moreThan4Passengers {
+    return Intl.message(
+      'More Than 4 Passengers',
+      name: 'moreThan4Passengers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apply`
+  String get apply {
+    return Intl.message('Apply', name: 'apply', desc: '', args: []);
+  }
+
+  /// `App Theme`
+  String get appTheme {
+    return Intl.message('App Theme', name: 'appTheme', desc: '', args: []);
+  }
+
+  /// `Dark`
+  String get dark {
+    return Intl.message('Dark', name: 'dark', desc: '', args: []);
+  }
+
+  /// `Light`
+  String get light {
+    return Intl.message('Light', name: 'light', desc: '', args: []);
+  }
+
+  /// `Language`
+  String get language {
+    return Intl.message('Language', name: 'language', desc: '', args: []);
+  }
+
+  /// `Options`
+  String get options {
+    return Intl.message('Options', name: 'options', desc: '', args: []);
+  }
+
+  /// `System Default`
+  String get systemDefault {
+    return Intl.message(
+      'System Default',
+      name: 'systemDefault',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Driver`
+  String get contactDriver {
+    return Intl.message(
+      'Contact Driver',
+      name: 'contactDriver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Contact Passenger`
+  String get contactPassenger {
+    return Intl.message(
+      'Contact Passenger',
+      name: 'contactPassenger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Audio Call`
+  String get audioCall {
+    return Intl.message('Audio Call', name: 'audioCall', desc: '', args: []);
+  }
+
+  /// `Regular Call`
+  String get regularCall {
+    return Intl.message(
+      'Regular Call',
+      name: 'regularCall',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Recent Rides`
+  String get yourRecentRides {
+    return Intl.message(
+      'Your Recent Rides',
+      name: 'yourRecentRides',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose On Map`
+  String get chooseOnMap {
+    return Intl.message(
+      'Choose On Map',
+      name: 'chooseOnMap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter Your Route`
+  String get enterYourRoute {
+    return Intl.message(
+      'Enter Your Route',
+      name: 'enterYourRoute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Finish`
+  String get finish {
+    return Intl.message('Finish', name: 'finish', desc: '', args: []);
+  }
+
+  /// `Registration Successful`
+  String get registrationSuccessful {
+    return Intl.message(
+      'Registration Successful',
+      name: 'registrationSuccessful',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Registration Failed`
+  String get registrationFailed {
+    return Intl.message(
+      'Registration Failed',
+      name: 'registrationFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter text`
+  String get hintText {
+    return Intl.message('Enter text', name: 'hintText', desc: '', args: []);
+  }
+
+  /// `Please enter your date of birth`
+  String get pleaseEnterDate {
+    return Intl.message(
+      'Please enter your date of birth',
+      name: 'pleaseEnterDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date format must be DD/MM/YYYY`
+  String get invalidDateFormat {
+    return Intl.message(
+      'Date format must be DD/MM/YYYY',
+      name: 'invalidDateFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid date`
+  String get invalidDate {
+    return Intl.message(
+      'Invalid date',
+      name: 'invalidDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day must be between 01 and 31`
+  String get invalidDay {
+    return Intl.message(
+      'Day must be between 01 and 31',
+      name: 'invalidDay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Month must be between 01 and 12`
+  String get invalidMonth {
+    return Intl.message(
+      'Month must be between 01 and 12',
+      name: 'invalidMonth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year must be between 1950 and current year`
+  String get invalidYear {
+    return Intl.message(
+      'Year must be between 1950 and current year',
+      name: 'invalidYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your license number`
+  String get pleaseEnterLicense {
+    return Intl.message(
+      'Please enter your license number',
+      name: 'pleaseEnterLicense',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License number must be 14 characters long`
+  String get invalidLicenseLength {
+    return Intl.message(
+      'License number must be 14 characters long',
+      name: 'invalidLicenseLength',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License number should start with a letter`
+  String get invalidLicenseStart {
+    return Intl.message(
+      'License number should start with a letter',
+      name: 'invalidLicenseStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License number should have 13 digits following the first letter`
+  String get invalidLicenseDigits {
+    return Intl.message(
+      'License number should have 13 digits following the first letter',
+      name: 'invalidLicenseDigits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year in license number is not valid`
+  String get invalidLicenseYear {
+    return Intl.message(
+      'Year in license number is not valid',
+      name: 'invalidLicenseYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your National ID`
+  String get pleaseEnterNationalId {
+    return Intl.message(
+      'Please enter your National ID',
+      name: 'pleaseEnterNationalId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID must be 14 digits long`
+  String get invalidNationalIdLength {
+    return Intl.message(
+      'National ID must be 14 digits long',
+      name: 'invalidNationalIdLength',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID must contain only digits`
+  String get invalidNationalIdDigits {
+    return Intl.message(
+      'National ID must contain only digits',
+      name: 'invalidNationalIdDigits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid National ID checksum`
+  String get invalidNationalIdChecksum {
+    return Intl.message(
+      'Invalid National ID checksum',
+      name: 'invalidNationalIdChecksum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid birth month`
+  String get invalidBirthMonth {
+    return Intl.message(
+      'Invalid birth month',
+      name: 'invalidBirthMonth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Birth date cannot be in the future`
+  String get invalidBirthDateFuture {
+    return Intl.message(
+      'Birth date cannot be in the future',
+      name: 'invalidBirthDateFuture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the expiry date`
+  String get pleaseEnterExpiryDate {
+    return Intl.message(
+      'Please enter the expiry date',
+      name: 'pleaseEnterExpiryDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date format must be DD/MM/YYYY`
+  String get invalidExpiryDateFormat {
+    return Intl.message(
+      'Date format must be DD/MM/YYYY',
+      name: 'invalidExpiryDateFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiry date cannot be in the past`
+  String get expiryDateInPast {
+    return Intl.message(
+      'Expiry date cannot be in the past',
+      name: 'expiryDateInPast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid expiry date`
+  String get invalidExpiryDate {
+    return Intl.message(
+      'Invalid expiry date',
+      name: 'invalidExpiryDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a vehicle plate number`
+  String get pleaseEnterPlateNumber {
+    return Intl.message(
+      'Please enter a vehicle plate number',
+      name: 'pleaseEnterPlateNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid plate number format. Example: C12345 or A1234E`
+  String get invalidPlateFormat {
+    return Intl.message(
+      'Invalid plate number format. Example: C12345 or A1234E',
+      name: 'invalidPlateFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your license number`
+  String get pleaseEnterLicenseNumber {
+    return Intl.message(
+      'Please enter your license number',
+      name: 'pleaseEnterLicenseNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License number must be 14 characters long`
+  String get licenseNumberMustBe14Characters {
+    return Intl.message(
+      'License number must be 14 characters long',
+      name: 'licenseNumberMustBe14Characters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License number should start with a letter`
+  String get licenseNumberMustStartWithLetter {
+    return Intl.message(
+      'License number should start with a letter',
+      name: 'licenseNumberMustStartWithLetter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License number should have 13 digits following the first letter`
+  String get licenseNumberMustHave13Digits {
+    return Intl.message(
+      'License number should have 13 digits following the first letter',
+      name: 'licenseNumberMustHave13Digits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID must be 14 digits long`
+  String get nationalIdMustBe14Digits {
+    return Intl.message(
+      'National ID must be 14 digits long',
+      name: 'nationalIdMustBe14Digits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `National ID must contain only digits`
+  String get nationalIdMustContainOnlyDigits {
+    return Intl.message(
+      'National ID must contain only digits',
+      name: 'nationalIdMustContainOnlyDigits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Birth date cannot be in the future`
+  String get birthDateCannotBeInFuture {
+    return Intl.message(
+      'Birth date cannot be in the future',
+      name: 'birthDateCannotBeInFuture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date format must be DD/MM/YYYY`
+  String get dateFormatMustBeDDMMYYYY {
+    return Intl.message(
+      'Date format must be DD/MM/YYYY',
+      name: 'dateFormatMustBeDDMMYYYY',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Day must be between 01 and 31`
+  String get dayMustBeBetween01And31 {
+    return Intl.message(
+      'Day must be between 01 and 31',
+      name: 'dayMustBeBetween01And31',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Month must be between 01 and 12`
+  String get monthMustBeBetween01And12 {
+    return Intl.message(
+      'Month must be between 01 and 12',
+      name: 'monthMustBeBetween01And12',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Year must be within the next 10 years`
+  String get yearMustBeWithinNext10Years {
+    return Intl.message(
+      'Year must be within the next 10 years',
+      name: 'yearMustBeWithinNext10Years',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Expiry date cannot be in the past`
+  String get expiryDateCannotBeInPast {
+    return Intl.message(
+      'Expiry date cannot be in the past',
+      name: 'expiryDateCannotBeInPast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a vehicle plate number`
+  String get pleaseEnterVehiclePlateNumber {
+    return Intl.message(
+      'Please enter a vehicle plate number',
+      name: 'pleaseEnterVehiclePlateNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invalid plate number format. Example: C12345 or A1234E`
+  String get invalidPlateNumberFormat {
+    return Intl.message(
+      'Invalid plate number format. Example: C12345 or A1234E',
+      name: 'invalidPlateNumberFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your first name`
+  String get pleaseEnterYourFirstName {
+    return Intl.message(
+      'Please enter your first name',
+      name: 'pleaseEnterYourFirstName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your last name`
+  String get pleaseEnterYourLastName {
+    return Intl.message(
+      'Please enter your last name',
+      name: 'pleaseEnterYourLastName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your date of birth`
+  String get pleaseEnterYourDateOfBirth {
+    return Intl.message(
+      'Please enter your date of birth',
+      name: 'pleaseEnterYourDateOfBirth',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your personal image`
+  String get pleaseEnterYourPersonalImage {
+    return Intl.message(
+      'Please enter your personal image',
+      name: 'pleaseEnterYourPersonalImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your vehicle picture`
+  String get pleaseEnterYourVehiclePicture {
+    return Intl.message(
+      'Please enter your vehicle picture',
+      name: 'pleaseEnterYourVehiclePicture',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your vehicle registration certificate`
+  String get pleaseEnterYourVehicleRegistrationCertificate {
+    return Intl.message(
+      'Please enter your vehicle registration certificate',
+      name: 'pleaseEnterYourVehicleRegistrationCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your back side of certificate`
+  String get pleaseEnterYourBackSideOfCertificate {
+    return Intl.message(
+      'Please enter your back side of certificate',
+      name: 'pleaseEnterYourBackSideOfCertificate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your vehicle brand`
+  String get pleaseEnterYourVehicleBrand {
+    return Intl.message(
+      'Please enter your vehicle brand',
+      name: 'pleaseEnterYourVehicleBrand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your vehicle model`
+  String get pleaseEnterYourVehicleModel {
+    return Intl.message(
+      'Please enter your vehicle model',
+      name: 'pleaseEnterYourVehicleModel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your vehicle color`
+  String get pleaseEnterYourVehicleColor {
+    return Intl.message(
+      'Please enter your vehicle color',
+      name: 'pleaseEnterYourVehicleColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your production year`
+  String get pleaseEnterYourProductionYear {
+    return Intl.message(
+      'Please enter your production year',
+      name: 'pleaseEnterYourProductionYear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter your vehicle plate number`
+  String get pleaseEnterYourVehiclePlateNumber {
+    return Intl.message(
+      'Please enter your vehicle plate number',
+      name: 'pleaseEnterYourVehiclePlateNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Brand`
+  String get selectBrand {
+    return Intl.message(
+      'Select Brand',
+      name: 'selectBrand',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Model`
+  String get selectModel {
+    return Intl.message(
+      'Select Model',
+      name: 'selectModel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Color`
+  String get selectColor {
+    return Intl.message(
+      'Select Color',
+      name: 'selectColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This field is required`
+  String get requiredField {
+    return Intl.message(
+      'This field is required',
+      name: 'requiredField',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Passenger Requests`
+  String get passengerRequests {
+    return Intl.message(
+      'Passenger Requests',
+      name: 'passengerRequests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Decline`
+  String get decline {
+    return Intl.message('Decline', name: 'decline', desc: '', args: []);
+  }
+
+  /// `Accept`
+  String get accept {
+    return Intl.message('Accept', name: 'accept', desc: '', args: []);
+  }
+
+  /// `Your Request Has Been Sent Successfully`
+  String get YourRequestHasBeenSentSuccessfully {
+    return Intl.message(
+      'Your Request Has Been Sent Successfully',
+      name: 'YourRequestHasBeenSentSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We Will Contact You Soon`
+  String get WeWillContactYouSoon {
+    return Intl.message(
+      'We Will Contact You Soon',
+      name: 'WeWillContactYouSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get ok {
+    return Intl.message('OK', name: 'ok', desc: '', args: []);
+  }
+
+  /// `Ride Description`
+  String get rideDescription {
+    return Intl.message(
+      'Ride Description',
+      name: 'rideDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get camera {
+    return Intl.message('Camera', name: 'camera', desc: '', args: []);
+  }
+
+  /// `Gallery`
+  String get gallery {
+    return Intl.message('Gallery', name: 'gallery', desc: '', args: []);
+  }
+
+  /// `Pick Image`
+  String get pickImage {
+    return Intl.message('Pick Image', name: 'pickImage', desc: '', args: []);
+  }
+
+  /// `Missing Phone Number`
+  String get missingPhoneNumber {
+    return Intl.message(
+      'Missing Phone Number',
+      name: 'missingPhoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose Call Type`
+  String get chooseCallType {
+    return Intl.message(
+      'Choose Call Type',
+      name: 'chooseCallType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Theme`
+  String get theme {
+    return Intl.message('Theme', name: 'theme', desc: '', args: []);
+  }
+
+  /// `Please complete your registration or wait for approval.`
+  String get pleaseCompleteYourRegistration {
+    return Intl.message(
+      'Please complete your registration or wait for approval.',
+      name: 'pleaseCompleteYourRegistration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You are not eligible to access driver mode.`
+  String get youAreNotEligible {
+    return Intl.message(
+      'You are not eligible to access driver mode.',
+      name: 'youAreNotEligible',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access Denied`
+  String get accessDenied {
+    return Intl.message(
+      'Access Denied',
+      name: 'accessDenied',
+      desc: '',
+      args: [],
+    );
   }
 }
 

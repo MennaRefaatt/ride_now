@@ -63,13 +63,13 @@ class _DPendingScreenState extends State<DPendingScreen>
                   );
                 },
               ),
-              verticalSpacing(20.h),
-              Text("S().Your request has been sent successfully",
+              verticalSpacing(20),
+              Text(S().YourRequestHasBeenSentSuccessfully,
                   style: TextStyles.font24BlackBold),
-              verticalSpacing(10.h),
-              Text("S().We will contact you soon",
+              verticalSpacing(10),
+              Text(S().WeWillContactYouSoon,
                   style: TextStyles.font18BlackRegular),
-              verticalSpacing(20.h),
+              verticalSpacing(20),
               AppButton(
                 text: S().done,
                 backgroundColor: AppColors.primary,

@@ -1,5 +1,4 @@
 enum MySharedKeys {
-  language,
   onBoarding,
   currentLanguage,
   firstOpen,
@@ -28,5 +27,6 @@ enum MySharedKeys {
   carColor,
   carNumber,
   driverLatitude,
-  driverLongitude, deviceToken,
+  driverLongitude,
+  deviceToken,
 }

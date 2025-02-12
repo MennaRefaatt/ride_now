@@ -39,7 +39,8 @@ class PickImage extends StatelessWidget {
       child: Column(
         children: [
           image.isNotEmpty
-              ? SizedBox(
+              ? Container(
+                  margin: EdgeInsets.all(10.sp),
                   height: MediaQuery.of(context).size.height * 0.15,
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(20.r),
@@ -48,21 +49,24 @@ class PickImage extends StatelessWidget {
               : Container(
                   height: MediaQuery.of(context).size.height * 0.15,
                   width: MediaQuery.of(context).size.height * 0.15,
-                  padding: EdgeInsets.all(20.sp),
+                  margin: EdgeInsets.all(10.sp),
                   decoration: BoxDecoration(
-                    color: AppColors.semiGrey.withOpacity(0.2),
+                    color: AppColors.semiGrey.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Icon(CupertinoIcons.plus, size: 40.sp),
                 ),
-          verticalSpacing(10.h),
-          Text(
-            formatText(text),
-            style: TextStyles.font14BlackRegular,
-            textAlign: TextAlign.center,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            softWrap: true,
+          verticalSpacing(10),
+          SizedBox(
+            height: 50.h,
+            child: Text(
+              formatText(text),
+              style: TextStyles.font14BlackRegular,
+              textAlign: TextAlign.center,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              softWrap: true,
+            ),
           ),
         ],
       ),
