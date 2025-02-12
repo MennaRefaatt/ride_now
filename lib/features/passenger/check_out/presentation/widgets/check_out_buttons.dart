@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
@@ -13,8 +12,9 @@ import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/presentation/manager/trip_cubit.dart';
-import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/trip/presentation/trip_tracking_args.dart';
+import '../../../../trip_module/trip/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
 
 class CheckOutButtons extends StatefulWidget {

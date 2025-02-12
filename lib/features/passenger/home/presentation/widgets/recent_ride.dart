@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 
 class RecentRide extends StatelessWidget {
   const RecentRide(
@@ -45,7 +45,7 @@ class RecentRide extends StatelessWidget {
                 child: Row(
                   children: [
                     CircleAvatar(
-                        backgroundColor: AppColors.primary.withOpacity(0.2),
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.2),
                         child: const Icon(
                           CupertinoIcons.clock,
                           color: AppColors.primary,

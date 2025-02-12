@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
-import 'package:ride_now/features/trip_module/presentation/widgets/passenger_trip_details.dart';
-
+import 'package:ride_now/features/trip_module/trip/presentation/widgets/passenger_trip_details.dart';
+import '../../data/models/trip_model.dart';
 import 'driver_trip_details.dart';
 
 class TripDetails extends StatefulWidget {

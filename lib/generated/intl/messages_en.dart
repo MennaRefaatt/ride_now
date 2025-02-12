@@ -81,6 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "change": MessageLookupByLibrary.simpleMessage("Change"),
     "changeLanguage": MessageLookupByLibrary.simpleMessage("Change Language"),
     "changePassword": MessageLookupByLibrary.simpleMessage("Change Password"),
+    "chargeWallet": MessageLookupByLibrary.simpleMessage("Charge Wallet"),
     "chats": MessageLookupByLibrary.simpleMessage("Chats"),
     "checkout": MessageLookupByLibrary.simpleMessage("Check Out"),
     "chooseCallType": MessageLookupByLibrary.simpleMessage("Choose Call Type"),
@@ -214,6 +215,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "goToPassengerMode": MessageLookupByLibrary.simpleMessage(
       "Go To Passenger Mode",
     ),
+    "help": MessageLookupByLibrary.simpleMessage("Help"),
     "hintText": MessageLookupByLibrary.simpleMessage("Enter text"),
     "home": MessageLookupByLibrary.simpleMessage("Home"),
     "iAlreadyHaveAnAccount": MessageLookupByLibrary.simpleMessage(
@@ -289,6 +291,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemDetails": MessageLookupByLibrary.simpleMessage("Item Details"),
     "language": MessageLookupByLibrary.simpleMessage("Language"),
     "lastName": MessageLookupByLibrary.simpleMessage("Last Name"),
+    "lastUpdated": MessageLookupByLibrary.simpleMessage("Last Updated"),
     "latitude": MessageLookupByLibrary.simpleMessage("Latitude"),
     "lengthMustBeEqual11": MessageLookupByLibrary.simpleMessage(
       "Length Must Be Equal 11",
@@ -331,6 +334,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "myAddresses": MessageLookupByLibrary.simpleMessage("My Addresses"),
     "myOrderDetails": MessageLookupByLibrary.simpleMessage("My Order Details"),
+    "myTrips": MessageLookupByLibrary.simpleMessage("My Trips"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "nationalId": MessageLookupByLibrary.simpleMessage("National ID"),
     "nationalIdMustBe14Digits": MessageLookupByLibrary.simpleMessage(
@@ -362,6 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "notValidPhone": MessageLookupByLibrary.simpleMessage("Not Valid Phone"),
     "notes": MessageLookupByLibrary.simpleMessage("Notes"),
     "notification": MessageLookupByLibrary.simpleMessage("Notification"),
+    "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
     "ok": MessageLookupByLibrary.simpleMessage("OK"),
     "old": MessageLookupByLibrary.simpleMessage("Old"),
     "oldPassword": MessageLookupByLibrary.simpleMessage("Old Password"),
@@ -397,6 +402,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordsDontMatch": MessageLookupByLibrary.simpleMessage(
       "Passwords Don\'t Match",
     ),
+    "pay": MessageLookupByLibrary.simpleMessage("Pay"),
+    "payment": MessageLookupByLibrary.simpleMessage("Payment"),
     "paymentMethod": MessageLookupByLibrary.simpleMessage("Payment Method"),
     "paymentSummary": MessageLookupByLibrary.simpleMessage("Payment Summary"),
     "personalDocuments": MessageLookupByLibrary.simpleMessage(
@@ -493,6 +500,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Please enter your vehicle registration certificate",
         ),
+    "privacyPolicy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
     "productDetails": MessageLookupByLibrary.simpleMessage("Product Details"),
     "productionYear": MessageLookupByLibrary.simpleMessage("Production Year"),
     "products": MessageLookupByLibrary.simpleMessage("Products"),
@@ -583,6 +591,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vehicleRegistrationCertificate": MessageLookupByLibrary.simpleMessage(
       "Vehicle Registration Certificate",
     ),
+    "wallet": MessageLookupByLibrary.simpleMessage("Wallet"),
     "whereTo": MessageLookupByLibrary.simpleMessage("Where To ?"),
     "writeYourComplaintHere": MessageLookupByLibrary.simpleMessage(
       "Write Your Complaint Here",

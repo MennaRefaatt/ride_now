@@ -5,7 +5,7 @@ import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../manager/home_cubit.dart';
 
 class LastTripsListView extends StatefulWidget {
@@ -70,7 +70,7 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                       margin: EdgeInsets.all(1.sp),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.r),
-                        color: AppColors.primary.withOpacity(0.5),
+                        color: AppColors.primary.withValues(alpha: 0.5),
                       ),
                       width: uniqueTrips[0].to.length > 15
                           ? MediaQuery.of(context).size.width * 0.5
@@ -133,7 +133,7 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                       margin: EdgeInsets.all(1.sp),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25.r),
-                        color: AppColors.primary.withOpacity(0.5),
+                        color: AppColors.primary.withValues(alpha: 0.5),
                       ),
                       width: uniqueTrips[index].to.length > 15
                           ? MediaQuery.of(context).size.width * 0.5

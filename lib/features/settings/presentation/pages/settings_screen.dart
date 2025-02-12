@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/core/utils/app_button.dart';
-import 'package:ride_now/core/components/drawer_items.dart';
+import 'package:ride_now/core/components/drawer/drawer_items.dart';
 import '../../../../core/components/app_bar.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../core/theming/app_colors.dart';

@@ -19,6 +19,10 @@ class RoutingEndpoints {
   static const audioCall = '/audioCall';
   static const contactScreen = '/contactScreen';
   static const driverNotEligibleScreen = '/driverNotEligibleScreen';
+  static const helpScreen = '/helpScreen';
+  static const privacyScreen = '/privacyScreen';
+  static const walletScreen = '/walletScreen';
+  static const myTripsScreen = '/myTripsScreen';
 
 
 }

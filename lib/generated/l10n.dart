@@ -2704,6 +2704,71 @@ class S {
       args: [],
     );
   }
+
+  /// `Help`
+  String get help {
+    return Intl.message('Help', name: 'help', desc: '', args: []);
+  }
+
+  /// `Notifications`
+  String get notifications {
+    return Intl.message(
+      'Notifications',
+      name: 'notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `My Trips`
+  String get myTrips {
+    return Intl.message('My Trips', name: 'myTrips', desc: '', args: []);
+  }
+
+  /// `Wallet`
+  String get wallet {
+    return Intl.message('Wallet', name: 'wallet', desc: '', args: []);
+  }
+
+  /// `Payment`
+  String get payment {
+    return Intl.message('Payment', name: 'payment', desc: '', args: []);
+  }
+
+  /// `Charge Wallet`
+  String get chargeWallet {
+    return Intl.message(
+      'Charge Wallet',
+      name: 'chargeWallet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pay`
+  String get pay {
+    return Intl.message('Pay', name: 'pay', desc: '', args: []);
+  }
+
+  /// `Last Updated`
+  String get lastUpdated {
+    return Intl.message(
+      'Last Updated',
+      name: 'lastUpdated',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

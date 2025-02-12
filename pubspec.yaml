@@ -151,6 +151,7 @@ dependencies:
   agora_rtc_engine: ^6.5.0
   flutter_callkit_incoming: ^2.5.0
   blurrycontainer: ^2.1.0
+  u_credit_card: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -167,6 +168,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/sounds/
+    - assets/service-account.json
 
 
 
