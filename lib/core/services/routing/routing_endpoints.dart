@@ -1,7 +1,6 @@
 class RoutingEndpoints {
   static const splash = '/';
   static const onBoardingScreen = '/onBoardingScreen';
-  static const scanner = '/scanner';
   static const login = '/login';
   static const passengerHome = '/passengerHome';
   static const driverHome = '/driverHome';
@@ -19,6 +18,7 @@ class RoutingEndpoints {
   static const driverPendingScreen = '/driverPendingScreen';
   static const audioCall = '/audioCall';
   static const contactScreen = '/contactScreen';
+  static const driverNotEligibleScreen = '/driverNotEligibleScreen';
 
 
 }

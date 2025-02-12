@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/services/f_c_m_service/firebase_messaging_service.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../generated/l10n.dart';
 import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
 import '../services/network/api_constants.dart';
@@ -54,32 +55,36 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
           : MediaQuery.of(context).size.width * 0.3,
       leading: Scaffold.of(context).hasDrawer
           ? null
-          : Padding(
-              padding: EdgeInsets.all(2.0.sp),
-              child: Row(
-                children: [
-                  const BackButton(),
-                  CircleAvatar(
-                    radius: 30.r,
-                    backgroundColor: AppColors.primary.withOpacity(0.3),
-                    backgroundImage: (SharedPref.getString(
-                                    key: MySharedKeys.picture) !=
-                                null &&
-                            SharedPref.getString(key: MySharedKeys.picture)!
-                                .isNotEmpty)
-                        ? NetworkImage(
-                            SharedPref.getString(key: MySharedKeys.picture)!)
-                        : null,
-                    child: (SharedPref.getString(key: MySharedKeys.picture) ==
-                                null ||
-                            SharedPref.getString(key: MySharedKeys.picture)!
-                                .isEmpty)
-                        ? Icon(Icons.person, size: 24.sp, color: Colors.white)
-                        : null,
+          : widget.withProfilePicture == false
+              ? SizedBox()
+              : Padding(
+                  padding: EdgeInsets.all(2.0.sp),
+                  child: Row(
+                    children: [
+                      const BackButton(),
+                      CircleAvatar(
+                        radius: 30.r,
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.3),
+                        backgroundImage: (SharedPref.getString(
+                                        key: MySharedKeys.picture) !=
+                                    null &&
+                                SharedPref.getString(key: MySharedKeys.picture)!
+                                    .isNotEmpty)
+                            ? NetworkImage(SharedPref.getString(
+                                key: MySharedKeys.picture)!)
+                            : null,
+                        child: (SharedPref.getString(
+                                        key: MySharedKeys.picture) ==
+                                    null ||
+                                SharedPref.getString(key: MySharedKeys.picture)!
+                                    .isEmpty)
+                            ? Icon(Icons.person,
+                                size: 24.sp, color: Colors.white)
+                            : null,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
       actions: [
         widget.audioCallIcon == false
             ? const SizedBox()
@@ -109,10 +114,10 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Choose Call Type", style: TextStyles.font24BlackBold),
+              Text(S().chooseCallType, style: TextStyles.font24BlackBold),
               verticalSpacing(20.h),
               AppButton(
-                text: "Regular Call",
+                text: S().regularCall,
                 backgroundColor: AppColors.primary,
                 onPressed: () {
                   Navigator.pop(context);
@@ -121,7 +126,7 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                 textStyle: TextStyles.font18BlackRegular,
               ),
               AppButton(
-                text: "Online Call (Audio)",
+                text: S().audioCall,
                 backgroundColor: AppColors.semiGrey,
                 onPressed: () {
                   Navigator.pop(context);
@@ -151,7 +156,8 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
 
   void _startOnlineCall() {
     if (widget.receiverFCMToken != null && widget.callerName != null) {
-      sendCallNotification(widget.receiverFCMToken!, widget.callerName!, AgoraConstants.channelId);
+      sendCallNotification(widget.receiverFCMToken!, widget.callerName!,
+          AgoraConstants.channelId);
       appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -159,5 +165,4 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
       );
     }
   }
-
 }

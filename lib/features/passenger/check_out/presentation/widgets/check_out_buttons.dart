@@ -12,6 +12,7 @@ import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/presentation/manager/trip_cubit.dart';
 import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
@@ -61,7 +62,7 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                   );
                 }
                 return AppButton(
-                  text: "S().done",
+                  text: S().done,
                   textStyle: TextStyles.font18BlackBold,
                   onPressed: () async {
                     try {

@@ -10,13 +10,13 @@ import 'package:ride_now/features/contact/presentation/contact_args.dart';
 import 'package:ride_now/features/contact/presentation/screen/contact_screen.dart';
 import 'package:ride_now/features/driver/d_pending/d_pending_screen.dart';
 import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_home.dart';
+import 'package:ride_now/features/driver/driver_not_eligible_screen/driver_not_eligible_screen.dart';
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/pages/driver_registration.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
 import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
 import 'package:ride_now/features/profile/presentation/pages/city_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart';
-import 'package:ride_now/features/scanner.dart';
 import 'package:ride_now/features/settings/presentation/pages/settings_screen.dart';
 import 'package:ride_now/features/splash.dart';
 import 'package:ride_now/features/trip_module/presentation/pages/trip_screen.dart';
@@ -41,9 +41,6 @@ class RouteServices {
         final args = routeSettings.arguments as PhoneArgs;
         return _customFadeRoute(
             PhoneNumberScreen(args: args), routeSettings.name!);
-      case RoutingEndpoints.scanner:
-        return _customFadeRoute(
-            const LicensePlateScanner(), routeSettings.name!);
       case RoutingEndpoints.login:
         return _customFadeRoute(
             ProviderScope(child: const LoginScreen()), routeSettings.name!);
@@ -57,6 +54,8 @@ class RouteServices {
         return _customFadeRoute(const SettingsScreen(), routeSettings.name!);
       case RoutingEndpoints.driverPendingScreen:
         return _customFadeRoute(const DPendingScreen(), routeSettings.name!);
+      case RoutingEndpoints.driverNotEligibleScreen:
+        return _customFadeRoute(const DriverNotEligibleScreen(), routeSettings.name!);
       case RoutingEndpoints.maps:
         final args = routeSettings.arguments as MapsArgs;
         return _customFadeRoute(

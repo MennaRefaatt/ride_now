@@ -84,59 +84,65 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                   ),
                 ],
               )
-            : ListView.builder(
-                itemCount: uniqueTrips.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    final selectedTrip = uniqueTrips[index];
-                    widget.cubit.toController.text = selectedTrip.to;
-                    widget.cubit.toLatLng = selectedTrip.toLatLng;
-                    widget.cubit.fromLatLng = selectedTrip.fromLatLng;
+            : Directionality(
+                textDirection:
+                    Localizations.localeOf(context).languageCode == 'ar'
+                        ? TextDirection.rtl
+                        : TextDirection.ltr,
+                child: ListView.builder(
+                  itemCount: uniqueTrips.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      final selectedTrip = uniqueTrips[index];
+                      widget.cubit.toController.text = selectedTrip.to;
+                      widget.cubit.toLatLng = selectedTrip.toLatLng;
+                      widget.cubit.fromLatLng = selectedTrip.fromLatLng;
 
-                    if (widget.cubit.toLatLng != null &&
-                        widget.cubit.fromLatLng != null) {
-                      setState(() {
-                        widget.disappear = true;
-                      });
-                      Navigator.pushNamed(
-                        context,
-                        RoutingEndpoints.checkOut,
-                        arguments: CheckOutArgs(
-                          fromAddress: widget.cubit.fromController.text,
-                          toAddress: widget.cubit.toController.text,
-                          fromLatLng: widget.cubit.fromLatLng!,
-                          toLatLng: widget.cubit.toLatLng!,
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: AppColors.red,
-                          content: Text(
-                            "Error: LatLng values are null",
-                            style: TextStyles.font18BlackRegular,
+                      if (widget.cubit.toLatLng != null &&
+                          widget.cubit.fromLatLng != null) {
+                        setState(() {
+                          widget.disappear = true;
+                        });
+                        Navigator.pushNamed(
+                          context,
+                          RoutingEndpoints.checkOut,
+                          arguments: CheckOutArgs(
+                            fromAddress: widget.cubit.fromController.text,
+                            toAddress: widget.cubit.toController.text,
+                            fromLatLng: widget.cubit.fromLatLng!,
+                            toLatLng: widget.cubit.toLatLng!,
                           ),
-                        ),
-                      );
-                      safePrint("Error: LatLng values are null");
-                    }
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5.sp),
-                    margin: EdgeInsets.all(1.sp),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.r),
-                      color: AppColors.primary.withOpacity(0.5),
-                    ),
-                    width: uniqueTrips[index].to.length > 15
-                        ? MediaQuery.of(context).size.width * 0.5
-                        : MediaQuery.of(context).size.width * 0.25,
-                    child: Text(
-                      uniqueTrips[index].to,
-                      style: TextStyles.font18BlackRegular,
-                      overflow: TextOverflow.ellipsis,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColors.red,
+                            content: Text(
+                              "Error: LatLng values are null",
+                              style: TextStyles.font18BlackRegular,
+                            ),
+                          ),
+                        );
+                        safePrint("Error: LatLng values are null");
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(5.sp),
+                      margin: EdgeInsets.all(1.sp),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.r),
+                        color: AppColors.primary.withOpacity(0.5),
+                      ),
+                      width: uniqueTrips[index].to.length > 15
+                          ? MediaQuery.of(context).size.width * 0.5
+                          : MediaQuery.of(context).size.width * 0.25,
+                      child: Text(
+                        uniqueTrips[index].to,
+                        style: TextStyles.font18BlackRegular,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                 ),

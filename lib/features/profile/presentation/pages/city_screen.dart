@@ -44,7 +44,7 @@ class _CityScreenState extends State<CityScreen> {
             children: [
               AppTextFormField(
                 controller: _searchController,
-                hintText: "S().startTyping",
+                hintText: S().startTyping,
                 withHint: true,
                 onChanged: (value) {
                   cityCubit.fetchCities(value);

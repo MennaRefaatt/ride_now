@@ -15,6 +15,7 @@ import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/presentation/trip_tracking_args.dart';
 
 class TripRequestsDialogue extends StatefulWidget {
@@ -181,7 +182,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                           Row(
                             children: [
                               AppButton(
-                                text: "Reject",
+                                text: S().decline,
                                 backgroundColor: Colors.grey.shade200,
                                 onPressed: () {},
                                 textStyle: TextStyles.font18WhiteBold.copyWith(
@@ -191,7 +192,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                 width: MediaQuery.of(context).size.width * 0.3,
                               ),
                               AppButton(
-                                text: "Accept",
+                                text: S().accept,
                                 backgroundColor: AppColors.primary,
                                 onPressed: () {
                                   final driverId = SharedPref.getString(

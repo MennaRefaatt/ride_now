@@ -9,6 +9,7 @@ import 'package:ride_now/features/passenger/home/data/models/category_model.dart
 import 'package:ride_now/features/passenger/home/presentation/widgets/ride_description.dart';
 
 import '../../../../../core/components/app_icon.dart';
+import '../../../../../generated/l10n.dart';
 
 class RideCategories extends StatefulWidget {
   const RideCategories({super.key, required this.categories});
@@ -147,7 +148,7 @@ class RideCategoriesState extends State<RideCategories> {
     showModalBottomSheet(
       context: context,
       builder: (_) => CustomBottomSheet(
-        title: "S().RideDescription",
+        title: S().rideDescription,
         child: RideDescription(
           image: image,
           text: text,

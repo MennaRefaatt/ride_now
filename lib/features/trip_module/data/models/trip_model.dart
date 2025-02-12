@@ -63,7 +63,9 @@ class TripModel {
           : json['toLatLng'] as LatLng,
       dateTime: (json['dateTime'] is Timestamp)
           ? (json['dateTime'] as Timestamp).toDate()
-          : DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'] ?? ''),
+          : (json['dateTime'] is String && json['dateTime'].isNotEmpty)
+          ? DateFormat('dd/MM/yyyy HH:mm').tryParse(json['dateTime']) ?? DateTime.now()
+          : DateTime.now(),
       price: (json['price'] is String)
           ? double.tryParse(json['price'])?.toString() ?? '0.0'
           : json['price'].toString(),

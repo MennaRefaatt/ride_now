@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
           child: DefaultAppBar(
-            text: 'Profile',
+            text: S().profile,
             withDivider: false,
             backgroundColor: Colors.white,
           ),

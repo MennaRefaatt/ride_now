@@ -75,6 +75,10 @@ class SharedPref {
   static String getCurrentLanguage() {
     return _preferences?.getString(MySharedKeys.currentLanguage.name) ?? "en";
   }
+  static Future<void> setCurrentLanguage(String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(MySharedKeys.currentLanguage.name, languageCode);
+  }
 
   static bool isLoggedIn() {
     return getString(key: MySharedKeys.userId).toString().isNotEmpty;

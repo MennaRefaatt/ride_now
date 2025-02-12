@@ -11,6 +11,7 @@ import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
 import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
+import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/data/models/trip_model.dart';
 import '../../../check_out/presentation/check_out_args.dart';
 import '../../../maps/data/model/location_model.dart';
@@ -132,7 +133,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
               children: [
                 Expanded(
                   child: Text(
-                    "S().Enter your route",
+                    S().enterYourRoute,
                     style: TextStyles.font24BlackBold,
                     textAlign: TextAlign.center,
                   ),
@@ -162,7 +163,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
               hintStyle: TextStyles.font18BlackRegular.copyWith(
                 color: Colors.grey.shade800,
               ),
-              hintText: "S().From",
+              hintText: S().fromWhere,
               keyboardType: TextInputType.text,
               prefixIcon: Icon(
                 Icons.trip_origin,
@@ -198,7 +199,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
               hintStyle: TextStyles.font18BlackRegular.copyWith(
                 color: Colors.grey.shade800,
               ),
-              hintText: "S().To",
+              hintText: S().whereTo,
               keyboardType: TextInputType.text,
               prefixIcon: Icon(
                 CupertinoIcons.search,
@@ -219,7 +220,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
                       color: AppColors.primary, size: 30.sp),
                   horizontalSpacing(10.w),
                   Text(
-                    "S().Choose on map",
+                    S().chooseOnMap,
                     style: TextStyles.font18WhiteBold
                         .copyWith(color: AppColors.primary),
                   ),
