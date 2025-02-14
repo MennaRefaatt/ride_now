@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/utils/app_button.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
@@ -13,8 +12,9 @@ import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/presentation/manager/trip_cubit.dart';
-import '../../../../trip_module/presentation/trip_tracking_route_args.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/trip/presentation/trip_tracking_args.dart';
+import '../../../../trip_module/trip/presentation/trip_tracking_route_args.dart';
 import 'more_options.dart';
 
 class CheckOutButtons extends StatefulWidget {
@@ -67,7 +67,8 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                   onPressed: () async {
                     try {
                       safePrint(widget.toAddress);
-                      await widget.tripCubit.createTrip(
+                      await widget.tripCubit
+                          .createTrip(
                         widget.fromAddress,
                         widget.fromLatLng,
                         widget.toAddress,
@@ -76,20 +77,26 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                         moreThan4Passengers,
                         commentController.text,
                         widget.cost,
-                      ).then((_) {
+                      )
+                          .then((_) async {
+                        await Future.delayed(Duration(
+                            milliseconds: 500)); // Allow some time for storage
+
                         tripId = SharedPref.getString(
-                            key: MySharedKeys.currentTripId) ??
+                                key: MySharedKeys.currentTripId) ??
                             "";
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: AppColors.primary,
-                                content: Text("Trip id: $tripId"),
-                              ),
-                            );
-                          }
+                          if (!mounted)
+                            return; // Ensure widget is mounted before UI updates
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: AppColors.primary,
+                              content: Text("Trip id: $tripId"),
+                            ),
+                          );
+
                           Navigator.pushReplacementNamed(
                             context,
                             RoutingEndpoints.tripTracking,
@@ -103,8 +110,8 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                                 driverLatLng: LatLng(0, 0),
                                 tripStatus: TripStatus.pending.name,
                               ),
-                                isPassenger: true,
-                              ),
+                              isPassenger: true,
+                            ),
                           );
                         } else {
                           throw Exception("Trip ID is missing after creation");
@@ -112,18 +119,14 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                       });
                     } catch (error) {
                       safePrint("Error creating trip: $error");
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              backgroundColor: AppColors.red,
-                              content: Text(
-                                "Error creating trip: $error",
-                              )),
-                        );
-                      }
-                      return;
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: AppColors.red,
+                          content: Text("Error creating trip: $error"),
+                        ),
+                      );
                     }
-                    safePrint("Order button pressed");
                   },
                   backgroundColor: AppColors.primary,
                   width: double.infinity,

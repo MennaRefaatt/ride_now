@@ -4,7 +4,7 @@ import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../models/category_model.dart';
 
 abstract class HomeRemoteDS {

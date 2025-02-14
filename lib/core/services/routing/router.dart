@@ -13,18 +13,22 @@ import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_h
 import 'package:ride_now/features/driver/driver_not_eligible_screen/driver_not_eligible_screen.dart';
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/pages/driver_registration.dart';
+import 'package:ride_now/features/notifications/presentation/pages/notification_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
 import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
+import 'package:ride_now/features/privacy_policy/presentation/pages/privacy_policy_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/city_screen.dart';
 import 'package:ride_now/features/profile/presentation/pages/profile_screen.dart';
 import 'package:ride_now/features/settings/presentation/pages/settings_screen.dart';
 import 'package:ride_now/features/splash.dart';
-import 'package:ride_now/features/trip_module/presentation/pages/trip_screen.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
+import 'package:ride_now/features/trip_module/my_trips/my_trips_screen.dart';
+import 'package:ride_now/features/wallet/presentation/pages/wallet_screen.dart';
 import '../../../features/passenger/check_out/presentation/check_out_args.dart';
 import '../../../features/passenger/check_out/presentation/pages/check_out.dart';
 import '../../../features/passenger/home/presentation/pages/passenger_home.dart';
 import '../../../features/passenger/maps/presentation/screen/map_screen.dart';
+import '../../../features/trip_module/trip/presentation/pages/trip_screen.dart';
+import '../../../features/trip_module/trip/presentation/trip_tracking_route_args.dart';
 import '../../helpers/safe_print.dart';
 
 class RouteServices {
@@ -55,7 +59,8 @@ class RouteServices {
       case RoutingEndpoints.driverPendingScreen:
         return _customFadeRoute(const DPendingScreen(), routeSettings.name!);
       case RoutingEndpoints.driverNotEligibleScreen:
-        return _customFadeRoute(const DriverNotEligibleScreen(), routeSettings.name!);
+        return _customFadeRoute(
+            const DriverNotEligibleScreen(), routeSettings.name!);
       case RoutingEndpoints.maps:
         final args = routeSettings.arguments as MapsArgs;
         return _customFadeRoute(
@@ -87,6 +92,16 @@ class RouteServices {
             routeSettings.name!);
       case RoutingEndpoints.audioCall:
         return _customFadeRoute(AudioCallScreen(), routeSettings.name!);
+      case RoutingEndpoints.walletScreen:
+        return _customFadeRoute(
+            WalletScreen(userId: routeSettings.arguments as String),
+            routeSettings.name!);
+      case RoutingEndpoints.privacyScreen:
+        return _customFadeRoute(PrivacyPolicyScreen(), routeSettings.name!);
+      case RoutingEndpoints.myTripsScreen:
+        return _customFadeRoute(MyTripsScreen(), routeSettings.name!);
+     case RoutingEndpoints.notifications:
+        return _customFadeRoute(NotificationsScreen(), routeSettings.name!);
       case RoutingEndpoints.otp:
         return _customFadeRoute(
             OTPScreen(verificationId: routeSettings.arguments as String),

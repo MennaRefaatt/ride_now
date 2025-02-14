@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../../data/models/category_model.dart';
 import '../../domain/repositories/home_repo_base.dart';
 import '../widgets/enter_your_route.dart';
@@ -84,7 +84,6 @@ class HomeCubit extends Cubit<HomeState> {
   Future<void> getTrips() async {
     emit(GetRecentTripsLoading());
     try {
-      // Correctly retrieve the list of TripModel objects
       final List<TripModel> trips = await homeRepoBase.getRecentTrips();
 
       emit(GetRecentTripsLoaded(trips: trips));

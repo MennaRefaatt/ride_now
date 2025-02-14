@@ -5,11 +5,13 @@ import 'package:get_it/get_it.dart';
 import 'package:ride_now/features/driver/driver_registration/data/repositories/d_repo_impl.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/repositories/d_repo_base.dart';
 import 'package:ride_now/features/driver/driver_registration/domain/use_cases/fetch_brands_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/accept_trip_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/cancel_trip_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/create_trip_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/get_trip_details_usecase.dart';
-import 'package:ride_now/features/trip_module/domain/use_cases/get_trips_usecase.dart';
+import 'package:ride_now/features/notifications/data/data_sources/notification_ds.dart';
+import 'package:ride_now/features/notifications/data/repositories/notification_repo.dart';
+import 'package:ride_now/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:ride_now/features/privacy_policy/data/repositories/privacy_repo.dart';
+import 'package:ride_now/features/privacy_policy/domain/use_cases/privacy_use_case.dart';
+import 'package:ride_now/features/wallet/data/data_sources/wallet_data_source.dart';
+import 'package:ride_now/features/wallet/domain/use_cases/get_wallet_use_case.dart';
 import '../../features/driver/driver_registration/data/data_sources/d_remote_ds.dart';
 import '../../features/driver/driver_registration/domain/use_cases/d_fetch_colors_usecase.dart';
 import '../../features/driver/driver_registration/domain/use_cases/fetch_models_usecase.dart';
@@ -25,6 +27,8 @@ import '../../features/passenger/maps/domain/repo_base/repo_base.dart';
 import '../../features/passenger/maps/domain/use_case/get_location_use_case.dart';
 import '../../features/passenger/maps/domain/use_case/get_realtime_location_use_case.dart';
 import '../../features/passenger/maps/domain/use_case/set_location_use_case.dart';
+import '../../features/privacy_policy/data/data_sources/privacy_data_source.dart';
+import '../../features/privacy_policy/presentation/manager/privacy_cubit.dart';
 import '../../features/profile/data/data_sources/city_remote_ds.dart';
 import '../../features/profile/data/data_sources/profile_remote_ds.dart';
 import '../../features/profile/data/repositories/city_repo_impl.dart';
@@ -37,10 +41,18 @@ import '../../features/profile/domain/use_cases/save_city_usecase.dart';
 import '../../features/profile/domain/use_cases/save_profile_usecase.dart';
 import '../../features/profile/presentation/manager/city_cubit.dart';
 import '../../features/profile/presentation/manager/profile_cubit.dart';
-import '../../features/trip_module/data/data_sources/trip_remote_ds.dart';
-import '../../features/trip_module/data/repositories/trip_repo_impl.dart';
-import '../../features/trip_module/domain/repositories/trip_repo_base.dart';
-import '../../features/trip_module/presentation/manager/trip_cubit.dart';
+import '../../features/trip_module/trip/data/data_sources/trip_remote_ds.dart';
+import '../../features/trip_module/trip/data/repositories/trip_repo_impl.dart';
+import '../../features/trip_module/trip/domain/repositories/trip_repo_base.dart';
+import '../../features/trip_module/trip/domain/use_cases/accept_trip_usecase.dart';
+import '../../features/trip_module/trip/domain/use_cases/cancel_trip_usecase.dart';
+import '../../features/trip_module/trip/domain/use_cases/create_trip_usecase.dart';
+import '../../features/trip_module/trip/domain/use_cases/get_trip_details_usecase.dart';
+import '../../features/trip_module/trip/domain/use_cases/get_trips_usecase.dart';
+import '../../features/trip_module/trip/presentation/manager/trip_cubit.dart';
+import '../../features/wallet/data/repositories/wallet_repo.dart';
+import '../../features/wallet/domain/use_cases/charge_wallet_use_case.dart';
+import '../../features/wallet/presentation/manager/wallet_cubit.dart';
 import '../services/f_c_m_service/device_token_service.dart';
 import '../services/network/api_service.dart';
 
@@ -146,4 +158,22 @@ Future<void> init() async {
         getTripDetailsUseCase: sl(),
         cancelTripUseCase: sl()),
   );
+
+  ///wallet
+  sl.registerLazySingleton<WalletDataSource>(() => WalletDataSourceImpl(sl()));
+  sl.registerLazySingleton<WalletRepoBase>(() => WalletRepo(sl()));
+  sl.registerLazySingleton(() => GetWalletBalanceUseCase(sl()));
+  sl.registerLazySingleton(() => ChargeWalletUseCase(sl()));
+  sl.registerFactory(() => WalletCubit(sl(), sl()));
+
+  ///privacy policy
+  sl.registerLazySingleton<PrivacyDataSource>(() => PrivacyDataSourceImpl(sl()));
+  sl.registerLazySingleton<PrivacyRepository>(() => PrivacyRepositoryImpl(sl()));
+  sl.registerLazySingleton(() => FetchPrivacyPolicyUseCase(sl()));
+  sl.registerFactory(() => PrivacyCubit(sl()));
+
+  ///notifications
+  sl.registerLazySingleton<NotificationDs>(() => NotificationDsImpl(sl()));
+  sl.registerLazySingleton<NotificationsRepository>(() => NotificationsRepositoryImpl(notificationDs: sl()));
+  sl.registerFactory(() => NotificationsCubit(sl()));
 }
