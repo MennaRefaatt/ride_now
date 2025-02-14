@@ -28,5 +28,4 @@ enum MySharedKeys {
   carNumber,
   driverLatitude,
   driverLongitude,
-  deviceToken,
 }

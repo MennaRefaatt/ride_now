@@ -33,9 +33,6 @@ Future<void> main() async {
   final deviceTokenService = sl<DeviceTokenService>();
   String? deviceToken = await deviceTokenService.getDeviceToken();
   safePrint(deviceToken);
-  if (deviceToken != null) {
-    SharedPref.setString(key: MySharedKeys.deviceToken, value: deviceToken);
-  }
 
   DriverStatusListener driverStatusListener = DriverStatusListener(
     userId: userId!,

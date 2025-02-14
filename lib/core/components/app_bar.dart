@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/services/f_c_m_service/firebase_messaging_service.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../features/notifications/data/models/notification_model.dart';
+import '../../features/notifications/presentation/manager/notification_cubit.dart';
 import '../../generated/l10n.dart';
 import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
@@ -54,7 +57,33 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
           ? MediaQuery.of(context).size.width * 0.1
           : MediaQuery.of(context).size.width * 0.3,
       leading: Scaffold.of(context).hasDrawer
-          ? null
+          ? BlocBuilder<NotificationsCubit, List<NotificationModel>>(
+              builder: (context, notifications) {
+                int unreadCount = notifications.where((n) => !n.isRead).length;
+                return Stack(
+                  children: [
+                    IconButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: const Icon(Icons.menu, color: Colors.black),
+                    ),
+                    if (unreadCount > 0)
+                      Positioned(
+                        right: 8,
+                        top: 8,
+                        child: CircleAvatar(
+                          radius: 8,
+                          backgroundColor: Colors.red,
+                          child: Text(
+                            unreadCount.toString(),
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            )
           : widget.withProfilePicture == false
               ? SizedBox()
               : Padding(
@@ -64,7 +93,8 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                       const BackButton(),
                       CircleAvatar(
                         radius: 30.r,
-                        backgroundColor: AppColors.primary.withValues(alpha: 0.3),
+                        backgroundColor:
+                            AppColors.primary.withValues(alpha: 0.3),
                         backgroundImage: (SharedPref.getString(
                                         key: MySharedKeys.picture) !=
                                     null &&
@@ -157,11 +187,11 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
   void _startOnlineCall() {
     if (widget.receiverFCMToken != null && widget.callerName != null) {
       sendNotification(
-        fcmToken: widget.receiverFCMToken!,
+        token: widget.receiverFCMToken!,
         title: "Incoming Call",
         body: "Driver is calling...",
-        callerName: widget.callerName,
-        channelId: AgoraConstants.channelId,
+        // callerName: widget.callerName,
+        // channelId: AgoraConstants.channelId,
       );
 
       appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall);
