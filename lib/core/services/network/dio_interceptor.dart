@@ -28,7 +28,7 @@ class DioInterceptor extends Interceptor {
     safePrint("Request to: ${options.uri}");
 
     try {
-      String? token = await SecureStorageService.readData(SecureKeys.token);
+      String? token = await SecureStorageService.readData(SecureKeys.deviceToken);
       safePrint("Token: $token");
 
       if (token != null && token.isNotEmpty) {

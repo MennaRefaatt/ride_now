@@ -314,5 +314,14 @@
   "theme": "Theme",
   "pleaseCompleteYourRegistration": "Please complete your registration or wait for approval.",
   "youAreNotEligible":  "You are not eligible to access driver mode.",
-  "accessDenied": "Access Denied"
+  "accessDenied": "Access Denied",
+  "help": "Help",
+  "notifications": "Notifications",
+  "privacyPolicy": "Privacy Policy",
+  "myTrips": "My Trips",
+  "wallet": "Wallet",
+  "payment": "Payment",
+  "chargeWallet": "Charge Wallet",
+  "pay": "Pay",
+  "lastUpdated": "Last Updated"
 }

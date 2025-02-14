@@ -14,7 +14,7 @@ class AgoraConstants {
   static const String appId = "fb581f774f4c46c884d1a0884843a551";
   static const String token ="007eJxTYNi7IGpR5J7KCzp5h6dcazrf9/vTibjTG9fry60KlzZs0chRYEhLMrUwTDM3N0kzSTYxS7awMEkxTDQAUhYmxommpoZxc5ekNwQyMvTXTWZiZIBAEJ+doSgzJdUvv5yBAQBKnCH+";
   static const String channelId = "rideNow";
-  static const String serverUrl="http://192.168.1.26:3000/send-call-notification";
+  static const String serverUrl="http://192.168.1.8:3000/send-call-notification";
 }
 
 class ApiErrors {

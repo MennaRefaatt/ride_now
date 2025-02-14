@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_bar.dart';
-import 'package:ride_now/core/components/drawer_items.dart';
+import 'package:ride_now/core/components/drawer/drawer_items.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import '../../../core/di/di.dart';
 import '../../../core/helpers/enums/user_type.dart';

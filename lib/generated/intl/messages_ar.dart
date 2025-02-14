@@ -81,6 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "change": MessageLookupByLibrary.simpleMessage("Change"),
     "changeLanguage": MessageLookupByLibrary.simpleMessage(" تغيير اللغة"),
     "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
+    "chargeWallet": MessageLookupByLibrary.simpleMessage("شحن المحفظة"),
     "chats": MessageLookupByLibrary.simpleMessage("المحادثات"),
     "checkout": MessageLookupByLibrary.simpleMessage("الدفع"),
     "chooseCallType": MessageLookupByLibrary.simpleMessage("اختر نوع الاتصال"),
@@ -207,6 +208,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "goToPassengerMode": MessageLookupByLibrary.simpleMessage(
       "الانتقال إلى وضع الراكب",
     ),
+    "help": MessageLookupByLibrary.simpleMessage("مساعدة"),
     "hintText": MessageLookupByLibrary.simpleMessage("أدخل النص"),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
     "iAlreadyHaveAnAccount": MessageLookupByLibrary.simpleMessage("لدي حساب"),
@@ -284,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "itemDetails": MessageLookupByLibrary.simpleMessage("تفاصيل العنصر"),
     "language": MessageLookupByLibrary.simpleMessage("اللغة"),
     "lastName": MessageLookupByLibrary.simpleMessage("الاسم الأخير"),
+    "lastUpdated": MessageLookupByLibrary.simpleMessage("اخر تحديث"),
     "latitude": MessageLookupByLibrary.simpleMessage("خط العرض"),
     "lengthMustBeEqual11": MessageLookupByLibrary.simpleMessage(
       "يجب ان يكون الرقم 11 رقم",
@@ -326,6 +329,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "myAddresses": MessageLookupByLibrary.simpleMessage("عناويني"),
     "myOrderDetails": MessageLookupByLibrary.simpleMessage("تفاصيل طلبي"),
+    "myTrips": MessageLookupByLibrary.simpleMessage("الرحلات الخاصة بي"),
     "name": MessageLookupByLibrary.simpleMessage("اسمك"),
     "nationalId": MessageLookupByLibrary.simpleMessage("الهوية الوطنية"),
     "nationalIdMustBe14Digits": MessageLookupByLibrary.simpleMessage(
@@ -365,6 +369,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "notes": MessageLookupByLibrary.simpleMessage("ملاحظات"),
     "notification": MessageLookupByLibrary.simpleMessage("الاشعارات"),
+    "notifications": MessageLookupByLibrary.simpleMessage("الاشعارات"),
     "ok": MessageLookupByLibrary.simpleMessage("حسنا"),
     "old": MessageLookupByLibrary.simpleMessage("قديم"),
     "oldPassword": MessageLookupByLibrary.simpleMessage("كلمة المرور القديمة"),
@@ -399,6 +404,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordsDontMatch": MessageLookupByLibrary.simpleMessage(
       "كلمات المرور غير متطابقة",
     ),
+    "pay": MessageLookupByLibrary.simpleMessage("ادفع"),
+    "payment": MessageLookupByLibrary.simpleMessage("الدفع"),
     "paymentMethod": MessageLookupByLibrary.simpleMessage("طريقة الدفع"),
     "paymentSummary": MessageLookupByLibrary.simpleMessage("ملخص الدفع"),
     "personalDocuments": MessageLookupByLibrary.simpleMessage(
@@ -463,6 +470,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseEnterYourPhone": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل رقم هاتفك",
     ),
+    "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
     "productDetails": MessageLookupByLibrary.simpleMessage("تفاصيل المنتج"),
     "productionYear": MessageLookupByLibrary.simpleMessage("سنة الإنتاج"),
     "products": MessageLookupByLibrary.simpleMessage("المنتجات"),
@@ -549,6 +557,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vehicleRegistrationCertificate": MessageLookupByLibrary.simpleMessage(
       "شهادة تسجيل المركبة",
     ),
+    "wallet": MessageLookupByLibrary.simpleMessage("المحفظة"),
     "whereTo": MessageLookupByLibrary.simpleMessage("اين؟"),
     "writeYourComplaintHere": MessageLookupByLibrary.simpleMessage(
       "اكتب رسالتك هنا",

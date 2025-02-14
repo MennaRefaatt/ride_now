@@ -1,4 +1,4 @@
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../../data/models/category_model.dart';
 
 abstract class HomeRepoBase {

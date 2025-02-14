@@ -7,11 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
 import 'package:uuid/uuid.dart';
-import '../../../../core/helpers/enums/trip_status.dart';
-import '../../../passenger/maps/presentation/manager/location_cubit.dart';
+import '../../../../../core/helpers/enums/trip_status.dart';
+import '../../../../passenger/maps/presentation/manager/location_cubit.dart';
 import '../../data/data_sources/direction_service/direction_service.dart';
+import '../trip_tracking_args.dart';
 
 class TripTracking extends StatefulWidget {
   const TripTracking(

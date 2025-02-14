@@ -10,7 +10,7 @@ import '../../../../../core/helpers/enums/stripe_payment_status.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
 
 class TripPaymentMethod extends StatefulWidget {
   const TripPaymentMethod({

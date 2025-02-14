@@ -7,8 +7,8 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
-import '../../../../trip_module/data/data_sources/distance_helper/distance_helper.dart';
-import '../../../../trip_module/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/trip/data/data_sources/distance_helper/distance_helper.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
 import '../../../maps/data/model/location_model.dart';
 import '../../../maps/presentation/maps_args.dart';
 

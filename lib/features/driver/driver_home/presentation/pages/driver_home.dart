@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_bar.dart';
-import 'package:ride_now/core/components/drawer_items.dart';
+import 'package:ride_now/core/components/drawer/drawer_items.dart';
 import 'package:ride_now/features/driver/driver_home/presentation/widgets/trip_request_dialogue.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
 
 class DriverHome extends StatefulWidget {
   const DriverHome({super.key});
@@ -27,7 +27,7 @@ class _DriverHomeState extends State<DriverHome> {
     return BlocProvider(
       create: (context) => tripCubit..getTrips(),
       child: Scaffold(
-        backgroundColor: AppColors.semiGrey.withOpacity(0.1),
+        backgroundColor: AppColors.semiGrey.withValues(alpha: 0.1),
         appBar: PreferredSize(
             preferredSize: Size.fromHeight(50.h),
             child: DefaultAppBar(

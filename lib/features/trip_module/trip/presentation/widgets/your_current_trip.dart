@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/helpers/spacing.dart';
+import '../../../../../core/helpers/spacing.dart';
 import 'cancel_button.dart';
 
 class YourCurrentTrip extends StatelessWidget {

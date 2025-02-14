@@ -3,20 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/utils/app_button.dart';
-import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
-import 'package:ride_now/features/trip_module/presentation/manager/trip_cubit.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
 import '../../../../../core/helpers/enums/stripe_payment_status.dart';
+import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/spacing.dart';
+import '../../../../../core/services/f_c_m_service/firebase_messaging_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/presentation/trip_tracking_args.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
+import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
+import '../../../../trip_module/trip/presentation/trip_tracking_args.dart';
+import '../../../../trip_module/trip/presentation/trip_tracking_route_args.dart';
 
 class TripRequestsDialogue extends StatefulWidget {
   const TripRequestsDialogue({super.key, required this.tripCubit});
@@ -194,7 +197,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                               AppButton(
                                 text: S().accept,
                                 backgroundColor: AppColors.primary,
-                                onPressed: () {
+                                onPressed: () async {
                                   final driverId = SharedPref.getString(
                                       key: MySharedKeys.driverId)!;
                                   final driverName = SharedPref.getString(
@@ -213,8 +216,7 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       key: MySharedKeys.carNumber)!;
                                   final carColor = SharedPref.getString(
                                       key: MySharedKeys.carColor)!;
-                                  final driverToken = SharedPref.getString(
-                                      key: MySharedKeys.deviceToken)!;
+                                  final driverToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
                                   safePrint("driverId: $driverId");
                                   widget.tripCubit
                                       .acceptTrip(
@@ -241,6 +243,16 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                             content: Text(
                                                 "Trip id: ${trip.tripId}")),
                                       );
+                                      if (trip.passengerData.passengerToken
+                                          .isNotEmpty) {
+                                        await sendNotification(
+                                          title: "رحلتك قيد التنفيذ!",
+                                          body:
+                                              "لقد قبل السائق $driverName رحلتك، استعد للانطلاق 🚗",
+                                          token:
+                                              trip.passengerData.passengerToken,
+                                        );
+                                      }
                                       Navigator.pushReplacementNamed(context,
                                           RoutingEndpoints.tripTracking,
                                           arguments: TripTrackingRouteArgs(

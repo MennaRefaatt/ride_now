@@ -4,16 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_args.dart';
-import 'package:ride_now/features/trip_module/presentation/trip_tracking_route_args.dart';
-import 'package:ride_now/features/trip_module/presentation/widgets/waiting_for_driver.dart';
 import '../../../../../core/di/di.dart';
-import '../../../../core/helpers/enums/trip_status.dart';
-import '../../../passenger/maps/presentation/manager/location_cubit.dart';
+import '../../../../../core/helpers/enums/trip_status.dart';
+import '../../../../passenger/maps/presentation/manager/location_cubit.dart';
 import '../../data/models/trip_model.dart';
 import '../manager/trip_cubit.dart';
+import '../trip_tracking_args.dart';
+import '../trip_tracking_route_args.dart';
 import '../widgets/trip_details.dart';
 import '../widgets/trip_tracking.dart';
+import '../widgets/waiting_for_driver.dart';
 
 class TripScreen extends StatefulWidget {
   const TripScreen({super.key, required this.args});
@@ -91,10 +91,10 @@ class _TripScreenState extends State<TripScreen> {
                       );
                       return Stack(
                         children: [
-                          // TripTracking(
-                          //   args: updatedArgs,
-                          //   driverLatLng: driverLocation!,
-                          // ),
+                          TripTracking(
+                            args: updatedArgs,
+                            driverLatLng: driverLocation!,
+                          ),
                           if (tripStatus == TripStatus.accepted.name &&
                               driverData["driverId"] != "" &&
                               paymentStatus ==

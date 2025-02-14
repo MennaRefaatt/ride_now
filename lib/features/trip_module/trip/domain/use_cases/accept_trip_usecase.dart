@@ -1,4 +1,4 @@
-import '../../../../core/helpers/safe_print.dart';
+import '../../../../../../core/helpers/safe_print.dart';
 import '../../data/models/trip_model.dart';
 import '../repositories/trip_repo_base.dart';
 

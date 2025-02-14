@@ -12,7 +12,7 @@ import '../../../../../core/helpers/spacing.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
 import '../../../../../generated/l10n.dart';
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../../../check_out/presentation/check_out_args.dart';
 import '../../../maps/data/model/location_model.dart';
 

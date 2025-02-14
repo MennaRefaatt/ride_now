@@ -67,6 +67,11 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
           if (user.photoURL != null) {
             await _firestoreService.uploadProfileImage(File(user.photoURL!));
           }
+          if (deviceToken != null) {
+            await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+              'deviceToken': deviceToken,
+            });
+          }
           if (phone == "missing phone number") {
             Navigator.pushReplacementNamed(
                 context, RoutingEndpoints.phoneNumber,

@@ -1,4 +1,4 @@
-import '../../../../trip_module/data/models/trip_model.dart';
+import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../../domain/repositories/home_repo_base.dart';
 import '../data_sources/home_remote_ds.dart';
 import '../models/category_model.dart';

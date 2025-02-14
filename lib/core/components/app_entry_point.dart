@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ride_now/features/notifications/presentation/manager/notification_cubit.dart';
 
 import '../../generated/l10n.dart';
 import '../cubits/language/language_cubit.dart';
+import '../di/di.dart';
 import '../helpers/shared_pref.dart';
 import '../services/routing/router.dart';
 import '../services/routing/routing_endpoints.dart';
@@ -29,8 +31,16 @@ class _AppEntryPointState extends State<AppEntryPoint> {
   @override
   Widget build(BuildContext context) {
     return DevicePreview(
-        builder: (context) => BlocProvider(
-              create: (context) => LanguageCubit(),
+        builder: (context) =>
+            MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => LanguageCubit(),
+                ),
+                BlocProvider(
+                  create: (context) =>NotificationsCubit(sl()),
+                ),
+              ],
               child: BlocBuilder<LanguageCubit, LanguageState>(
                 builder: (context, state) {
                   return ScreenUtilInit(

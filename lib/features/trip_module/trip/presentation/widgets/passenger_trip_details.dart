@@ -1,12 +1,12 @@
-import 'package:ride_now/features/trip_module/data/models/trip_model.dart';
 import 'package:flutter/material.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/utils/app_image.dart';
-import 'package:ride_now/features/trip_module/presentation/widgets/contact_call.dart';
-import 'package:ride_now/features/trip_module/presentation/widgets/your_current_trip.dart';
-import '../../../../core/helpers/spacing.dart';
-import '../../../../generated/l10n.dart';
+import 'package:ride_now/features/trip_module/trip/presentation/widgets/your_current_trip.dart';
+import '../../../../../core/helpers/spacing.dart';
+import '../../../../../generated/l10n.dart';
+import '../../data/models/trip_model.dart';
+import 'contact_call.dart';
 
 class PassengerTripDetails extends StatelessWidget {
   const PassengerTripDetails({super.key, required this.tripModel, required this.isPassenger});
