@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
+import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
 import '../../data/models/trip_model.dart';
@@ -105,6 +107,7 @@ class TripCubit extends Cubit<TripState> {
       final tripHelper = TripHelper();
       String distance = await tripHelper.calculateDistance(fromLatLng, toLatLng, unit: 'km');
       String estimatedTime = await tripHelper.calculateEstimatedArrivalTime(fromLatLng, toLatLng, 30);
+      final passengerToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final tripModel = TripModel(
         tripId: "", // TripId will be generated after creating the trip
@@ -136,7 +139,7 @@ class TripCubit extends Cubit<TripState> {
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
           passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
-          passengerToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
+          passengerToken: passengerToken,
         ),
       );
       await createTripUseCase.call(tripModel);

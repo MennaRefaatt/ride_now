@@ -36,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return BlocProvider(
       create: (context) => profileCubit..loadProfile(),
       child: Scaffold(
-        backgroundColor: AppColors.semiGrey.withOpacity(0.1),
+        backgroundColor: AppColors.semiGrey.withValues(alpha: 0.1),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
           child: DefaultAppBar(

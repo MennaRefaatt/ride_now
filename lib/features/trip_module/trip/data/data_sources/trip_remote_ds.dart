@@ -6,6 +6,8 @@ import '../../../../../../core/helpers/safe_print.dart';
 
 import '../../../../../core/helpers/enums/driver_trip_status.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
+import '../../../../../core/helpers/secure_storage/secure_keys.dart';
+import '../../../../../core/helpers/secure_storage/secure_storage.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../models/trip_model.dart';
 import 'distance_helper/distance_helper.dart';
@@ -110,6 +112,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
       double calculatedCost =
           tripHelper.calculateCost(double.parse(distance.split(" ")[0]));
       String formattedCost = tripHelper.formatCost(calculatedCost);
+      final passengerToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final model = TripModel(
         fromLatLng: fromCoordinates,
@@ -134,7 +137,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
           passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
-          passengerToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
+          passengerToken: passengerToken,
         ),
         tripId: "",
         from: tripModel.from,
@@ -162,6 +165,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
     try {
       final tripRef =
           FirebaseFirestore.instance.collection('trips').doc(tripModel.tripId);
+      final driverToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final availableDriversSnapshot = await FirebaseFirestore.instance
           .collection('drivers')
@@ -189,7 +193,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
             driverName: driverName,
             driverPhone: driverPhone,
             driverImage: driverImage,
-            driverToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
+            driverToken: driverToken,
             driverLocation: LatLng(diverLat, diverLong),
             carColor: carColor,
             carModel: carModel,

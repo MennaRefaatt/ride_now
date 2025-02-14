@@ -11,16 +11,12 @@ import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
-import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/features/notifications/presentation/widgets/notification_icon.dart';
 import '../../../features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
 import '../../../features/driver/driver_registration/data/models/driver_registration_model.dart';
 import '../../di/di.dart';
 import '../../helpers/safe_print.dart';
 import '../../../generated/l10n.dart';
-import '../../services/f_c_m_service/firebase_messaging_service.dart';
-import '../../theming/app_colors.dart';
-import '../../theming/styles.dart';
 
 class DrawerItems extends StatefulWidget {
   const DrawerItems({super.key});
@@ -88,7 +84,9 @@ class _DrawerItemsState extends State<DrawerItems> {
                       icon: Icons.wallet,
                       isActive: currentRoute == RoutingEndpoints.walletScreen,
                       onTap: () => Navigator.pushReplacementNamed(
-                          context, RoutingEndpoints.walletScreen,arguments:SharedPref.getString(key: MySharedKeys.userId)),
+                          context, RoutingEndpoints.walletScreen,
+                          arguments:
+                              SharedPref.getString(key: MySharedKeys.userId)),
                     ),
                     DrawerItem(
                       title: S().privacyPolicy,
@@ -101,29 +99,19 @@ class _DrawerItemsState extends State<DrawerItems> {
                       title: S().notifications,
                       isNotificationIcon: true,
                       isActive: currentRoute == RoutingEndpoints.notifications,
-                      onTap: () => Navigator.pushReplacementNamed(
-                          context, RoutingEndpoints.notifications),
+                      onTap: () {
+                        Navigator.pushReplacementNamed(
+                            context, RoutingEndpoints.notifications);
+                      },
                       child: NotificationIcon(),
-                      ),
+                    ),
                     DrawerItem(
                       title: S().help,
                       icon: Icons.help,
                       isActive: currentRoute == RoutingEndpoints.helpScreen,
                       onTap: () => Navigator.pushReplacementNamed(
                           context, RoutingEndpoints.helpScreen),
-                      ),
-                      AppButton(
-                        text: S().notification,
-                        textStyle: TextStyles.font18BlackRegular,
-                        backgroundColor: AppColors.red,
-                        onPressed: ()  {
-                          sendNotification(
-                            fcmToken: SharedPref.getString(key: MySharedKeys.deviceToken)!,
-                            title: "Hello!",
-                            body: "This is a test from Flutter app",
-                          );
-                        },
-                    )
+                    ),
                   ],
                 ),
               ),
