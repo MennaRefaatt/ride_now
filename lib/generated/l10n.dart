@@ -2769,6 +2769,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Estimated Time`
+  String get estimatedTime {
+    return Intl.message(
+      'Estimated Time',
+      name: 'estimatedTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No Trip Requests Available`
+  String get noTripRequestsAvailable {
+    return Intl.message(
+      'No Trip Requests Available',
+      name: 'noTripRequestsAvailable',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ride_now/core/helpers/enums/driver_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
+import '../../core/helpers/secure_storage/secure_keys.dart';
 import 'driver_registration/data/models/driver_registration_model.dart';
 
 class DriverStatusListener {
@@ -33,34 +36,38 @@ class DriverStatusListener {
             final location = DriverLocation(
                 latitude: position.latitude,
                 longitude: position.longitude);
-            await FirebaseFirestore.instance
-                .collection("drivers")
-                .doc(userId)
-                .update({
+
+            // Fetch the latest FCM token
+            String? newToken = await FirebaseMessaging.instance.getToken();
+            if (newToken == null) {
+              safePrint("Error: FCM token is null.");
+            }
+
+            // Update Firestore with location and token
+            await FirebaseFirestore.instance.collection("drivers").doc(userId).update({
               'location': location.toJson(),
+              if (newToken != null) 'driverToken': newToken, // Only update token if it's not null
             });
 
-            await storeDriverDataInPrefs(
-                DriverRegistrationModel.fromJson(data));
-            safePrint("Driver location updated: $location");
+            // Store driver data and token locally
+            await storeDriverDataInPrefs(DriverRegistrationModel.fromJson(data), newToken);
+            safePrint("Firestore: Driver location and token updated.");
           } catch (e) {
-            safePrint("Error fetching location: $e");
+            safePrint("Error fetching location or updating Firestore: $e");
           }
         }
       }
     });
   }
 
-  Future<void> storeDriverDataInPrefs(
-      DriverRegistrationModel driverModel) async {
+  Future<void> storeDriverDataInPrefs(DriverRegistrationModel driverModel, String? driverToken) async {
     safePrint("Storing driver data for ${driverModel.driverId}");
 
     await SharedPref.storeDriverData(
       driverId: driverModel.driverId,
       driverStatus: driverModel.driverStatus,
       driverTripStatus: driverModel.driverTripStatus,
-      driverName:
-          "${driverModel.personalInfo.firstName} ${driverModel.personalInfo.lastName}",
+      driverName: "${driverModel.personalInfo.firstName} ${driverModel.personalInfo.lastName}",
       driverPicture: driverModel.personalInfo.personalImage,
       carNumber: driverModel.vehicleInfo.plateNumber,
       carColor: driverModel.vehicleInfo.vehicleColor,
@@ -68,6 +75,11 @@ class DriverStatusListener {
       latitude: driverModel.location.latitude,
       longitude: driverModel.location.longitude,
     );
+
+    if (driverToken != null) {
+      await SecureStorageService.writeData(SecureKeys.deviceToken, driverToken,);
+      safePrint("Local Storage: Driver token updated.");
+    }
   }
 
   Future<Position> _getCurrentLocation() async {

@@ -6,10 +6,12 @@ import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
+import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/services/f_c_m_service/firebase_messaging_service.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
 import '../../data/models/trip_model.dart';
 import '../../domain/use_cases/accept_trip_usecase.dart';
@@ -142,16 +144,49 @@ class TripCubit extends Cubit<TripState> {
           passengerToken: passengerToken,
         ),
       );
+
+      // Create the trip in the database
       await createTripUseCase.call(tripModel);
 
+      // Fetch the created trip details
       final createdTrip = await getTripDetailsUseCase.call(tripModel.tripId);
 
       safePrint("Trip created successfully.");
       safePrint(createdTrip);
+
+      // Fetch available drivers
+      final availableDrivers = await getAvailableDrivers();
+
+      // Send notifications to all available drivers
+      final DriverRegistrationModel driverRegistrationModel;
+      for (var driverRegistrationModel in availableDrivers) {
+        if (driverRegistrationModel.driverToken.isNotEmpty) {
+          await sendNotification(
+            title: "New Trip Request 🚖",
+            body: "Passenger needs a ride from $from to $to. Tap to accept!",
+            token: driverRegistrationModel.driverToken,
+          );
+        }
+      }
+
       emit(CreateTripLoaded(createdTrip));
     } catch (e) {
-      safePrint(e.toString());
+      safePrint("Error creating trip: $e");
       emit(CreateTripError(e.toString()));
+    }
+  }
+
+  Future<List<DriverRegistrationModel>> getAvailableDrivers() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('drivers')
+          .where('driverTripStatus', isEqualTo: 'available') // Only fetch available drivers
+          .get();
+
+      return querySnapshot.docs.map((doc) => DriverRegistrationModel.fromJson(doc.data())).toList();
+    } catch (e) {
+      safePrint("Error fetching available drivers: $e");
+      return [];
     }
   }
 

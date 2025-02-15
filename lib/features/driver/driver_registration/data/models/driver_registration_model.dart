@@ -11,6 +11,7 @@ class DriverRegistrationModel{
   final DriverLicenseModel driverInfo;
   final PersonalDocumentModel personalDocument;
   final DriverLocation location;
+  final String driverToken;
 
   DriverRegistrationModel({
     required this.driverId,
@@ -21,7 +22,8 @@ class DriverRegistrationModel{
     required this.personalDocument,
     required this.driverTripStatus,
     required this.currentTripId,
-    required this.location
+    required this.location,
+    required this.driverToken
   });
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
@@ -36,6 +38,7 @@ class DriverRegistrationModel{
     'vehicleInfo': vehicleInfo.toJson(),
     'driverInfo': driverInfo.toJson(),
     'personalDocument': personalDocument.toJson(),
+    'driverToken': driverToken
   };
 }
 @JsonSerializable()
