@@ -185,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "enterYourVehicleRegistrationCertificate":
         MessageLookupByLibrary.simpleMessage("أدخل شهادة تسجيل مركبتك"),
+    "estimatedTime": MessageLookupByLibrary.simpleMessage("الوقت المقدر"),
     "expiryDate": MessageLookupByLibrary.simpleMessage("تاريخ الانتهاء"),
     "expiryDateCannotBeInPast": MessageLookupByLibrary.simpleMessage(
       "لا يمكن أن يكون تاريخ الانتهاء في الماضي",
@@ -346,6 +347,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "noRidesFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على رحلات",
+    ),
+    "noTripRequestsAvailable": MessageLookupByLibrary.simpleMessage(
+      "لا يوجد طلبات رحلة متاحة",
     ),
     "notValid": MessageLookupByLibrary.simpleMessage("غير صالح"),
     "notValidConfirmPassword": MessageLookupByLibrary.simpleMessage(

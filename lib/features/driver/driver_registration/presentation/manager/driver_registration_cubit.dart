@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ride_now/core/helpers/enums/driver_trip_status.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
+import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import '../../../../../core/helpers/enums/driver_status.dart';
+import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
 import '../../data/models/brand_model.dart';
 import '../../data/models/color_model.dart';
@@ -170,6 +172,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
           personalImage: personalImage ?? '',
           phone: "",
         ),
+        driverToken: SecureStorageService.readData(SecureKeys.deviceToken)as String? ?? '',
         location: DriverLocation(latitude: 0.0, longitude: 0.0),
         vehicleInfo: VehicleRegistrationModel(
           vehicleBrand: vehicleBrand ?? '',

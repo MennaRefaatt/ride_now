@@ -192,6 +192,7 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Enter Your Vehicle Registration Certificate",
         ),
+    "estimatedTime": MessageLookupByLibrary.simpleMessage("Estimated Time"),
     "expiryDate": MessageLookupByLibrary.simpleMessage("Expiry Date"),
     "expiryDateCannotBeInPast": MessageLookupByLibrary.simpleMessage(
       "Expiry date cannot be in the past",
@@ -348,6 +349,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "no": MessageLookupByLibrary.simpleMessage("No"),
     "noOrdersFound": MessageLookupByLibrary.simpleMessage("No Orders Found"),
     "noRidesFound": MessageLookupByLibrary.simpleMessage("No Rides Found"),
+    "noTripRequestsAvailable": MessageLookupByLibrary.simpleMessage(
+      "No Trip Requests Available",
+    ),
     "notValid": MessageLookupByLibrary.simpleMessage("Not Valid"),
     "notValidConfirmPassword": MessageLookupByLibrary.simpleMessage(
       "Not Valid Confirm Password",

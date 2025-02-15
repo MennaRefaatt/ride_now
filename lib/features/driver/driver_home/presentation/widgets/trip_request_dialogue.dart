@@ -245,12 +245,11 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       );
                                       if (trip.passengerData.passengerToken
                                           .isNotEmpty) {
-                                        await sendNotification(
+                                        await sendNotificationToSpecificUser(
+                                          userId: trip.passengerData.passengerId,
                                           title: "رحلتك قيد التنفيذ!",
                                           body:
                                               "لقد قبل السائق $driverName رحلتك، استعد للانطلاق 🚗",
-                                          token:
-                                              trip.passengerData.passengerToken,
                                         );
                                       }
                                       Navigator.pushReplacementNamed(context,

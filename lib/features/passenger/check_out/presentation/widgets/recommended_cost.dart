@@ -55,7 +55,7 @@ class RecommendedCost extends StatelessWidget {
               horizontalSpacing(10.w),
               Text(S().recommendedFare,
                   style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
-              Text("EGP $formattedCost",
+              Text(": $formattedCost EGP",
                   style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
