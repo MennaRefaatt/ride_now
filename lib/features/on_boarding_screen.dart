@@ -9,6 +9,7 @@ import '../core/helpers/shared_pref_keys.dart';
 import '../core/services/routing/routing_endpoints.dart';
 import '../core/theming/styles.dart';
 import '../core/utils/app_image.dart';
+import '../generated/l10n.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
@@ -42,7 +43,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen>
   }
 
   Future<void> _checkFirstLaunch() async {
-    bool isFirstOpen = await SharedPref.isFirstOpen();
+    bool isFirstOpen =  SharedPref.isFirstOpen();
     if (isFirstOpen) {
       await SharedPref.setFirstOpen(false);
       return;
@@ -88,11 +89,11 @@ class OnBoardingScreenState extends State<OnBoardingScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                verticalSpacing(30.h),
+                verticalSpacing(30),
                 const AppName(),
-                verticalSpacing(50.h),
+                verticalSpacing(50),
                 const _TitleText(),
-                verticalSpacing(30.h),
+                verticalSpacing(30),
                 const _SubtitleText(),
               ],
             ),
@@ -152,8 +153,8 @@ class _GetStartedButton extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              horizontalSpacing(10.w),
-              Text("S().Get Started", style: TextStyles.font18BlackRegular),
+              horizontalSpacing(10),
+              Text(S().getStarted, style: TextStyles.font18BlackRegular),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: CircleAvatar(

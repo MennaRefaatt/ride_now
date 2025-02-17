@@ -216,7 +216,10 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       key: MySharedKeys.carNumber)!;
                                   final carColor = SharedPref.getString(
                                       key: MySharedKeys.carColor)!;
-                                  final driverToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
+                                  final driverToken =
+                                      await SecureStorageService.readData(
+                                              SecureKeys.deviceToken) ??
+                                          '';
                                   safePrint("driverId: $driverId");
                                   widget.tripCubit
                                       .acceptTrip(
@@ -245,12 +248,15 @@ class _TripRequestsDialogueState extends State<TripRequestsDialogue>
                                       );
                                       if (trip.passengerData.passengerToken
                                           .isNotEmpty) {
-                                        await sendNotification(
+                                        await sendNotificationToSpecificUser(
+                                          senderId: driverId,
+                                          deviceToken:
+                                              trip.passengerData.passengerToken,
+                                          receiverId:
+                                              trip.passengerData.passengerId,
                                           title: "رحلتك قيد التنفيذ!",
                                           body:
                                               "لقد قبل السائق $driverName رحلتك، استعد للانطلاق 🚗",
-                                          token:
-                                              trip.passengerData.passengerToken,
                                         );
                                       }
                                       Navigator.pushReplacementNamed(context,
