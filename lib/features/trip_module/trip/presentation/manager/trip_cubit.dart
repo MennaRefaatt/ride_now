@@ -11,7 +11,6 @@ import 'package:rxdart/rxdart.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../core/services/f_c_m_service/firebase_messaging_service.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
 import '../../data/models/trip_model.dart';
 import '../../domain/use_cases/accept_trip_usecase.dart';
@@ -112,7 +111,7 @@ class TripCubit extends Cubit<TripState> {
       final passengerToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final tripModel = TripModel(
-        tripId: "", // TripId will be generated after creating the trip
+        tripId: "",
         from: from,
         moreThan4Passengers: moreThan4Passengers,
         comment: comment,
@@ -145,29 +144,12 @@ class TripCubit extends Cubit<TripState> {
         ),
       );
 
-      // Create the trip in the database
       await createTripUseCase.call(tripModel);
 
-      // Fetch the created trip details
       final createdTrip = await getTripDetailsUseCase.call(tripModel.tripId);
 
       safePrint("Trip created successfully.");
       safePrint(createdTrip);
-
-      // Fetch available drivers
-      final availableDrivers = await getAvailableDrivers();
-
-      // Send notifications to all available drivers
-      final DriverRegistrationModel driverRegistrationModel;
-      for (var driverRegistrationModel in availableDrivers) {
-        if (driverRegistrationModel.driverToken.isNotEmpty) {
-          await sendNotification(
-            title: "New Trip Request 🚖",
-            body: "Passenger needs a ride from $from to $to. Tap to accept!",
-            token: driverRegistrationModel.driverToken,
-          );
-        }
-      }
 
       emit(CreateTripLoaded(createdTrip));
     } catch (e) {

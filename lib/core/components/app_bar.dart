@@ -186,12 +186,12 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
 
   void _startOnlineCall() {
     if (widget.receiverFCMToken != null && widget.callerName != null) {
-      sendNotification(
-        token: widget.receiverFCMToken!,
+      sendNotificationCaller(
+        fcmToken: widget.receiverFCMToken!,
         title: "Incoming Call",
         body: "Driver is calling...",
-        // callerName: widget.callerName,
-        // channelId: AgoraConstants.channelId,
+         callerName: widget.callerName,
+         channelId: AgoraConstants.channelId,
       );
 
       appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall);

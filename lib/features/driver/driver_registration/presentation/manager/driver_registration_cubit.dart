@@ -9,6 +9,7 @@ import 'package:ride_now/features/driver/driver_registration/data/models/driver_
 import '../../../../../core/helpers/enums/driver_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../subscribe_driver_to_topic.dart';
 import '../../data/models/brand_model.dart';
 import '../../data/models/color_model.dart';
 import '../../data/models/model_model.dart';
@@ -172,7 +173,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
           personalImage: personalImage ?? '',
           phone: "",
         ),
-        driverToken: SecureStorageService.readData(SecureKeys.deviceToken)as String? ?? '',
+        driverToken: SecureStorageService.readData(SecureKeys.deviceToken) as String? ?? '',
         location: DriverLocation(latitude: 0.0, longitude: 0.0),
         vehicleInfo: VehicleRegistrationModel(
           vehicleBrand: vehicleBrand ?? '',
@@ -206,6 +207,10 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       if (isSuccess) {
         emit(DriverRegistrationSuccess());
         safePrint("Driver Registration Successful");
+
+        final driverId = SharedPref.getString(key: MySharedKeys.userId) ?? '';
+        await subscribeDriverToTopic(driverId);
+
         return true;
       } else {
         emit(DriverRegistrationFailure(error: "Registration failed"));

@@ -325,5 +325,7 @@
   "pay": "Pay",
   "lastUpdated": "Last Updated",
   "estimatedTime": "Estimated Time",
-  "noTripRequestsAvailable": "No Trip Requests Available"
+  "noTripRequestsAvailable": "No Trip Requests Available",
+  "getStarted": "Get Started",
+  "noNotificationsFound": "No Notifications Found"
 }

@@ -213,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "getIncomeWithUs": MessageLookupByLibrary.simpleMessage(
       "Get Income With Us",
     ),
+    "getStarted": MessageLookupByLibrary.simpleMessage("Get Started"),
     "goToPassengerMode": MessageLookupByLibrary.simpleMessage(
       "Go To Passenger Mode",
     ),
@@ -347,6 +348,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "newPassword": MessageLookupByLibrary.simpleMessage("New Password"),
     "next": MessageLookupByLibrary.simpleMessage("Next"),
     "no": MessageLookupByLibrary.simpleMessage("No"),
+    "noNotificationsFound": MessageLookupByLibrary.simpleMessage(
+      "No Notifications Found",
+    ),
     "noOrdersFound": MessageLookupByLibrary.simpleMessage("No Orders Found"),
     "noRidesFound": MessageLookupByLibrary.simpleMessage("No Rides Found"),
     "noTripRequestsAvailable": MessageLookupByLibrary.simpleMessage(
