@@ -2789,6 +2789,21 @@ class S {
       args: [],
     );
   }
+
+  /// `Get Started`
+  String get getStarted {
+    return Intl.message('Get Started', name: 'getStarted', desc: '', args: []);
+  }
+
+  /// `No Notifications Found`
+  String get noNotificationsFound {
+    return Intl.message(
+      'No Notifications Found',
+      name: 'noNotificationsFound',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

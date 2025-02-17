@@ -206,6 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "getIncomeWithUs": MessageLookupByLibrary.simpleMessage(
       "احصل على دخل معنا",
     ),
+    "getStarted": MessageLookupByLibrary.simpleMessage("ابدأ"),
     "goToPassengerMode": MessageLookupByLibrary.simpleMessage(
       "الانتقال إلى وضع الراكب",
     ),
