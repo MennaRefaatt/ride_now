@@ -9,7 +9,8 @@ class YourCurrentTrip extends StatelessWidget {
   final String from;
   final String to;
   final bool isPassenger;
-  const YourCurrentTrip({super.key, required this.from, required this.to, required this.isPassenger});
+  final String tripId;
+  const YourCurrentTrip({super.key, required this.from, required this.to, required this.isPassenger, required this.tripId});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,6 +60,7 @@ class YourCurrentTrip extends StatelessWidget {
         ),
         verticalSpacing(20.h),
         CancelButton(
+          tripId: tripId,
           isPassenger:isPassenger,
         ),
       ],

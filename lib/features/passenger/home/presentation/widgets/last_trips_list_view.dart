@@ -53,16 +53,21 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                         setState(() {
                           widget.disappear = true;
                         });
-                        Navigator.pushNamed(
-                          context,
-                          RoutingEndpoints.checkOut,
-                          arguments: CheckOutArgs(
-                            fromAddress: widget.cubit.fromController.text,
-                            toAddress: widget.cubit.toController.text,
-                            fromLatLng: widget.cubit.fromLatLng!,
-                            toLatLng: widget.cubit.toLatLng!,
-                          ),
-                        );
+                        if (widget.cubit.toLatLng != null &&
+                            widget.cubit.fromLatLng != null &&
+                            widget.cubit.fromController != null &&
+                            widget.cubit.toController != null) {
+                          Navigator.pushNamed(
+                            context,
+                            RoutingEndpoints.checkOut,
+                            arguments: CheckOutArgs(
+                              fromAddress: widget.cubit.fromController.text,
+                              toAddress: widget.cubit.toController.text,
+                              fromLatLng: widget.cubit.fromLatLng!,
+                              toLatLng: widget.cubit.toLatLng!,
+                            ),
+                          );
+                        }
                       }
                     },
                     child: Container(

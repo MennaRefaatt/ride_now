@@ -105,7 +105,10 @@ class _TripScreenState extends State<TripScreen> {
                             ),
                           if (tripStatus != TripStatus.accepted.name &&
                               driverData["driverId"] == "")
-                            WaitingForDriver(isPassenger: true,),
+                            WaitingForDriver(
+                              tripId: widget.args.tripTrackingArgs.tripId,
+                              isPassenger: true,
+                            ),
                         ],
                       );
                     }

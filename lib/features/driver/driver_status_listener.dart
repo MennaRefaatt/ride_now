@@ -36,14 +36,16 @@ class DriverStatusListener {
 
         safePrint("Driver Status: $driverStatus");
 
-        if (driverStatus == DriverStatus.accepted.name &&
-            previousStatus != DriverStatus.accepted.name) {
+        if (driverStatus == DriverStatus.accepted.name) {
           try {
-            await sendNotification(
-              title: "You have been Accepted",
-              body: "You are now available for a trip.",
-              topic: "drivers",
-            );
+            if (driverStatus == DriverStatus.accepted.name &&
+                previousStatus == DriverStatus.pending.name) {
+              await sendNotification(
+                title: "You have been Accepted",
+                body: "You are now available for a trip.",
+                topic: "drivers",
+              );
+            }
             await subscribeDriverToTopic(data['driverToken']);
 
             Position position = await _getCurrentLocation();

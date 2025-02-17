@@ -184,11 +184,17 @@ class TripCubit extends Cubit<TripState> {
 
   Future<void> cancelTrip(String tripId) async {
     try {
+      if (tripId.isEmpty) {
+        throw Exception('Trip ID cannot be empty');
+      }
+
       emit(CancelTripLoading());
       final result = await cancelTripUseCase.call(tripId);
       emit(CancelTripSuccess(result.toString()));
     } catch (error) {
+      safePrint("Error canceling trip: $error");
       emit(CancelTripError(error.toString()));
     }
   }
+
 }

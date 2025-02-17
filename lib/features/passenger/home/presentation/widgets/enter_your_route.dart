@@ -39,11 +39,14 @@ class EnterYourRoute extends StatefulWidget {
 
 class _EnterYourRouteState extends State<EnterYourRoute> {
   late String toAddress;
+  String? errorText;
   @override
   void initState() {
     super.initState();
     widget.cubit.fromController.text = widget.fromText;
-    widget.cubit.toController.text = widget.cubit.toController.text.isEmpty ? "" : widget.cubit.toController.text;
+    widget.cubit.toController.text = widget.cubit.toController.text.isEmpty
+        ? ""
+        : widget.cubit.toController.text;
 
     if (widget.cubit.toController.text.isEmpty) {
       Future.delayed(Duration.zero, () {
@@ -76,9 +79,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
     var toAddress = widget.cubit.toController.text.trim();
 
     if (fromAddress.isEmpty || toAddress.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Both 'From' and 'To' fields are required!")),
-      );
+      errorText = "Both 'From Where?' and 'Where To?' fields are required!";
       return;
     }
     Navigator.pushNamed(
@@ -120,12 +121,12 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.all(15.sp),
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
+    return Container(
+      margin: EdgeInsets.all(15.sp),
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -208,7 +209,15 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
               ),
               onFieldSubmitted: (_) => _navigateToCheckout(context),
             ),
-            verticalSpacing(30.h),
+            Visibility(
+              visible: errorText != null,
+              child: Text(
+                errorText ?? "",
+                style:
+                    TextStyles.font18BlackBold.copyWith(color: AppColors.red),
+              ),
+            ),
+            verticalSpacing(30),
             InkWell(
               onTap: () => _navigateToMaps(context, widget.cubit.toController),
               borderRadius: BorderRadius.circular(15.r),
@@ -218,7 +227,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
                 children: [
                   Icon(CupertinoIcons.map_pin_ellipse,
                       color: AppColors.primary, size: 30.sp),
-                  horizontalSpacing(10.w),
+                  horizontalSpacing(10),
                   Text(
                     S().chooseOnMap,
                     style: TextStyles.font18WhiteBold

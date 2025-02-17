@@ -133,32 +133,33 @@ class _HomeBodyState extends State<HomeBody> {
                             text: S().order,
                             textStyle: TextStyles.font18BlackBold,
                             onPressed: () async {
-                              if (widget
-                                      .homeCubit.fromController.text.isEmpty ||
-                                  widget.homeCubit.toController.text.isEmpty) {
+                              if (widget.homeCubit.fromController.text.isEmpty ||
+                                  widget.homeCubit.toController.text.isEmpty ||
+                                  widget.homeCubit.fromLatLng == null ||
+                                  widget.homeCubit.toLatLng == null) {
                                 openEnterYourRouteFromOrderButton(context);
-                              }
-                              final locationState =
-                                  context.read<LocationCubit>().state;
-                              if (locationState is LocationLoaded) {
-                                widget.homeCubit.fromLatLng = LatLng(
-                                  locationState.position.latitude,
-                                  locationState.position.longitude,
+                              } else {
+                                final locationState = context.read<LocationCubit>().state;
+                                if (locationState is LocationLoaded) {
+                                  widget.homeCubit.fromLatLng = LatLng(
+                                    locationState.position.latitude,
+                                    locationState.position.longitude,
+                                  );
+                                }
+
+                                safePrint("From: ${widget.homeCubit.fromLatLng}, To: ${widget.homeCubit.toLatLng}");
+
+                                await Navigator.pushNamed(
+                                    context,
+                                    RoutingEndpoints.checkOut,
+                                    arguments: CheckOutArgs(
+                                      fromAddress: widget.homeCubit.fromController.text,
+                                      toAddress: widget.homeCubit.toController.text,
+                                      fromLatLng: widget.homeCubit.fromLatLng!,
+                                      toLatLng: widget.homeCubit.toLatLng!,
+                                    )
                                 );
                               }
-                              safePrint(
-                                  "From: ${widget.homeCubit.fromLatLng}, To: ${widget.homeCubit.toLatLng}");
-
-                              await Navigator.pushNamed(
-                                  context, RoutingEndpoints.checkOut,
-                                  arguments: CheckOutArgs(
-                                    fromAddress:
-                                        widget.homeCubit.fromController.text,
-                                    toAddress:
-                                        widget.homeCubit.toController.text,
-                                    fromLatLng: widget.homeCubit.fromLatLng!,
-                                    toLatLng: widget.homeCubit.toLatLng!,
-                                  ));
                             },
                             backgroundColor: AppColors.primary,
                             width: double.infinity,

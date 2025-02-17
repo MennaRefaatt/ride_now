@@ -78,6 +78,7 @@ class DriverTripDetails extends StatelessWidget {
             verticalSpacing(10.h),
             YourCurrentTrip(
                 isPassenger: isPassenger,
+                tripId: tripModel.tripId,
                 to: tripModel.to,
                 from: tripModel.from),
           ],
