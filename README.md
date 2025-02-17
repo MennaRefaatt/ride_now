@@ -10,7 +10,8 @@
 - real time tracking
 - fix colors, brands, and models bug
 - hide api keys
-- firebase storage for profile image
+- firebase storage for profile image ✅
+- notifications ✅
 ===========================================================
 - Users => Client, Driver, Admin
 - Driver => driver data, car data,Reviews, wallet data, charge,rides.
@@ -28,11 +29,11 @@ Driver
 ==============================================================
 Drawer 
 - profile ✅
-- My Trips
-- payment
+- My Trips ✅
+- wallet ✅
 - Help
-- Notifications 
-- Safety
+- Notifications ✅
+- Safety ✅
 - Settings ✅
 ==============================================================
 Trip

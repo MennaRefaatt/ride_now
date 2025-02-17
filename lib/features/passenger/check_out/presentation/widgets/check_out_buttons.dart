@@ -8,6 +8,7 @@ import 'package:ride_now/core/utils/app_button.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/services/f_c_m_service/firebase_messaging_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
@@ -96,7 +97,7 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                               content: Text("Trip id: $tripId"),
                             ),
                           );
-
+                          onTripCreated();
                           Navigator.pushReplacementNamed(
                             context,
                             RoutingEndpoints.tripTracking,
@@ -148,4 +149,12 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
       ),
     );
   }
+  void onTripCreated() async {
+    String title = "New Trip Available!";
+    String body = "A new trip has been created. Check it out!";
+    String topic = "drivers";
+
+    await sendNotification(title: title, body: body, topic: topic);
+  }
+
 }

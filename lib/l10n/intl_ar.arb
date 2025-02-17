@@ -325,5 +325,9 @@
   "payment": "الدفع",
   "chargeWallet": "شحن المحفظة",
   "pay": "ادفع",
-  "lastUpdated": "اخر تحديث"
+  "lastUpdated": "اخر تحديث",
+  "estimatedTime": "الوقت المقدر",
+  "noTripRequestsAvailable": "لا يوجد طلبات رحلة متاحة",
+  "noNotificationFound": "لا يوجد اشعارات",
+  "getStarted": "ابدأ"
 }

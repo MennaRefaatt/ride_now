@@ -323,5 +323,9 @@
   "payment": "Payment",
   "chargeWallet": "Charge Wallet",
   "pay": "Pay",
-  "lastUpdated": "Last Updated"
+  "lastUpdated": "Last Updated",
+  "estimatedTime": "Estimated Time",
+  "noTripRequestsAvailable": "No Trip Requests Available",
+  "getStarted": "Get Started",
+  "noNotificationsFound": "No Notifications Found"
 }
