@@ -4,7 +4,7 @@ import '../../../../../../core/di/di.dart';
 import '../../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../../core/helpers/secure_storage/secure_storage.dart';
 import '../../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../../core/services/f_c_m_service/device_token_service.dart';
+import '../../../../../../core/services/fcm/device_token_service.dart';
 import '../../models/user.dart';
 
 abstract class DSAuthLocal {

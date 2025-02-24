@@ -10,8 +10,8 @@ import 'core/helpers/safe_print.dart';
 import 'core/helpers/secure_storage/secure_storage.dart';
 import 'core/helpers/shared_pref.dart';
 import 'core/helpers/shared_pref_keys.dart';
-import 'core/services/f_c_m_service/device_token_service.dart';
-import 'core/services/f_c_m_service/firebase_messaging_service.dart';
+import 'core/services/fcm/device_token_service.dart';
+import 'core/services/fcm/firebase_messaging_service.dart';
 import 'core/services/network/api_constants.dart';
 import 'core/services/network/api_service.dart';
 
@@ -27,8 +27,6 @@ Future<void> main() async {
   await SharedPref.init();
   final userId = SharedPref.getString(key: MySharedKeys.userId);
   safePrint(userId);
-  safePrint(SharedPref.getString(key: MySharedKeys.userName));
-  safePrint(SharedPref.getString(key: MySharedKeys.picture));
   safePrint(SharedPref.getString(key: MySharedKeys.type));
   final deviceTokenService = sl<DeviceTokenService>();
   String? deviceToken = await deviceTokenService.getDeviceToken();

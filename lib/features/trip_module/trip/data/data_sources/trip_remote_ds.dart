@@ -18,6 +18,7 @@ abstract class TripRemoteDS {
   Future<void> createTrip(TripModel tripModel);
   Future<void> acceptTrip(TripModel tripModel, DriverData driverData);
   Future<bool> cancelTripRequest(String tripId);
+  Future<void> completeTrip(String tripId);
 }
 
 class TripRemoteDSImpl implements TripRemoteDS {
@@ -265,4 +266,16 @@ class TripRemoteDSImpl implements TripRemoteDS {
       throw Exception("Error canceling trip: $e");
     }
   }
+
+  @override
+  Future<void> completeTrip(String tripId) async {
+    try {
+      final tripRef = FirebaseFirestore.instance.collection('trips').doc(tripId);
+      await tripRef.update({'status': TripStatus.completed.name});
+      safePrint("Trip $tripId marked as succeeded.");
+    } catch (e) {
+      throw Exception("Error completing trip: $e");
+    }
+  }
+
 }

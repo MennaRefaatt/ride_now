@@ -4,11 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ride_now/core/services/wallet/wallet_service.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
 import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../core/services/f_c_m_service/device_token_service.dart';
+import '../../../../../core/services/fcm/device_token_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../phone_args.dart';
 import '../../domain/repositories/google_repo_base.dart';
@@ -22,9 +23,10 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
   final DSGoogleSignIn _dsGoogleSignIn;
   final FirestoreService _firestoreService;
   final DSAuthLocal _dsAuthLocal;
+  final WalletService _walletService;
 
-  GoogleRepositoryImpl(
-      this._dsGoogleSignIn, this._firestoreService, this._dsAuthLocal);
+  GoogleRepositoryImpl(this._walletService, this._dsGoogleSignIn,
+      this._firestoreService, this._dsAuthLocal);
 
   @override
   Future<UserModel?> signInWithGoogle(BuildContext context) async {
@@ -35,6 +37,7 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
           .doc(user.uid)
           .get();
       if (!userDoc.exists) {
+        await _walletService.createWalletForUser(user.uid);
         String phone = user.phoneNumber ?? '';
         if (phone.isEmpty) {
           phone = await _promptForPhoneNumber();
@@ -72,6 +75,7 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
           }
         });
       } else {
+        await _walletService.createWalletForUser(user.uid);
         String phoneNumber = userDoc.data()?['phoneNumber'] ?? '';
         if (phoneNumber == "missing phone number" || phoneNumber.isEmpty) {
           Navigator.pushReplacementNamed(context, RoutingEndpoints.phoneNumber,
@@ -121,6 +125,8 @@ class GoogleRepositoryImpl implements GoogleRepositoryBase {
 final googleRepositoryProvider = Provider<GoogleRepositoryBase>((ref) {
   final googleSignInService = GoogleSignInServiceImpl();
   final firestoreService = FirestoreService(sl(), sl());
+  final walletService = WalletService(FirebaseFirestore.instance);
+
   return GoogleRepositoryImpl(
-      googleSignInService, firestoreService, DSAuthLocalImpl());
+      walletService, googleSignInService, firestoreService, DSAuthLocalImpl());
 });

@@ -36,6 +36,7 @@ class _CheckOutState extends State<CheckOut> {
     createTripUseCase: sl(),
     getTripDetailsUseCase: sl(),
     cancelTripUseCase: sl(),
+    completeTripUseCase: sl(),
   );
   String selectedPaymentMethod = PaymentMethod.cash.name;
   late String tripId;

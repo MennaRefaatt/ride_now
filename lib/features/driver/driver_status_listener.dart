@@ -8,7 +8,8 @@ import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/subscribe_driver_to_topic.dart';
 import '../../core/helpers/secure_storage/secure_keys.dart';
 import '../../core/helpers/shared_pref_keys.dart';
-import '../../core/services/f_c_m_service/firebase_messaging_service.dart';
+import '../../core/permissions/location.dart';
+import '../../core/services/fcm/firebase_messaging_service.dart';
 import 'driver_registration/data/models/driver_registration_model.dart';
 
 class DriverStatusListener {
@@ -47,7 +48,11 @@ class DriverStatusListener {
               );
             }
             await subscribeDriverToTopic(data['driverToken']);
-
+            bool hasPermission = await LocationPermissionHandler.requestLocationPermission();
+            if (!hasPermission) {
+              safePrint("⚠️ Cannot fetch location. Permission denied.");
+              return;
+            }
             Position position = await _getCurrentLocation();
             final location = DriverLocation(
                 latitude: position.latitude, longitude: position.longitude);
@@ -106,26 +111,6 @@ class DriverStatusListener {
   }
 
   Future<Position> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception('Location services are disabled');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      throw Exception('Location permission is permanently denied');
-    }
-
-    if (permission == LocationPermission.denied) {
-      throw Exception('Location permission is denied.');
-    }
-
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   }
 }

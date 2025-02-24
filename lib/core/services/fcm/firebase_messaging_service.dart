@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ride_now/core/components/app_entry_point.dart';
+import 'package:ride_now/core/helpers/enums/user_type.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/services/network/api_constants.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
@@ -13,6 +14,7 @@ import '../../../google_auth.dart';
 import '../../helpers/secure_storage/secure_storage.dart';
 import '../../helpers/shared_pref.dart';
 import '../../helpers/shared_pref_keys.dart';
+import '../../permissions/notification.dart';
 import '../call/call_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,9 +25,11 @@ import 'package:ride_now/core/helpers/secure_storage/secure_keys.dart';
 class FirebaseMessagingService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   static final FlutterLocalNotificationsPlugin _localNotifications =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
-  static void initialize() {
+  static Future<void> initialize() async {
+    await requestNotificationPermission();
+
     _initializeLocalNotifications();
     _handleFCMToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -63,9 +67,9 @@ class FirebaseMessagingService {
 
   static void _initializeLocalNotifications() {
     const AndroidInitializationSettings androidSettings =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     final InitializationSettings settings =
-    InitializationSettings(android: androidSettings);
+        InitializationSettings(android: androidSettings);
 
     _localNotifications.initialize(settings);
   }
@@ -87,8 +91,8 @@ class FirebaseMessagingService {
       if (appNavKey.currentState?.canPop() ?? false) {
         appNavKey.currentState?.pop();
       }
-      appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall, arguments: channelId);
-
+      appNavKey.currentState
+          ?.pushNamed(RoutingEndpoints.audioCall, arguments: channelId);
     } else {
       _showLocalNotification(title: title, body: body);
     }
@@ -97,7 +101,7 @@ class FirebaseMessagingService {
   static Future<void> saveNotificationToFirestore(
       String userId, String title, String body) async {
     DocumentSnapshot userDoc =
-    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     if (!userDoc.exists) {
       safePrint('User does not exist, cannot save notification.');
@@ -119,7 +123,7 @@ class FirebaseMessagingService {
   static Future<void> _showLocalNotification(
       {required String title, required String body}) async {
     const AndroidNotificationDetails androidDetails =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'default_channel_id',
       'General Notifications',
       importance: Importance.high,
@@ -127,7 +131,7 @@ class FirebaseMessagingService {
     );
 
     const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidDetails);
+        NotificationDetails(android: androidDetails);
 
     await _localNotifications.show(
       0, // Notification ID
@@ -209,6 +213,7 @@ Future<void> sendNotificationToSpecificUser({
     safePrint('Failed to send notification: ${response.data}');
   }
 }
+
 Future<void> sendNotification({
   required String title,
   required String body,
@@ -240,9 +245,28 @@ Future<void> sendNotification({
     },
   );
 
-  safePrint(response);
   if (response.statusCode == 200) {
     safePrint('Notification sent successfully: ${response.data}');
+
+    QuerySnapshot driverSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .where('type', isEqualTo: UserType.driver.name)
+        .get();
+
+    for (var driverDoc in driverSnapshot.docs) {
+      String driverId = driverDoc.id;
+      String? driverToken = driverDoc['deviceToken'];
+
+      await FirebaseFirestore.instance.collection('notifications').add({
+        'title': title,
+        'body': body,
+        'senderId': 'system',
+        'receiverId': driverId,
+        'deviceToken': driverToken ?? '',
+        'isRead': false,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    }
   } else {
     safePrint('Failed to send notification: ${response.data}');
   }
@@ -273,7 +297,7 @@ Future<void> sendNotificationCaller({
     headers: {
       "Content-Type": "application/json",
       "Authorization":
-      "key=AAAAe-V0xx8:APA91bEhZx-sb3kybBetY9RPBpqvD0Ftyp7so5a95Am5XG_B9ZZBxwqmOvlAd9eq509n_yVy1Lt7PwRR6nnJNjthsKgY-b51JmmQ9DF8MfitXWgWQUcD5HEcbwJDkYUWVmxq5Zn7mSg8",
+          "key=AAAAe-V0xx8:APA91bEhZx-sb3kybBetY9RPBpqvD0Ftyp7so5a95Am5XG_B9ZZBxwqmOvlAd9eq509n_yVy1Lt7PwRR6nnJNjthsKgY-b51JmmQ9DF8MfitXWgWQUcD5HEcbwJDkYUWVmxq5Zn7mSg8",
     },
     body: json.encode(message),
   );
@@ -284,4 +308,3 @@ Future<void> sendNotificationCaller({
     safePrint("Failed to send notification: ${response.statusCode}");
   }
 }
-

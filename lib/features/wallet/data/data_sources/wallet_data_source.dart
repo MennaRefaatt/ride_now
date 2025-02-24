@@ -26,6 +26,14 @@ class WalletDataSourceImpl implements WalletDataSource {
   Future<Wallet> getWalletBalance(String userId) async {
     final walletRef = _firestore.collection('wallet').doc(userId);
     final snapshot = await walletRef.get();
+
+    if (!snapshot.exists) {
+      final wallet = Wallet(userId: userId, balance: 0.0, lastUpdated: DateTime.now());
+      await walletRef.set(wallet.toMap());
+      return wallet;
+    }
+
     return Wallet.fromFirestore(snapshot);
   }
+
 }

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/helpers/spacing.dart';
-import 'cancel_button.dart';
+import 'complete_button.dart';
 
 class YourCurrentTrip extends StatelessWidget {
   final String from;
   final String to;
   final bool isPassenger;
   final String tripId;
-  const YourCurrentTrip({super.key, required this.from, required this.to, required this.isPassenger, required this.tripId});
+  const YourCurrentTrip(
+      {super.key,
+      required this.from,
+      required this.to,
+      required this.isPassenger,
+      required this.tripId});
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,14 +24,14 @@ class YourCurrentTrip extends StatelessWidget {
           "Your Current Trip",
           style: TextStyles.font24BlackBold,
         ),
-        verticalSpacing(20.h),
+        verticalSpacing(20),
         Row(
           children: [
             Icon(
               Icons.trip_origin,
               color: AppColors.red,
             ),
-            horizontalSpacing(10.w),
+            horizontalSpacing(10),
             Expanded(
               child: Text(
                 from,
@@ -39,14 +43,14 @@ class YourCurrentTrip extends StatelessWidget {
             ),
           ],
         ),
-        verticalSpacing(10.h),
+        verticalSpacing(10),
         Row(
           children: [
             Icon(
               Icons.trip_origin,
               color: AppColors.primary,
             ),
-            horizontalSpacing(10.w),
+            horizontalSpacing(10),
             Expanded(
               child: Text(
                 to,
@@ -58,11 +62,10 @@ class YourCurrentTrip extends StatelessWidget {
             ),
           ],
         ),
-        verticalSpacing(20.h),
-        CancelButton(
-          tripId: tripId,
-          isPassenger:isPassenger,
-        ),
+        verticalSpacing(20),
+        Visibility(
+            visible: isPassenger == false,
+            child: CompleteButton(tripId: tripId, isPassenger: isPassenger)),
       ],
     );
   }

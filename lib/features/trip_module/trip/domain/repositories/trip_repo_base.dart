@@ -10,4 +10,6 @@ abstract class TripRepoBase {
   Future<TripModel> getTripDetails(String tripId);
 
   Future<bool> cancelTripRequest(String tripId);
+
+  Future<void> completeTrip(String tripId);
 }

@@ -547,6 +547,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "theme": MessageLookupByLibrary.simpleMessage("الثيم"),
     "total": MessageLookupByLibrary.simpleMessage("المجموع"),
+    "tripCompleted": MessageLookupByLibrary.simpleMessage("الرحلة تمت"),
     "updateAccount": MessageLookupByLibrary.simpleMessage("تحديث الحساب"),
     "vat": MessageLookupByLibrary.simpleMessage("ضريبة القيمة المضافة"),
     "vehicleBrand": MessageLookupByLibrary.simpleMessage("ماركة المركبة"),
