@@ -88,8 +88,9 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                             "";
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
-                          if (!mounted)
+                          if (!mounted) {
                             return; // Ensure widget is mounted before UI updates
+                          }
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

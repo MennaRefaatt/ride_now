@@ -99,6 +99,7 @@ class PassengerTripDetails extends StatelessWidget {
             Divider(),
             verticalSpacing(10.h),
             YourCurrentTrip(
+                tripId: tripModel.tripId,
               isPassenger: isPassenger,
                 to: tripModel.to, from: tripModel.from),
           ],

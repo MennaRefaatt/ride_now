@@ -12,6 +12,9 @@
 - hide api keys
 - firebase storage for profile image ✅
 - notifications ✅
+- solve audio call caller screen bug
+- the passenger cant nav to checkout screen when there is no from or to address ✅
+- fix the cancel trip bug ✅
 ===========================================================
 - Users => Client, Driver, Admin
 - Driver => driver data, car data,Reviews, wallet data, charge,rides.

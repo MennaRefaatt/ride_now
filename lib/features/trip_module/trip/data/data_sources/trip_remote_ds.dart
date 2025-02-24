@@ -224,48 +224,45 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
   @override
   Future<bool> cancelTripRequest(String tripId) async {
+    safePrint("Received tripId: $tripId"); // Debugging: Log tripId
+
+    if (tripId.isEmpty) {
+      safePrint("Error: Trip ID is empty");
+      throw Exception('Trip ID is empty or invalid');
+    }
+
     try {
       final userId = SharedPref.getString(key: MySharedKeys.userId);
       if (userId == null) {
         throw Exception("User ID not found in shared preferences.");
       }
 
-      final tripRef =
-          FirebaseFirestore.instance.collection('trips').doc(tripId);
+      final tripRef = FirebaseFirestore.instance.collection('trips').doc(tripId);
       final tripDoc = await tripRef.get();
 
       if (!tripDoc.exists) {
-        throw Exception("Trip not found.");
+        throw Exception("Trip not found for tripId: $tripId");
       }
 
-      await tripRef.update({
-        'status': TripStatus.canceled.name,
-      });
+      // Proceed with cancellation logic
+      await tripRef.update({'status': TripStatus.canceled.name});
+      final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+      await userRef.update({'currentTripId': 'none'});
 
-      final userRef =
-          FirebaseFirestore.instance.collection('users').doc(userId);
-      await userRef.update({
-        'currentTripId': 'none',
-      });
-      final driverRef = FirebaseFirestore.instance
-          .collection('drivers')
-          .doc(tripDoc.data()!['driverData']['driverId']);
-      await driverRef.update({
-        "driverTripStatus": DriverTripStatus.available.name,
-        "currentTripId": "none",
-      });
-      await _firestore
-          .collection('users')
-          .doc(tripDoc.data()!['driverData']['driverId'])
-          .update({
-        'currentTripId': "none",
-      });
+      final driverId = tripDoc.data()?['driverData']['driverId'];
+      if (driverId != null && driverId.isNotEmpty) {
+        final driverRef = FirebaseFirestore.instance.collection('drivers').doc(driverId);
+        await driverRef.update({
+          "driverTripStatus": DriverTripStatus.available.name,
+          "currentTripId": "none",
+        });
+      }
 
-      safePrint("Trip $tripId successfully cancelled.");
+      safePrint("Trip $tripId successfully canceled.");
       return true;
     } catch (e) {
-      safePrint("Error cancelling trip: $e");
-      throw Exception("Error cancelling trip: $e");
+      safePrint("Error canceling trip: $e");
+      throw Exception("Error canceling trip: $e");
     }
   }
 }

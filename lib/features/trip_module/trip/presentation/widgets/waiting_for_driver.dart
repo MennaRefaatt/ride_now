@@ -9,8 +9,9 @@ import '../manager/trip_cubit.dart';
 import 'cancel_button.dart';
 
 class WaitingForDriver extends StatefulWidget {
-  const WaitingForDriver({super.key, required this.isPassenger});
+  const WaitingForDriver({super.key, required this.isPassenger, required this.tripId});
 final bool isPassenger;
+final String tripId;
   @override
   State<WaitingForDriver> createState() => _WaitingForDriverState();
 }
@@ -33,7 +34,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
           width: double.infinity,
           height: _childSize * MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-            color: AppColors.semiGrey.withOpacity(0.8),
+            color: AppColors.semiGrey.withValues(alpha: 0.8),
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(40.r),
               topLeft: Radius.circular(40.r),
@@ -107,6 +108,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                         ),
                         verticalSpacing(20),
                         CancelButton(
+                          tripId: widget.tripId,
                           isPassenger: widget.isPassenger,
                         ),
                       ],
