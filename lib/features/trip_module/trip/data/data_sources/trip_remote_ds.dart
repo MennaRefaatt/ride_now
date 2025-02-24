@@ -265,5 +265,4 @@ class TripRemoteDSImpl implements TripRemoteDS {
       throw Exception("Error canceling trip: $e");
     }
   }
-
 }

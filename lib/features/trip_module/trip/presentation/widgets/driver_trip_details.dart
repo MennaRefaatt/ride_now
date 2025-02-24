@@ -79,6 +79,7 @@ class DriverTripDetails extends StatelessWidget {
             YourCurrentTrip(
                 isPassenger: isPassenger,
                 tripId: tripModel.tripId,
+
                 to: tripModel.to,
                 from: tripModel.from),
           ],
