@@ -108,6 +108,7 @@ class FirebaseMessagingService {
       return;
     }
 
+
     String? deviceToken = userDoc['deviceToken'];
 
     await FirebaseFirestore.instance.collection('notifications').add({
