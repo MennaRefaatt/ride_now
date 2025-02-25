@@ -10,6 +10,7 @@ import 'package:ride_now/features/notifications/data/repositories/notification_r
 import 'package:ride_now/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:ride_now/features/privacy_policy/data/repositories/privacy_repo.dart';
 import 'package:ride_now/features/privacy_policy/domain/use_cases/privacy_use_case.dart';
+import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
 import 'package:ride_now/features/wallet/data/data_sources/wallet_data_source.dart';
 import 'package:ride_now/features/wallet/domain/use_cases/get_wallet_use_case.dart';
 import '../../features/driver/driver_registration/data/data_sources/d_remote_ds.dart';
@@ -53,7 +54,7 @@ import '../../features/trip_module/trip/presentation/manager/trip_cubit.dart';
 import '../../features/wallet/data/repositories/wallet_repo.dart';
 import '../../features/wallet/domain/use_cases/charge_wallet_use_case.dart';
 import '../../features/wallet/presentation/manager/wallet_cubit.dart';
-import '../services/f_c_m_service/device_token_service.dart';
+import '../services/fcm/device_token_service.dart';
 import '../services/network/api_service.dart';
 
 final sl = GetIt.instance;
@@ -149,6 +150,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetTripsUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => GetTripDetailsUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => CancelTripUseCase(sl()));
+ sl.registerLazySingleton(() => CompleteTripUseCase(sl()));
 
   sl.registerFactory(
     () => TripCubit(
@@ -156,6 +158,7 @@ Future<void> init() async {
         acceptTripUseCase: sl(),
         getTripsUseCase: sl(),
         getTripDetailsUseCase: sl(),
+        completeTripUseCase: sl(),
         cancelTripUseCase: sl()),
   );
 

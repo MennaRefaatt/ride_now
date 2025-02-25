@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
-import '../../../../../core/services/f_c_m_service/device_token_service.dart';
+import '../../../../../core/services/fcm/device_token_service.dart';
 import '../../domain/repositories/phone_repo_base.dart';
 import '../data_sources/firestore_service/firestore_param.dart';
 import '../data_sources/firestore_service/firestore_service.dart';

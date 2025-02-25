@@ -584,6 +584,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "theme": MessageLookupByLibrary.simpleMessage("Theme"),
     "total": MessageLookupByLibrary.simpleMessage("Total"),
+    "tripCompleted": MessageLookupByLibrary.simpleMessage("Trip Completed"),
     "updateAccount": MessageLookupByLibrary.simpleMessage("Update Account"),
     "vat": MessageLookupByLibrary.simpleMessage("VAT: "),
     "vehicleBrand": MessageLookupByLibrary.simpleMessage("Vehicle Brand"),

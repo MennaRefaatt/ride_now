@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
+import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
 import 'package:rxdart/rxdart.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
@@ -28,6 +31,7 @@ class TripCubit extends Cubit<TripState> {
     required this.getTripDetailsUseCase,
     required this.createTripUseCase,
     required this.cancelTripUseCase,
+    required this.completeTripUseCase,
   }) : super(TripInitial());
 
   AcceptTripUseCase acceptTripUseCase;
@@ -35,6 +39,7 @@ class TripCubit extends Cubit<TripState> {
   GetTripDetailsUseCase getTripDetailsUseCase;
   CreateTripUseCase createTripUseCase;
   CancelTripUseCase cancelTripUseCase;
+  CompleteTripUseCase completeTripUseCase;
 
   double cost = 0.0;
   String paymentStatus = "";
@@ -197,4 +202,14 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
+  Future <void> completeTrip(String tripId) async {
+    try {
+      emit(CompleteTripLoading());
+      await completeTripUseCase.call(tripId);
+      emit(CompleteTripLoaded("Trip completed successfully"));
+    } catch (error) {
+      safePrint("Error completing trip: $error");
+      emit(CompleteTripError(error.toString()));
+    }
+  }
 }

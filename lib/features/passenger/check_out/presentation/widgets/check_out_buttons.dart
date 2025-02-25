@@ -8,7 +8,7 @@ import 'package:ride_now/core/utils/app_button.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../core/services/f_c_m_service/firebase_messaging_service.dart';
+import '../../../../../core/services/fcm/firebase_messaging_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
@@ -68,8 +68,7 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                   onPressed: () async {
                     try {
                       safePrint(widget.toAddress);
-                      await widget.tripCubit
-                          .createTrip(
+                      await widget.tripCubit.createTrip(
                         widget.fromAddress,
                         widget.fromLatLng,
                         widget.toAddress,
@@ -78,19 +77,14 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                         moreThan4Passengers,
                         commentController.text,
                         widget.cost,
-                      )
-                          .then((_) async {
-                        await Future.delayed(Duration(
-                            milliseconds: 500)); // Allow some time for storage
+                      ).then((_) async {
+                        await Future.delayed(Duration(milliseconds: 500)); // Allow time for storage
 
-                        tripId = SharedPref.getString(
-                                key: MySharedKeys.currentTripId) ??
-                            "";
+                        tripId = SharedPref.getString(key: MySharedKeys.currentTripId) ?? "";
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
-                          if (!mounted) {
-                            return; // Ensure widget is mounted before UI updates
-                          }
+
+                          if (!mounted) return; // ✅ Fix: Ensure widget is still mounted
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -98,7 +92,10 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                               content: Text("Trip id: $tripId"),
                             ),
                           );
+
                           onTripCreated();
+
+                          if (!mounted) return; // ✅ Fix: Ensure widget is still mounted
                           Navigator.pushReplacementNamed(
                             context,
                             RoutingEndpoints.tripTracking,
@@ -121,7 +118,8 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                       });
                     } catch (error) {
                       safePrint("Error creating trip: $error");
-                      if (!context.mounted) return;
+
+                      if (!mounted) return; // ✅ Fix: Ensure widget is still mounted
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           backgroundColor: AppColors.red,

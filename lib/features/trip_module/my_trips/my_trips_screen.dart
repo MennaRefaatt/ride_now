@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/components/app_bar.dart';
 import 'package:ride_now/core/theming/styles.dart';
-
 import '../../../core/components/drawer/drawer_items.dart';
 import '../../../core/di/di.dart';
 import '../../../core/theming/app_colors.dart';

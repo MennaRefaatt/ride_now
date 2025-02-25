@@ -7,7 +7,7 @@ import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/features/auth/login/data/data_sources/firestore_service/firestore_param.dart';
 import '../../../../../../core/di/di.dart';
 import '../../../../../../core/helpers/enums/user_type.dart';
-import '../../../../../../core/services/f_c_m_service/device_token_service.dart';
+import '../../../../../../core/services/fcm/device_token_service.dart';
 import '../../models/user.dart';
 
 class FirestoreService {

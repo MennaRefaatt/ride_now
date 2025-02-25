@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/helpers/safe_print.dart';
+import '../../../../../core/permissions/location.dart';
 abstract class GeolocationDataSource {
   Future<Position> getCurrentLocation();
   Stream<Position> getRealTimeLocationUpdates();
@@ -11,25 +12,13 @@ abstract class GeolocationDataSource {
 class GeolocationDataSourceImpl implements GeolocationDataSource {
   @override
   Future<Position> getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception("Location services are disabled.");
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        throw Exception("Location permission denied.");
-      }
+    bool hasPermission = await LocationPermissionHandler.requestLocationPermission();
+    if (!hasPermission) {
+      throw Exception("Cannot fetch location. Permission denied.");
     }
 
     try {
-      return await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best
-      );
+      return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     } catch (e) {
       throw Exception("Failed to get location: $e");
     }
@@ -45,10 +34,7 @@ class GeolocationDataSourceImpl implements GeolocationDataSource {
   @override
   Stream<Position> getRealTimeLocationUpdates() {
     return Geolocator.getPositionStream(
-        locationSettings: LocationSettings(
-            accuracy: LocationAccuracy.best,
-            distanceFilter: 10
-        )
+      locationSettings: LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 10),
     ).handleError((error) => throw Exception("Location stream error: $error"));
   }
 }

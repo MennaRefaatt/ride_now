@@ -12,8 +12,9 @@ import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/user_type.dart';
 import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../core/services/f_c_m_service/device_token_service.dart';
+import '../../../../../core/services/fcm/device_token_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../../../../../core/services/wallet/wallet_service.dart';
 import '../../../phone_args.dart';
 import '../../domain/repositories/facebook_repo_base.dart';
 import '../data_sources/firestore_service/firestore_service.dart';
@@ -23,9 +24,11 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
   final DSFacebookSignIn _dsFacebookSignIn;
   final DSAuthLocal _dsAuthLocal;
   final FirestoreService _firestoreService;
+  final WalletService _walletService;
+
 
   FacebookRepositoryImpl(
-      this._dsFacebookSignIn, this._firestoreService, this._dsAuthLocal);
+      this._dsFacebookSignIn, this._firestoreService, this._dsAuthLocal, this._walletService);
 
   @override
   Future<UserModel?> signInWithFacebook(BuildContext context) async {
@@ -36,6 +39,8 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
           .doc(user.uid)
           .get();
       if (!userDoc.exists) {
+        await _walletService.createWalletForUser(user.uid);
+
         String phone = user.phoneNumber ?? '';
         if (phone.isEmpty) {
           phone = await _promptForPhoneNumber();
@@ -79,6 +84,8 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
           }
         });
       } else {
+        await _walletService.createWalletForUser(user.uid);
+
         String phoneNumber = userDoc.data()?['phoneNumber'] ?? '';
 
         if (phoneNumber == "missing phone number" || phoneNumber.isEmpty) {
@@ -130,6 +137,8 @@ class FacebookRepositoryImpl implements FacebookRepositoryBase {
 final facebookRepositoryProvider = Provider<FacebookRepositoryBase>((ref) {
   final facebookSignInService = DSFacebookSignInImpl();
   final firestoreService = FirestoreService(sl(), sl());
+  final walletService = WalletService(FirebaseFirestore.instance);
+
   return FacebookRepositoryImpl(
-      facebookSignInService, firestoreService, DSAuthLocalImpl());
+      facebookSignInService, firestoreService, DSAuthLocalImpl(), walletService);
 });

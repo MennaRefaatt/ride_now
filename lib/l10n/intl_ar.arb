@@ -329,5 +329,6 @@
   "estimatedTime": "الوقت المقدر",
   "noTripRequestsAvailable": "لا يوجد طلبات رحلة متاحة",
   "noNotificationFound": "لا يوجد اشعارات",
-  "getStarted": "ابدأ"
+  "getStarted": "ابدأ",
+  "tripCompleted": "الرحلة تمت"
 }

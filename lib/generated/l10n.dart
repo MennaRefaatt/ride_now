@@ -2804,6 +2804,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Trip Completed`
+  String get tripCompleted {
+    return Intl.message(
+      'Trip Completed',
+      name: 'tripCompleted',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

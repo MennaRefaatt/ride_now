@@ -32,6 +32,7 @@ class _TripScreenState extends State<TripScreen> {
     createTripUseCase: sl(),
     getTripDetailsUseCase: sl(),
     cancelTripUseCase: sl(),
+    completeTripUseCase: sl(),
   );
 
   @override

@@ -327,5 +327,6 @@
   "estimatedTime": "Estimated Time",
   "noTripRequestsAvailable": "No Trip Requests Available",
   "getStarted": "Get Started",
-  "noNotificationsFound": "No Notifications Found"
+  "noNotificationsFound": "No Notifications Found",
+  "tripCompleted": "Trip Completed"
 }

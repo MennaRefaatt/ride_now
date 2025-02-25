@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../../core/components/app_entry_point.dart';
 import '../../../../../core/helpers/enums/stripe_payment_status.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/secure_storage/secure_storage.dart';
 import '../../../../../core/helpers/shared_pref.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../core/services/f_c_m_service/firebase_messaging_service.dart';
+import '../../../../../core/services/fcm/firebase_messaging_service.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../../core/services/stripe/stripe_manager.dart';
 import '../../../../../core/theming/app_colors.dart';
@@ -30,7 +31,6 @@ class TripActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        /// Decline Button
         AppButton(
           text: S.of(context).decline,
           backgroundColor: Colors.grey.shade200,
@@ -43,33 +43,33 @@ class TripActions extends StatelessWidget {
           borderRadius: 10.r,
           width: MediaQuery.of(context).size.width * 0.3,
         ),
-
-        /// Accept Button
         AppButton(
           text: S.of(context).accept,
           backgroundColor: AppColors.primary,
           onPressed: () async {
             final driverData = await getDriverData();
+            final driverId = driverData.driverId;
+            final driverName = driverData.driverName;
             await tripCubit.acceptTrip(trip, driverData);
 
             if (trip.tripId.isNotEmpty) {
               safePrint("Trip id: ${trip.tripId}");
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Trip Accepted: ${trip.tripId}")),
-              );
-
-              /// Send notification to passenger
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Trip Accepted: ${trip.tripId}")),
+                );
+              }
               if (trip.passengerData.passengerToken.isNotEmpty) {
-                // await sendNotification(
-                //   title: "رحلتك قيد التنفيذ!",
-                //   body: "لقد قبل السائق ${driverData.driverName} رحلتك، استعد للانطلاق 🚗",
-                //   token: trip.passengerData.passengerToken,
-                // );
+                await sendNotificationToSpecificUser(
+                  senderId: driverId,
+                  deviceToken: trip.passengerData.passengerToken,
+                  receiverId: trip.passengerData.passengerId,
+                  title: "رحلتك قيد التنفيذ!",
+                  body: "لقد قبل السائق $driverName رحلتك، استعد للانطلاق 🚗",
+                );
               }
 
-              /// Navigate to Trip Tracking screen
-              Navigator.pushReplacementNamed(
-                context,
+              appNavKey.currentState?.pushReplacementNamed(
                 RoutingEndpoints.tripTracking,
                 arguments: TripTrackingRouteArgs(
                   tripTrackingArgs: TripTrackingArgs(
@@ -85,10 +85,11 @@ class TripActions extends StatelessWidget {
                 ),
               );
 
-              /// Capture Payment
-              final captureResult = await StripePaymentManager.capturePayment(trip.tripId);
+              final captureResult =
+                  await StripePaymentManager.capturePayment(trip.tripId);
               if (captureResult == 'Payment succeeded') {
-                tripCubit.updatePaymentStatus(StripePaymentStatus.succeeded.name);
+                tripCubit
+                    .updatePaymentStatus(StripePaymentStatus.succeeded.name);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     backgroundColor: AppColors.primary,
@@ -114,9 +115,9 @@ class TripActions extends StatelessWidget {
   }
 }
 
-/// Fetch Driver Data
 Future<DriverData> getDriverData() async {
-  final driverToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
+  final driverToken =
+      await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
   return DriverData(
     driverId: SharedPref.getString(key: MySharedKeys.driverId) ?? '',

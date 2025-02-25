@@ -41,4 +41,8 @@ class TripRepoImpl implements TripRepoBase {
     safePrint(tripRef);
     return tripRef;
   }
+  @override
+  Future<void> completeTrip(String tripId) async {
+    await tripRemoteDS.completeTrip(tripId);
+  }
 }

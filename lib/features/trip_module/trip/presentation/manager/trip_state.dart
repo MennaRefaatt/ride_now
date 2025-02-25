@@ -77,3 +77,14 @@ class TripPaymentStatusUpdated extends TripState {
 
   TripPaymentStatusUpdated(this.status);
 }
+class CompleteTripError extends TripState {
+  final String message;
+  CompleteTripError(this.message);
+}
+
+class CompleteTripLoaded extends TripState {
+  final String message;
+  CompleteTripLoaded(this.message);
+}
+
+class CompleteTripLoading extends TripState {}
