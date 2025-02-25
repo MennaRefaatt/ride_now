@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import '../../../core/helpers/spacing.dart';
+import '../../../core/services/routing/routing_endpoints.dart';
 import '../../../core/theming/app_colors.dart';
 import '../../../core/theming/styles.dart';
 import '../../../generated/l10n.dart';
@@ -74,7 +75,8 @@ class _DPendingScreenState extends State<DPendingScreen>
                 text: S().done,
                 backgroundColor: AppColors.primary,
                 borderRadius: 10.r,
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pushReplacementNamed(
+                    context, RoutingEndpoints.driverOnBoarding),
                 textStyle: TextStyles.font18BlackRegular,
               ),
             ],

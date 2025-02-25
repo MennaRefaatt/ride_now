@@ -11,6 +11,7 @@ import 'package:ride_now/features/notifications/presentation/manager/notificatio
 import 'package:ride_now/features/privacy_policy/data/repositories/privacy_repo.dart';
 import 'package:ride_now/features/privacy_policy/domain/use_cases/privacy_use_case.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
+import 'package:ride_now/features/trip_module/trip/domain/use_cases/decline_trip_usecase.dart';
 import 'package:ride_now/features/wallet/data/data_sources/wallet_data_source.dart';
 import 'package:ride_now/features/wallet/domain/use_cases/get_wallet_use_case.dart';
 import '../../features/driver/driver_registration/data/data_sources/d_remote_ds.dart';
@@ -151,12 +152,14 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetTripDetailsUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => CancelTripUseCase(sl()));
  sl.registerLazySingleton(() => CompleteTripUseCase(sl()));
+ sl.registerLazySingleton(() => DeclineTripUseCase(sl()));
 
   sl.registerFactory(
     () => TripCubit(
         createTripUseCase: sl(),
         acceptTripUseCase: sl(),
         getTripsUseCase: sl(),
+        declineTripUseCase: sl(),
         getTripDetailsUseCase: sl(),
         completeTripUseCase: sl(),
         cancelTripUseCase: sl()),

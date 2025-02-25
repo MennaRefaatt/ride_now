@@ -45,4 +45,8 @@ class TripRepoImpl implements TripRepoBase {
   Future<void> completeTrip(String tripId) async {
     await tripRemoteDS.completeTrip(tripId);
   }
+  @override
+  Future<void> declineTrip(String driverId, String tripId) async {
+    await tripRemoteDS.declineTrip(driverId,tripId);
+  }
 }

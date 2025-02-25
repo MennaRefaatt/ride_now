@@ -319,17 +319,5 @@ class ExpiryDateValidator {
 
     return null;
   }
-}
 
-class VehiclePlateValidator {
-  static String? validatePlateNumber(String? value) {
-    if (value == null || value.isEmpty) {
-      return S().pleaseEnterVehiclePlateNumber;
-    }
-    final platePattern = RegExp(r'^[A-Za-z]{1,2}\d{4,6}[A-Za-z0-9]?$');
-    if (!platePattern.hasMatch(value)) {
-      return S().invalidPlateNumberFormat;
-    }
-    return null;
-  }
 }

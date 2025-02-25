@@ -27,6 +27,7 @@ class TripScreen extends StatefulWidget {
 class _TripScreenState extends State<TripScreen> {
   final locationCubit = LocationCubit(sl(), sl(), sl());
   final tripCubit = TripCubit(
+    declineTripUseCase: sl(),
     acceptTripUseCase: sl(),
     getTripsUseCase: sl(),
     createTripUseCase: sl(),

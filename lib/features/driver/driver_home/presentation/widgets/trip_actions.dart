@@ -34,7 +34,11 @@ class TripActions extends StatelessWidget {
         AppButton(
           text: S.of(context).decline,
           backgroundColor: Colors.grey.shade200,
-          onPressed: () {
+          onPressed: () async {
+            final driverId = SharedPref.getString(key: MySharedKeys.driverId);
+            safePrint("🚗 Driver ID from SharedPref: $driverId");
+            await tripCubit.declineTrip(driverId!, trip.tripId);
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text("Trip Declined")),
             );

@@ -33,6 +33,7 @@ class _CheckOutState extends State<CheckOut> {
   final tripCubit = TripCubit(
     acceptTripUseCase: sl(),
     getTripsUseCase: sl(),
+    declineTripUseCase: sl(),
     createTripUseCase: sl(),
     getTripDetailsUseCase: sl(),
     cancelTripUseCase: sl(),

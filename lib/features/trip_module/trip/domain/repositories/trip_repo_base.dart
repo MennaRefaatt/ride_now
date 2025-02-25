@@ -12,4 +12,5 @@ abstract class TripRepoBase {
   Future<bool> cancelTripRequest(String tripId);
 
   Future<void> completeTrip(String tripId);
+  Future<void> declineTrip( String driverId,String tripId);
 }

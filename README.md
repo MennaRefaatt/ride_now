@@ -8,7 +8,7 @@
 - chat
 - audio call ✅
 - real time tracking
-- fix colors, brands, and models bug
+- fix colors, brands, and models bug ✅
 - hide api keys
 - firebase storage for profile image ✅
 - notifications ✅
@@ -53,4 +53,6 @@ Trip
 - trip payment method ✅ 
 - trip payment status ✅
 - trip estimated time ✅
+- rating
+- trip type
 ==============================================================
