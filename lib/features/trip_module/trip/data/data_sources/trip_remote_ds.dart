@@ -19,6 +19,7 @@ abstract class TripRemoteDS {
   Future<void> acceptTrip(TripModel tripModel, DriverData driverData);
   Future<bool> cancelTripRequest(String tripId);
   Future<void> completeTrip(String tripId);
+  Future<void> declineTrip(String driverId, String tripId);
 }
 
 class TripRemoteDSImpl implements TripRemoteDS {
@@ -113,7 +114,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
       double calculatedCost =
           tripHelper.calculateCost(double.parse(distance.split(" ")[0]));
       String formattedCost = tripHelper.formatCost(calculatedCost);
-      final passengerToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
+      final passengerToken =
+          await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final model = TripModel(
         fromLatLng: fromCoordinates,
@@ -166,7 +168,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
     try {
       final tripRef =
           FirebaseFirestore.instance.collection('trips').doc(tripModel.tripId);
-      final driverToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
+      final driverToken =
+          await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final availableDriversSnapshot = await FirebaseFirestore.instance
           .collection('drivers')
@@ -238,7 +241,8 @@ class TripRemoteDSImpl implements TripRemoteDS {
         throw Exception("User ID not found in shared preferences.");
       }
 
-      final tripRef = FirebaseFirestore.instance.collection('trips').doc(tripId);
+      final tripRef =
+          FirebaseFirestore.instance.collection('trips').doc(tripId);
       final tripDoc = await tripRef.get();
 
       if (!tripDoc.exists) {
@@ -247,12 +251,14 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
       // Proceed with cancellation logic
       await tripRef.update({'status': TripStatus.canceled.name});
-      final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+      final userRef =
+          FirebaseFirestore.instance.collection('users').doc(userId);
       await userRef.update({'currentTripId': 'none'});
 
       final driverId = tripDoc.data()?['driverData']['driverId'];
       if (driverId != null && driverId.isNotEmpty) {
-        final driverRef = FirebaseFirestore.instance.collection('drivers').doc(driverId);
+        final driverRef =
+            FirebaseFirestore.instance.collection('drivers').doc(driverId);
         await driverRef.update({
           "driverTripStatus": DriverTripStatus.available.name,
           "currentTripId": "none",
@@ -270,12 +276,61 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<void> completeTrip(String tripId) async {
     try {
-      final tripRef = FirebaseFirestore.instance.collection('trips').doc(tripId);
+      final tripRef = _firestore.collection('trips').doc(tripId);
+      final tripDoc = await tripRef.get();
+
+      if (!tripDoc.exists) {
+        throw Exception("Trip not found");
+      }
+
+      final tripData = tripDoc.data()!;
+      final driverId = tripData['driverData']['driverId'];
+      final passengerId = tripData['passengerData']['passengerId'];
+
       await tripRef.update({'status': TripStatus.completed.name});
-      safePrint("Trip $tripId marked as succeeded.");
+
+      await _firestore.collection('drivers').doc(driverId).update({
+        'driverTripStatus': DriverTripStatus.available.name,
+      });
+
+      await _firestore.collection('users').doc(driverId).update({
+        'currentTripId': 'none',
+      });
+
+      await _firestore.collection('users').doc(passengerId).update({
+        'currentTripId': 'none',
+      });
+
+      safePrint("Trip $tripId completed successfully.");
     } catch (e) {
       throw Exception("Error completing trip: $e");
     }
   }
 
+  @override
+  Future<void> declineTrip(String driverId, String tripId) async {
+    try {
+      safePrint(
+          "🚀 Attempting to decline trip. Driver ID: $driverId, Trip ID: $tripId");
+
+      final driverDocRef =
+      FirebaseFirestore.instance.collection('drivers').doc(driverId);
+      final driverDoc = await driverDocRef.get();
+
+      safePrint("📄 Retrieved Driver Document: ${driverDoc.data()}");
+
+      if (!driverDoc.exists) {
+        safePrint("❌ ERROR: Driver document does not exist!");
+        throw Exception("⚠️ Driver document not found in Firestore!");
+      }
+
+      await driverDocRef.update({
+        'declinedTrips': FieldValue.arrayUnion([tripId])
+      });
+
+      safePrint("🚫 Trip $tripId declined successfully!");
+    } catch (e) {
+      safePrint("❌ Error declining trip: $e");
+    }
+  }
 }

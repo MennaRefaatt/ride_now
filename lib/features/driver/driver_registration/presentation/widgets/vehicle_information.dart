@@ -53,7 +53,10 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => DriverBottomSheet(type: type, controller: controller),
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: DriverBottomSheet(type: type, controller: controller),
+      ),
     );
   }
 
@@ -272,8 +275,12 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                           widget.cubit.registrationCertificate ?? '',
                       backOfCertificate: widget.cubit.backOfCertificate ?? '',
                     ),
-                validator: VehiclePlateValidator.validatePlateNumber),
-          ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return S().requiredField;
+                  }
+                  return null;
+                }),],
         ),
       ),
     );

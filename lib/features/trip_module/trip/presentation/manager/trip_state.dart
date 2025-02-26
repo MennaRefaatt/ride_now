@@ -88,3 +88,15 @@ class CompleteTripLoaded extends TripState {
 }
 
 class CompleteTripLoading extends TripState {}
+
+class DeclineTripError extends TripState {
+  final String message;
+  DeclineTripError(this.message);
+}
+
+class DeclineTripLoaded extends TripState {
+  final String message;
+  DeclineTripLoaded(this.message);
+}
+
+class DeclineTripLoading extends TripState {}

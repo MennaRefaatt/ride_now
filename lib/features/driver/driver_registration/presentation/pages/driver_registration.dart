@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/widgets/bottom_navigation_bar_widget.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/services/routing/routing_endpoints.dart';
@@ -150,7 +151,7 @@ class _DriverRegistration extends State<DriverRegistration>
                           context, RoutingEndpoints.driverPendingScreen);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          backgroundColor: Colors.green,
+                          backgroundColor: AppColors.primary,
                           content: Text(S().registrationSuccessful),
                         ),
                       );

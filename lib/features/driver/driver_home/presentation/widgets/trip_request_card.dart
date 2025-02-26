@@ -9,14 +9,14 @@ import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
 
 class TripRequestCard extends StatelessWidget {
   final TripModel trip;
-  final int timeRemaining;
   final TripCubit tripCubit;
+  final VoidCallback onTimerEnd;
 
   const TripRequestCard({
     super.key,
     required this.trip,
-    required this.timeRemaining,
     required this.tripCubit,
+    required this.onTimerEnd,
   });
 
   @override
@@ -27,7 +27,7 @@ class TripRequestCard extends StatelessWidget {
       elevation: 5,
       child: Column(
         children: [
-          TripProgressBar(timeRemaining: timeRemaining),
+          TripProgressBar(onTimerEnd: onTimerEnd),
           DTripDetails(trip: trip),
           TripActions(trip: trip, tripCubit: tripCubit),
         ],

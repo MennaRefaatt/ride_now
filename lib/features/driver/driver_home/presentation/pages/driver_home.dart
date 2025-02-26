@@ -22,6 +22,7 @@ class _DriverHomeState extends State<DriverHome> {
       createTripUseCase: sl(),
       getTripsUseCase: sl(),
       completeTripUseCase: sl(),
+      declineTripUseCase: sl(),
       getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {

@@ -24,6 +24,9 @@ DriverRegistrationModel _$DriverRegistrationModelFromJson(
       location:
           DriverLocation.fromJson(json['location'] as Map<String, dynamic>),
       driverToken: json['driverToken'] as String,
+      declinedTrips: (json['declinedTrips'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$DriverRegistrationModelToJson(
@@ -39,6 +42,7 @@ Map<String, dynamic> _$DriverRegistrationModelToJson(
       'personalDocument': instance.personalDocument,
       'location': instance.location,
       'driverToken': instance.driverToken,
+      'declinedTrips': instance.declinedTrips,
     };
 
 DriverLocation _$DriverLocationFromJson(Map<String, dynamic> json) =>

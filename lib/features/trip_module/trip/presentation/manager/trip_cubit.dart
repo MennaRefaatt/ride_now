@@ -10,7 +10,6 @@ import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
-import 'package:rxdart/rxdart.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
@@ -19,6 +18,7 @@ import '../../data/models/trip_model.dart';
 import '../../domain/use_cases/accept_trip_usecase.dart';
 import '../../domain/use_cases/cancel_trip_usecase.dart';
 import '../../domain/use_cases/create_trip_usecase.dart';
+import '../../domain/use_cases/decline_trip_usecase.dart';
 import '../../domain/use_cases/get_trip_details_usecase.dart';
 import '../../domain/use_cases/get_trips_usecase.dart';
 
@@ -32,6 +32,7 @@ class TripCubit extends Cubit<TripState> {
     required this.createTripUseCase,
     required this.cancelTripUseCase,
     required this.completeTripUseCase,
+    required this.declineTripUseCase,
   }) : super(TripInitial());
 
   AcceptTripUseCase acceptTripUseCase;
@@ -40,6 +41,7 @@ class TripCubit extends Cubit<TripState> {
   CreateTripUseCase createTripUseCase;
   CancelTripUseCase cancelTripUseCase;
   CompleteTripUseCase completeTripUseCase;
+  DeclineTripUseCase declineTripUseCase;
 
   double cost = 0.0;
   String paymentStatus = "";
@@ -64,16 +66,28 @@ class TripCubit extends Cubit<TripState> {
         .snapshots();
   }
 
-  Stream<List<TripModel>> listenToTrips() {
-    return FirebaseFirestore.instance
-        .collection('trips')
-        .where('status', isEqualTo: TripStatus.pending.name)
-        .snapshots()
-        .debounceTime(const Duration(milliseconds: 300))
-        .map((querySnapshot) {
-      return querySnapshot.docs.map((doc) {
-        return TripModel.fromJson(doc.data());
-      }).toList();
+  Stream<List<TripModel>> listenToTrips(String driverId) {
+    final driverDoc =
+        FirebaseFirestore.instance.collection('drivers').doc(driverId);
+
+    return driverDoc.snapshots().asyncMap((driverSnapshot) async {
+      if (!driverSnapshot.exists) return [];
+
+      final driverData = driverSnapshot.data()!;
+      List<String> declinedTrips =
+          List<String>.from(driverData['declinedTrips'] ?? []);
+
+      final tripsSnapshot = await FirebaseFirestore.instance
+          .collection('trips')
+          .where('status', isEqualTo: TripStatus.pending.name)
+          .get();
+
+      List<TripModel> trips = tripsSnapshot.docs
+          .map((doc) => TripModel.fromJson(doc.data()))
+          .where((trip) => !declinedTrips.contains(trip.tripId))
+          .toList();
+
+      return trips;
     });
   }
 
@@ -99,21 +113,24 @@ class TripCubit extends Cubit<TripState> {
   }
 
   Future<void> createTrip(
-      String from,
-      LatLng fromLatLng,
-      String to,
-      LatLng toLatLng,
-      String paymentMethod,
-      bool moreThan4Passengers,
-      String comment,
-      double cost,
-      ) async {
+    String from,
+    LatLng fromLatLng,
+    String to,
+    LatLng toLatLng,
+    String paymentMethod,
+    bool moreThan4Passengers,
+    String comment,
+    double cost,
+  ) async {
     emit(CreateTripLoading());
     try {
       final tripHelper = TripHelper();
-      String distance = await tripHelper.calculateDistance(fromLatLng, toLatLng, unit: 'km');
-      String estimatedTime = await tripHelper.calculateEstimatedArrivalTime(fromLatLng, toLatLng, 30);
-      final passengerToken = await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
+      String distance =
+          await tripHelper.calculateDistance(fromLatLng, toLatLng, unit: 'km');
+      String estimatedTime = await tripHelper.calculateEstimatedArrivalTime(
+          fromLatLng, toLatLng, 30);
+      final passengerToken =
+          await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
 
       final tripModel = TripModel(
         tripId: "",
@@ -167,10 +184,13 @@ class TripCubit extends Cubit<TripState> {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('drivers')
-          .where('driverTripStatus', isEqualTo: 'available') // Only fetch available drivers
+          .where('driverTripStatus',
+              isEqualTo: 'available') // Only fetch available drivers
           .get();
 
-      return querySnapshot.docs.map((doc) => DriverRegistrationModel.fromJson(doc.data())).toList();
+      return querySnapshot.docs
+          .map((doc) => DriverRegistrationModel.fromJson(doc.data()))
+          .toList();
     } catch (e) {
       safePrint("Error fetching available drivers: $e");
       return [];
@@ -202,7 +222,7 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
-  Future <void> completeTrip(String tripId) async {
+  Future<void> completeTrip(String tripId) async {
     try {
       emit(CompleteTripLoading());
       await completeTripUseCase.call(tripId);
@@ -212,4 +232,32 @@ class TripCubit extends Cubit<TripState> {
       emit(CompleteTripError(error.toString()));
     }
   }
+  Future<void> declineTrip(String driverId,String tripId) async {
+    try {
+      emit(DeclineTripLoading());
+
+      final storedDriverId = SharedPref.getString(key: MySharedKeys.driverId);
+      safePrint("📌 Driver ID from SharedPref: $storedDriverId");
+      safePrint("📌 Driver ID passed to function: $driverId");
+
+      if (storedDriverId != driverId) {
+        safePrint("⚠️ MISMATCH: The stored driver ID and function argument are different!");
+      }
+      final driverDoc = await FirebaseFirestore.instance
+          .collection('drivers')
+          .doc(driverId)
+          .get();
+
+      if (!driverDoc.exists) {
+        throw Exception("⚠️ Driver document not found in Firestore!");
+      }
+
+      await declineTripUseCase.call(driverId, tripId);
+      emit(DeclineTripLoaded("Trip declined successfully"));
+    } catch (error) {
+      safePrint("❌ Error declining trip: $error");
+      emit(DeclineTripError(error.toString()));
+    }
+  }
+
 }

@@ -34,18 +34,21 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
   }
 
   final driverCubit = sl<DriverRegistrationCubit>();
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-  create: (context) => driverCubit,
-  child: BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
+    return BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
       builder: (context, state) {
-        if (state is DriverRegistrationDataFetched && widget.type == 'brand') {
-          filteredItems = state.brands.map((brand) => brand.toJson()).toList();
-        } else if (state is DriverRegistrationDataFetched && widget.type == 'model') {
-          filteredItems = state.models.map((model) => model.toJson()).toList();
-        } else if (state is DriverRegistrationDataFetched && widget.type == 'color') {
-          filteredItems = state.colors.map((color) => color.toJson()).toList();
+        List<dynamic> items = [];
+
+        if (state is DriverRegistrationBrandsFetched && widget.type == "brand") {
+          items = state.brands;
+        } else if (state is DriverRegistrationModelsFetched && widget.type == "model") {
+          items = state.models;
+        } else if (state is DriverRegistrationColorsFetched && widget.type == "color") {
+          items = state.colors;
+        } else if (state is DriverRegistrationLoading) {
+          return Center(child: CircularProgressIndicator());
         }
 
         return Container(
@@ -64,41 +67,13 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
                   ),
                   CircleAvatar(
                     radius: 15.r,
-                    backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
+                    backgroundColor: AppColors.semiGrey.withOpacity(0.2),
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
                       child: Icon(CupertinoIcons.xmark, size: 20.sp),
                     ),
                   ),
                 ],
-              ),
-              BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
-                builder: (context, state) {
-                  if (state is DriverRegistrationDataFetched) {
-                    final items = widget.type == "brand"
-                        ? state.brands.map((brand) => brand.name).toList()
-                        : widget.type == "model"
-                        ? state.models.map((model) => model.name).toList()
-                        : widget.type == "color"
-                        ? state.colors.map((color) => color.name).toList()
-                        : [];
-
-                    return DropdownButton<String>(
-                      value: widget.controller.text.isNotEmpty ? widget.controller.text : null,
-                      items: items
-                          .map((name) => DropdownMenuItem<String>(
-                        value: name,
-                        child: Text(name),
-                      ))
-                          .toList(),
-                      onChanged: (value) {
-                        widget.controller.text = value ?? "";
-                        Navigator.pop(context);
-                      },
-                    );
-                  }
-                  return CircularProgressIndicator();
-                },
               ),
               TextFormEntry(
                 controller: searchController,
@@ -119,23 +94,20 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
               ),
               Expanded(
                 child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: filteredItems.length,
+                  itemCount: items.length,
                   itemBuilder: (context, index) {
-                    final item = filteredItems[index];
+                    final item = items[index];
                     return ListTile(
-                      leading: item['color'] != null
+                      leading: widget.type == "color"
                           ? CircleAvatar(
                         radius: 15.r,
-                        backgroundColor: Color(int.parse(item['color'])),
+                        backgroundColor: _parseColor(item.hexCode),
                       )
                           : null,
-                      title: Text(
-                        item['name'],
-                        style: TextStyles.font18BlackRegular,
-                      ),
+
+                      title: Text(item.name),
                       onTap: () {
-                        widget.controller.text = item['name'];
+                        widget.controller.text = item.name;
                         Navigator.pop(context);
                       },
                     );
@@ -146,8 +118,7 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
           ),
         );
       },
-    ),
-);
+    );
   }
 
   String _getTitle() {
@@ -162,4 +133,16 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
         return '';
     }
   }
+  Color _parseColor(String hexCode) {
+    try {
+      if (hexCode.startsWith('#')) {
+        return Color(int.parse(hexCode.replaceFirst('#', '0xFF')));
+      }
+      return Color(int.parse(hexCode));
+    } catch (e) {
+      return Colors.grey;
+    }
+  }
+
+
 }

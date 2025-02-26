@@ -67,18 +67,8 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
     }
   }
 
-  Future<void> fetchColors() async {
-    emit(DriverRegistrationColorsLoading());
-    try {
-      final colors = await fetchColorsUseCase();
-      emit(DriverRegistrationColorsFetched(colors));
-    } catch (e) {
-      emit(DriverRegistrationColorsFailure(error: e.toString()));
-    }
-  }
-
   Future<void> fetchBrands() async {
-    emit(DriverRegistrationBrandsLoading());
+    emit(DriverRegistrationLoading());
     try {
       final brands = await fetchBrandsUseCase();
       emit(DriverRegistrationBrandsFetched(brands));
@@ -88,12 +78,22 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
   }
 
   Future<void> fetchModels() async {
-    emit(DriverRegistrationModelsLoading());
+    emit(DriverRegistrationLoading());
     try {
       final models = await fetchModelsUseCase();
       emit(DriverRegistrationModelsFetched(models));
     } catch (e) {
       emit(DriverRegistrationModelsFailure(error: e.toString()));
+    }
+  }
+
+  Future<void> fetchColors() async {
+    emit(DriverRegistrationLoading());
+    try {
+      final colors = await fetchColorsUseCase();
+      emit(DriverRegistrationColorsFetched(colors));
+    } catch (e) {
+      emit(DriverRegistrationColorsFailure(error: e.toString()));
     }
   }
 
@@ -161,19 +161,24 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
 
   Future<bool> submitRegistration() async {
     try {
+      final String? userId = SharedPref.getString(key: MySharedKeys.userId);
+      safePrint("User ID before Firestore registration: $userId");
+      final String? deviceToken = await SecureStorageService.readData(SecureKeys.deviceToken);
+
       final driverData = DriverRegistrationModel(
-        driverTripStatus: DriverTripStatus.available.name,
+        declinedTrips: [],
+        driverTripStatus: DriverTripStatus.offline.name,
         driverStatus: DriverStatus.pending.name,
-        driverId: SharedPref.getString(key: MySharedKeys.userId) ?? '',
+        driverId: userId ?? '',
         currentTripId: 'none',
         personalInfo: PersonalRegistrationModel(
           firstName: firstName ?? '',
           lastName: lastName ?? '',
           dateOfBirth: dateOfBirth ?? '',
           personalImage: personalImage ?? '',
-          phone: "",
+          phone: SharedPref.getString(key: MySharedKeys.phone) ?? '',
         ),
-        driverToken: SecureStorageService.readData(SecureKeys.deviceToken) as String? ?? '',
+        driverToken:deviceToken ?? '',
         location: DriverLocation(latitude: 0.0, longitude: 0.0),
         vehicleInfo: VehicleRegistrationModel(
           vehicleBrand: vehicleBrand ?? '',
@@ -203,6 +208,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
       emit(DriverRegistrationLoading());
 
       final isSuccess = await submitDriverRegistrationUseCase(driverData);
+      safePrint("Registration Success Status: $isSuccess");
 
       if (isSuccess) {
         emit(DriverRegistrationSuccess());
@@ -217,9 +223,11 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
         return false;
       }
     } catch (e) {
+      safePrint("Registration Error: $e");
       emit(DriverRegistrationFailure(error: e.toString()));
       return false;
-    }
+
+  }
   }
 
   Future<void> pickImage(ImageType type) async {
@@ -259,7 +267,7 @@ class DriverRegistrationCubit extends Cubit<DriverRegistrationState> {
         case ImageType.backOfCertificate:
           backOfCertificate = image.path;
           break;
-        }
+      }
 
       emit(DriverRegistrationDocumentsUpdated());
     } else {

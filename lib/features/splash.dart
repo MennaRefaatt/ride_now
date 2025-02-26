@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
+import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/utils/app_image.dart';
 import 'package:audioplayers/audioplayers.dart';
-
 import '../core/helpers/enums/driver_status.dart';
 import '../core/helpers/enums/user_type.dart';
 import '../core/helpers/safe_print.dart';
@@ -22,6 +22,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   double _opacity = 0.0;
+  bool _showProgress = false;
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimationRide;
   late Animation<Offset> _slideAnimationNow;
@@ -50,8 +51,10 @@ class _SplashScreenState extends State<SplashScreen>
       CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
     );
 
-    _carAnimation =
-        Tween<Offset>(begin: const Offset(1.5, 0.0), end: Offset.zero).animate(
+    _carAnimation = Tween<Offset>(
+      begin: const Offset(1.5, 0),
+      end: Offset.zero,
+    ).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
 
@@ -62,6 +65,7 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
       _opacity = 1.0;
+      _showProgress = true;
     });
 
     _animationController.forward();
@@ -133,51 +137,84 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green.withValues(alpha: 0.2),
+      backgroundColor: AppColors.primary.withValues(alpha: 0.4),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SlideTransition(
-            position: _carAnimation,
-            child: AnimatedOpacity(
-              opacity: _opacity,
-              duration: const Duration(seconds: 2),
-              child: AppImageAsset(
-                path: 'icons/app_icon.png',
-                height: 300.h,
-                width: 400.w,
-                fit: BoxFit.cover,
+          Expanded(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              SlideTransition(
+                position: _carAnimation,
+                child: AnimatedOpacity(
+                  opacity: _opacity,
+                  duration: const Duration(seconds: 2),
+                  child: AppImageAsset(
+                    path: 'icons/app_icon.png',
+                    height: 300.h,
+                    width: 400.w,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: AnimatedOpacity(
+                  opacity: _opacity,
+                  duration: const Duration(seconds: 1),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SlideTransition(
+                        position: _slideAnimationRide,
+                        child: Text(
+                          "𝚁𝚒𝚍𝚎",
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                      SlideTransition(
+                        position: _slideAnimationNow,
+                        child: Text(
+                          "𝙽𝚘𝚠",
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
           ),
-          Directionality(
-            textDirection: TextDirection.ltr,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SlideTransition(
-                  position: _slideAnimationRide,
-                  child: Text(
-                    "𝚁𝚒𝚍𝚎",
-                    style: TextStyle(
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.green,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Visibility(
+              visible: _showProgress,
+              child: Container(
+                margin: EdgeInsets.only(bottom: 40.h),
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.black.withValues(alpha: 0.1),
+                      spreadRadius: 1,
+                      blurRadius: 10,
                     ),
-                  ),
+                  ],
                 ),
-                SlideTransition(
-                  position: _slideAnimationNow,
-                  child: Text(
-                    "𝙽𝚘𝚠",
-                    style: TextStyle(
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.green,
-                    ),
-                  ),
+                child: CircularProgressIndicator(
+                  color: AppColors.primary,
+                  strokeWidth: 8,
+                  backgroundColor: AppColors.semiGrey,
                 ),
-              ],
+              ),
             ),
           ),
         ],

@@ -25,7 +25,7 @@ Future<void> main() async {
   ApiService.init();
   await init();
   await SharedPref.init();
-  final userId = SharedPref.getString(key: MySharedKeys.userId);
+   final userId = SharedPref.getString(key: MySharedKeys.userId);
   safePrint(userId);
   safePrint(SharedPref.getString(key: MySharedKeys.type));
   final deviceTokenService = sl<DeviceTokenService>();
