@@ -18,6 +18,7 @@ class TripModel {
   final PassengerData passengerData;
   final bool moreThan4Passengers;
   final String comment;
+  final String selectedCategory;
 
   TripModel({
     required this.tripId,
@@ -36,6 +37,7 @@ class TripModel {
     required this.estimatedTime,
     required this.moreThan4Passengers,
     required this.comment,
+    required this.selectedCategory
   });
 
   factory TripModel.fromJson(Map<String, dynamic> json) {
@@ -48,6 +50,7 @@ class TripModel {
       moreThan4Passengers: json['moreThan4Passengers'],
       comment: json['comment'],
       status: json['status'],
+      selectedCategory: json['selectedCategory'],
       estimatedTime: json['estimatedTime'],
       fromLatLng: json['fromLatLng'] is Map<String, dynamic>
           ? LatLng(
@@ -93,6 +96,7 @@ class TripModel {
       'moreThan4Passengers': moreThan4Passengers,
       'comment': comment,
       'estimatedTime': estimatedTime,
+      'selectedCategory': selectedCategory,
       "fromLatLng": {
         "latitude": fromLatLng.latitude,
         "longitude": fromLatLng.longitude

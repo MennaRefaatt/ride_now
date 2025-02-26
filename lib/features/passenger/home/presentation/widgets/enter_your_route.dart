@@ -90,6 +90,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
         toAddress: toAddress,
         fromLatLng: widget.cubit.fromLatLng!,
         toLatLng: widget.cubit.toLatLng!,
+        selectedCategory:widget.cubit.selectedCategory!,
       ),
     ).then((result) {
       if (result != null && result is String) {

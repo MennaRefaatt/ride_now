@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/features/auth/login/data/data_sources/firestore_service/firestore_param.dart';
 import '../../../../../../core/di/di.dart';
@@ -79,27 +81,32 @@ class FirestoreService {
     }
   }
 
-  Future<void> uploadProfileImage(File image) async {
+
+  Future<String?> uploadProfileImageFromUrl(String userId) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        // Upload the image to Firebase Storage
-        final storageRef = _storage.ref().child('user_images/${user.uid}.jpg');
-        await storageRef.putFile(image);
+      if (user == null || user.photoURL == null) return null;
 
-        // Get the download URL
+      final dio = Dio();
+      final response = await dio.get<List<int>>(user.photoURL!, options: Options(responseType: ResponseType.bytes));
+
+      if (response.statusCode == 200) {
+        final tempFile = File('${(await getTemporaryDirectory()).path}/temp.jpg');
+        await tempFile.writeAsBytes(response.data!);
+
+        // Upload the image to Firebase Storage
+        final storageRef = _storage.ref().child('user_images/$userId.jpg');
+        await storageRef.putFile(tempFile);
         final downloadUrl = await storageRef.getDownloadURL();
 
-        // Update the user's profile image URL in Firestore
-        await _db.collection('users').doc(user.uid).update({
-          'photoUrl': downloadUrl,
-        });
-
-        safePrint("Profile image uploaded and Firestore updated.");
+        // Update Firestore
+        await _db.collection('users').doc(userId).update({'photoUrl': downloadUrl});
+        return downloadUrl;
       }
     } catch (e) {
-      safePrint("Error uploading profile image: $e");
+      safePrint("Error uploading profile image from URL: $e");
     }
+    return null;
   }
 
   Future<void> updateUserCityToFirestore(String city) async {

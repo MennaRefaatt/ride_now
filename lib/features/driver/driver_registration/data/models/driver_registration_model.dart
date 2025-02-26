@@ -1,4 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../../../rating/data/models/rating_model.dart';
 part 'driver_registration_model.g.dart';
 @JsonSerializable()
 class DriverRegistrationModel{
@@ -13,6 +15,7 @@ class DriverRegistrationModel{
   final DriverLocation location;
   final String driverToken;
   final List<String> declinedTrips;
+  final RatingModel? rating;
 
   DriverRegistrationModel({
     required this.driverId,
@@ -25,7 +28,8 @@ class DriverRegistrationModel{
     required this.currentTripId,
     required this.location,
     required this.driverToken,
-    required this.declinedTrips
+    required this.declinedTrips,
+    this.rating
   });
 
   factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
@@ -41,7 +45,8 @@ class DriverRegistrationModel{
     'driverInfo': driverInfo.toJson(),
     'personalDocument': personalDocument.toJson(),
     'driverToken': driverToken,
-    'declinedTrips': declinedTrips
+    'declinedTrips': declinedTrips,
+    'rating': rating
   };
 }
 @JsonSerializable()

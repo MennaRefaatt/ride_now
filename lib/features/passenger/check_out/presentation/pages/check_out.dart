@@ -140,6 +140,7 @@ class _CheckOutState extends State<CheckOut> {
                     padding: EdgeInsets.all(15.sp),
                     child: CheckOutButtons(
                       tripCubit: tripCubit,
+                      selectedCategory: widget.args.selectedCategory,
                       fromAddress: widget.args.fromAddress,
                       toAddress: newPickedToAddress == true
                           ? newToAddress

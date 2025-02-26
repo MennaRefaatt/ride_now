@@ -330,5 +330,10 @@
   "noTripRequestsAvailable": "لا يوجد طلبات رحلة متاحة",
   "noNotificationFound": "لا يوجد اشعارات",
   "getStarted": "ابدأ",
-  "tripCompleted": "الرحلة تمت"
+  "tripCompleted": "الرحلة تمت",
+  "submit": "تقديم",
+  "pleaseSelectRating": "يرجى تحديد التقييم",
+  "thankYouForRating": "شكرا لك على التقييم",
+  "leaveComment": "اترك تعليق",
+  "rateYourDriver" : "قيم السائق"
 }

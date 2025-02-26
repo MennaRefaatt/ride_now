@@ -26,18 +26,27 @@ class _UserImageState extends State<UserImage> {
   @override
   void initState() {
     super.initState();
-    _fetchUserProfileImage(); // ✅ Fetch user profile image from Firestore
+    _fetchUserProfileImage();
   }
 
-  /// ✅ Fetch user profile image from Firestore
   Future<void> _fetchUserProfileImage() async {
+    String? cachedImage = SharedPref.getString(key: MySharedKeys.picture);
+
+    if (cachedImage != null && cachedImage.isNotEmpty) {
+      setState(() {
+        _downloadUrl = cachedImage;
+      });
+    } else {
+      await _fetchImageFromFirestore();
+    }
+  }
+
+  Future<void> _fetchImageFromFirestore() async {
     String userId = SharedPref.getString(key: MySharedKeys.userId) ?? "";
 
     if (userId.isNotEmpty) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
+      DocumentSnapshot userDoc =
+      await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
       if (userDoc.exists) {
         String? photoUrl = userDoc['photoUrl'];
@@ -45,12 +54,12 @@ class _UserImageState extends State<UserImage> {
           setState(() {
             _downloadUrl = photoUrl;
           });
+
+          SharedPref.setString(key: MySharedKeys.picture, value: photoUrl);
         }
       }
     }
   }
-
-  /// ✅ Allow user to pick an image from camera or gallery
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final pickedFile = await showDialog<XFile?>(

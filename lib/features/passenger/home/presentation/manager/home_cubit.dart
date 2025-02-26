@@ -23,6 +23,8 @@ class HomeCubit extends Cubit<HomeState> {
   final fromFocusNode = FocusNode();
   final toFocusNode = FocusNode();
   LatLng? fromLatLng, toLatLng;
+  String? selectedCategory;
+
 
   double cost = 0.0;
 

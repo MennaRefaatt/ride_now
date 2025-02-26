@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../../../rating/data/models/rating_model.dart';
+
 part 'user.g.dart';
 
 @JsonSerializable()
@@ -14,7 +16,8 @@ class UserModel {
   final String? type;
   final String? currentTripId;
   final String? deviceToken;
-
+  final RatingModel? rating;
+  final int ratingGivenCount;
   UserModel({
     required this.phoneNumber,
     required this.uid,
@@ -24,7 +27,9 @@ class UserModel {
     required this.type,
     required this.photoUrl,
     required this.currentTripId,
-    required this.deviceToken
+    required this.deviceToken,
+    this.rating,
+    this.ratingGivenCount = 0
   });
 
   factory UserModel.fromDocument(DocumentSnapshot doc) {

@@ -87,6 +87,11 @@ class _HomeBodyState extends State<HomeBody> {
                   children: [
                     RideCategories(
                       categories: categories,
+                      onCategorySelected: (category) {
+                        setState(() {
+                          widget.homeCubit.selectedCategory = category;
+                        });
+                      },
                     ),
                     WhereToBar(
                       cubit: widget.homeCubit,
@@ -157,6 +162,7 @@ class _HomeBodyState extends State<HomeBody> {
                                       toAddress: widget.homeCubit.toController.text,
                                       fromLatLng: widget.homeCubit.fromLatLng!,
                                       toLatLng: widget.homeCubit.toLatLng!,
+                                      selectedCategory: widget.homeCubit.selectedCategory!,
                                     )
                                 );
                               }

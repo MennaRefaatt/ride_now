@@ -37,17 +37,21 @@ class SettingsScreen extends StatelessWidget {
             settingsItems(
               text: S().email,
               onTap: () {},
-              returnedValue: SharedPref.getString(key: MySharedKeys.email),
+              returnedValue:
+                  SharedPref.getString(key: MySharedKeys.email) ?? "",
             ),
             settingsItems(
               text: S().appLanguage,
               onTap: () => _showBottomSheet(context, S().language),
-              returnedValue: SharedPref.getString(key: MySharedKeys.currentLanguage),
+              returnedValue:
+                  SharedPref.getString(key: MySharedKeys.currentLanguage) ??
+                      "en",
             ),
             settingsItems(
               text: S().appTheme,
               onTap: () => _showBottomSheet(context, S().theme),
-              returnedValue: SharedPref.getString(key: MySharedKeys.theme),
+              returnedValue:
+                  SharedPref.getString(key: MySharedKeys.theme) ?? "Light",
             ),
             AppButton(
               text: S().logout,
@@ -80,7 +84,7 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              returnedValue ?? "",
+              returnedValue!,
               style: TextStyles.font14grayRegular,
             ),
             Icon(
