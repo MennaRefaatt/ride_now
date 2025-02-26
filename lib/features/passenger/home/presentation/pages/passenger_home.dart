@@ -30,6 +30,7 @@ class _PassengerHomeState extends State<PassengerHome> {
 
   final homeCubit = HomeCubit(homeRepoBase: sl());
   final locationCubit = LocationCubit(sl(), sl(), sl());
+  final notificationsCubit = NotificationsCubit(sl());
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -39,6 +40,9 @@ class _PassengerHomeState extends State<PassengerHome> {
         ),
         BlocProvider(
           create: (context) => homeCubit..getCategoriesAndTrips(),
+        ),
+        BlocProvider(
+          create: (context) => notificationsCubit,
         ),
       ],
       child: Scaffold(

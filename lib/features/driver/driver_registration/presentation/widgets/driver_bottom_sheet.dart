@@ -37,6 +37,7 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
       builder: (context, state) {
         List<dynamic> items = [];
@@ -61,16 +62,16 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
                   Expanded(
                     child: Text(
                       _getTitle(),
-                      style: TextStyles.font18BlackRegular,
+                      style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
                       textAlign: TextAlign.center,
                     ),
                   ),
                   CircleAvatar(
                     radius: 15.r,
-                    backgroundColor: AppColors.semiGrey.withOpacity(0.2),
+                    backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
                     child: InkWell(
                       onTap: () => Navigator.pop(context),
-                      child: Icon(CupertinoIcons.xmark, size: 20.sp),
+                      child: Icon(CupertinoIcons.xmark, size: 20.sp,color: theme.brightness == Brightness.dark ? Colors.white : Colors.black,),
                     ),
                   ),
                 ],
@@ -105,7 +106,7 @@ class _DriverBottomSheetState extends State<DriverBottomSheet> {
                       )
                           : null,
 
-                      title: Text(item.name),
+                      title: Text(item.name, style: theme.brightness == Brightness.dark ? TextStyles.font14WhiteRegular : TextStyles.font14BlackRegular),
                       onTap: () {
                         widget.controller.text = item.name;
                         Navigator.pop(context);

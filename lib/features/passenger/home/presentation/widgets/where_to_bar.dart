@@ -40,6 +40,7 @@ class _WhereToBarState extends State<WhereToBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocConsumer<LocationCubit, LocationState>(
       listener: (context, state) {
         if (state is LocationLoaded) {
@@ -62,7 +63,9 @@ class _WhereToBarState extends State<WhereToBar> {
             : 'Select a location';
         Color backgroundColor = widget.cubit.fromController.text.isNotEmpty
             ? Colors.transparent
-            : Colors.grey.shade200;
+            : theme.brightness == Brightness.dark
+                ? Colors.grey.shade500
+                : Colors.grey.shade200;
 
         disappear = widget.cubit.toController.text.isNotEmpty;
 
@@ -120,8 +123,11 @@ class _WhereToBarState extends State<WhereToBar> {
                   child: AppTextFormField(
                     controller: widget.cubit.toController,
                     borderRadius: BorderRadius.circular(15.r),
-                    backgroundColor:
-                        disappear ? backgroundColor : Colors.grey.shade200,
+                    backgroundColor: disappear
+                        ? backgroundColor
+                        : theme.brightness == Brightness.dark
+                            ? Colors.grey.shade500
+                            : Colors.grey.shade200,
                     borderColor: Colors.transparent,
                     isFilled: true,
                     withHint: true,
@@ -139,9 +145,10 @@ class _WhereToBarState extends State<WhereToBar> {
                   ),
                 ),
                 Directionality(
-                  textDirection: Localizations.localeOf(context).languageCode == 'ar'
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
+                  textDirection:
+                      Localizations.localeOf(context).languageCode == 'ar'
+                          ? TextDirection.rtl
+                          : TextDirection.ltr,
                   child: LastTripsListView(
                     lastTrips: widget.lastTrips,
                     cubit: widget.cubit,

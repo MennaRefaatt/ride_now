@@ -24,6 +24,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => homeCubit..getTrips(),
       child: Scaffold(
@@ -51,7 +52,9 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                           padding: EdgeInsets.all(10.sp),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20.r),
-                            color: AppColors.primary.withValues(alpha: 0.1),
+                            color: theme.brightness == Brightness.light
+                                ? AppColors.primary.withValues(alpha: 0.1)
+                                : AppColors.primary.withValues(alpha: 0.3),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +73,9 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                   Expanded(
                                     child: Text(
                                       "From: ${uniqueTrips[index].from}",
-                                      style: TextStyles.font18BlackBold,
+                                      style: theme.brightness == Brightness.light
+                                          ? TextStyles.font18BlackBold
+                                          : TextStyles.font18WhiteBold,
                                     ),
                                   ),
                                 ],
@@ -88,22 +93,30 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                                   Expanded(
                                     child: Text(
                                       "To: ${uniqueTrips[index].to}",
-                                      style: TextStyles.font18BlackBold,
+                                      style: theme.brightness == Brightness.light
+                                          ? TextStyles.font18BlackBold
+                                          : TextStyles.font18WhiteBold,
                                     ),
                                   ),
                                 ],
                               ),
                               Text(
                                 "Date: ${uniqueTrips[index].dateTime.day}/${uniqueTrips[index].dateTime.month}/${uniqueTrips[index].dateTime.year}",
-                                style: TextStyles.font18BlackRegular,
+                                style: theme.brightness == Brightness.light
+                                    ? TextStyles.font18BlackRegular
+                                    : TextStyles.font18WhiteRegular,
                               ),
                               Text(
                                 "Time: ${uniqueTrips[index].dateTime.hour}:${uniqueTrips[index].dateTime.minute}",
-                                style: TextStyles.font18BlackRegular,
+                                style: theme.brightness == Brightness.light
+                                    ? TextStyles.font18BlackRegular
+                                    : TextStyles.font18WhiteRegular,
                               ),
                               Text(
                                 "Cost: ${uniqueTrips[index].price.split(".")[0].replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} ${uniqueTrips[index].paymentMethod}",
-                                style: TextStyles.font18BlackRegular,
+                                style: theme.brightness == Brightness.light
+                                    ? TextStyles.font18BlackRegular
+                                    : TextStyles.font18WhiteRegular,
                               ),
                             ],
                           ),

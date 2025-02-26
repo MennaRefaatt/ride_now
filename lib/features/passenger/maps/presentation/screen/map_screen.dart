@@ -37,6 +37,16 @@ class _MapScreenState extends State<MapScreen> {
       Future.microtask(() => context.read<LocationCubit>().fetchUserLocation());
     }
   }
+  void _onMapCreated(GoogleMapController controller) async {
+   _mapController = controller;
+    final theme = Theme.of(context);
+
+    if (theme.brightness == Brightness.dark) {
+      String style = await DefaultAssetBundle.of(context)
+          .loadString('assets/map_styles/dark_map_style.json');
+      _mapController.setMapStyle(style);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +102,7 @@ class _MapScreenState extends State<MapScreen> {
                             target: _selectedLocation ?? position,
                             zoom: 15,
                           ),
-                          onMapCreated: (controller) =>
-                              _mapController = controller,
+                          onMapCreated: _onMapCreated,
                           zoomControlsEnabled: false,
                           markers: _selectedLocation != null
                               ? {

@@ -12,8 +12,9 @@ class AppTheme {
     dividerTheme: DividerThemeData(
       color: Colors.grey.shade200,
     ),
-    colorScheme: const ColorScheme.light(
-      surfaceTint: Colors.white,
+    colorScheme: ColorScheme.light(
+      primary: AppColors.primary,
+      onSurface: Colors.black87,
     ),
     progressIndicatorTheme:
         const ProgressIndicatorThemeData(color: AppColors.primary),
@@ -27,9 +28,9 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: Colors.white,
     textTheme: TextTheme(
-      titleSmall: TextStyles.font12primaryBold,
-      titleMedium: TextStyles.font14primaryBold,
-      titleLarge: TextStyles.font18primaryBold,
+      titleSmall: TextStyles.font12WhiteRegular,
+      titleMedium: TextStyles.font14WhiteMedium,
+      titleLarge: TextStyles.font18WhiteBold,
       bodySmall: TextStyles.font12primaryRegular,
       bodyMedium: TextStyles.font14primaryRegular,
       bodyLarge: TextStyles.font18primaryRegular,
@@ -39,7 +40,11 @@ class AppTheme {
       headlineSmall: TextStyles.font12primaryMedium,
       headlineMedium: TextStyles.font14primaryMedium,
       headlineLarge: TextStyles.font18primaryMedium,
+      displaySmall: TextStyles.font14WhiteRegular,
+      displayMedium: TextStyles.font18WhiteRegular,
+      displayLarge: TextStyles.font34WhiteMedium,
     ),
+
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -51,8 +56,9 @@ class AppTheme {
     dividerTheme: DividerThemeData(
       color: Colors.grey.shade800,
     ),
-    colorScheme: const ColorScheme.dark(
-      surfaceTint: AppColors.black,
+    colorScheme: ColorScheme.dark(
+      primary: AppColors.primary,
+      onSurface: Colors.white70,
     ),
     splashColor: Colors.transparent,
     primaryColor: Colors.white,

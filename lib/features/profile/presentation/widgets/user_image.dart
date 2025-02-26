@@ -6,13 +6,14 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
 import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../core/theming/styles.dart';
 import '../../../../generated/l10n.dart';
 
 class UserImage extends StatefulWidget {
   const UserImage({super.key, required this.isChanged});
-final bool isChanged;
+  final bool isChanged;
   @override
   State<UserImage> createState() => _UserImageState();
 }
@@ -45,8 +46,10 @@ class _UserImageState extends State<UserImage> {
     String userId = SharedPref.getString(key: MySharedKeys.userId) ?? "";
 
     if (userId.isNotEmpty) {
-      DocumentSnapshot userDoc =
-      await FirebaseFirestore.instance.collection('users').doc(userId).get();
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get();
 
       if (userDoc.exists) {
         String? photoUrl = userDoc['photoUrl'];
@@ -60,6 +63,7 @@ class _UserImageState extends State<UserImage> {
       }
     }
   }
+
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final pickedFile = await showDialog<XFile?>(
@@ -78,7 +82,7 @@ class _UserImageState extends State<UserImage> {
             TextButton(
               onPressed: () async {
                 final file =
-                await picker.pickImage(source: ImageSource.gallery);
+                    await picker.pickImage(source: ImageSource.gallery);
                 Navigator.pop(context, file);
               },
               child: Text(S().gallery),
@@ -97,7 +101,6 @@ class _UserImageState extends State<UserImage> {
     }
   }
 
-  /// ✅ Uploads the selected image to Firebase Storage
   Future<void> _uploadImage() async {
     try {
       if (_imageFile == null) return;
@@ -116,7 +119,6 @@ class _UserImageState extends State<UserImage> {
     }
   }
 
-  /// ✅ Update Firestore with the new image URL
   Future<void> _updateUserProfile(String imageUrl) async {
     String userId = SharedPref.getString(key: MySharedKeys.userId) ?? "";
 
@@ -132,7 +134,7 @@ class _UserImageState extends State<UserImage> {
   @override
   Widget build(BuildContext context) {
     ImageProvider imageProvider;
-
+    final theme = Theme.of(context);
     if (_imageFile != null) {
       imageProvider = FileImage(_imageFile!);
     } else if (_downloadUrl != null &&
@@ -148,7 +150,9 @@ class _UserImageState extends State<UserImage> {
         margin: EdgeInsets.all(10.sp),
         padding: EdgeInsets.all(10.sp),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.brightness == Brightness.dark
+              ? Colors.black
+              : Colors.white,
           borderRadius: BorderRadius.circular(30.r),
         ),
         child: Row(
@@ -158,16 +162,17 @@ class _UserImageState extends State<UserImage> {
               backgroundImage: imageProvider,
               child: (_imageFile == null && _downloadUrl == null)
                   ? Text(
-                "U",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
+                      "U",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
                   : null,
             ),
-            SizedBox(width: 10),
-            Text(S().addProfilePicture, style: TextStyles.font18BlackBold),
+            horizontalSpacing(5),
+            Text(S().addProfilePicture, style: theme.brightness == Brightness.dark
+                ?  TextStyles.font18WhiteBold:TextStyles.font18BlackBold),
           ],
         ),
       ),

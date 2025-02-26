@@ -22,6 +22,7 @@ class DrawerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       child: AnimatedContainer(
@@ -40,11 +41,15 @@ class DrawerItem extends StatelessWidget {
                 ? child!
                 : Icon(icon, color: isActive ? AppColors.primary : Colors.grey),
             horizontalSpacing(10.w),
-            Text(title,
-                style: isActive
-                    ? TextStyles.font18BlackRegular
-                        .copyWith(color: AppColors.primary)
-                    : TextStyles.font18BlackRegular),
+            Text(
+              title,
+              style: isActive
+                  ? TextStyles.font18BlackRegular
+                      .copyWith(color: AppColors.primary)
+                  : theme.brightness == Brightness.light
+                      ? TextStyles.font18BlackRegular
+                      : TextStyles.font18WhiteRegular,
+            ),
           ],
         ),
       ),

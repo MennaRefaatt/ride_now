@@ -2,14 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
-import 'package:ride_now/core/services/routing/routing_endpoints.dart';
-import 'package:ride_now/features/passenger/check_out/presentation/check_out_args.dart';
+import 'package:ride_now/features/passenger/home/presentation/widgets/order_button.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../core/theming/styles.dart';
-import '../../../../../core/utils/app_button.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/trip/data/models/trip_model.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
@@ -54,6 +50,7 @@ class _HomeBodyState extends State<HomeBody> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Align(
       alignment: Alignment.bottomCenter,
       child: AnimatedContainer(
@@ -67,7 +64,9 @@ class _HomeBodyState extends State<HomeBody> {
         width: double.infinity,
         padding: EdgeInsets.all(15.sp),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.brightness == Brightness.light
+              ? Colors.white
+              : Colors.black,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(40.r),
             topLeft: Radius.circular(40.r),
@@ -133,44 +132,10 @@ class _HomeBodyState extends State<HomeBody> {
                             return SizedBox();
                           },
                         ),
-                        Expanded(
-                          child: AppButton(
-                            text: S().order,
-                            textStyle: TextStyles.font18BlackBold,
-                            onPressed: () async {
-                              if (widget.homeCubit.fromController.text.isEmpty ||
-                                  widget.homeCubit.toController.text.isEmpty ||
-                                  widget.homeCubit.fromLatLng == null ||
-                                  widget.homeCubit.toLatLng == null) {
-                                openEnterYourRouteFromOrderButton(context);
-                              } else {
-                                final locationState = context.read<LocationCubit>().state;
-                                if (locationState is LocationLoaded) {
-                                  widget.homeCubit.fromLatLng = LatLng(
-                                    locationState.position.latitude,
-                                    locationState.position.longitude,
-                                  );
-                                }
-
-                                safePrint("From: ${widget.homeCubit.fromLatLng}, To: ${widget.homeCubit.toLatLng}");
-
-                                await Navigator.pushNamed(
-                                    context,
-                                    RoutingEndpoints.checkOut,
-                                    arguments: CheckOutArgs(
-                                      fromAddress: widget.homeCubit.fromController.text,
-                                      toAddress: widget.homeCubit.toController.text,
-                                      fromLatLng: widget.homeCubit.fromLatLng!,
-                                      toLatLng: widget.homeCubit.toLatLng!,
-                                      selectedCategory: widget.homeCubit.selectedCategory!,
-                                    )
-                                );
-                              }
-                            },
-                            backgroundColor: AppColors.primary,
-                            width: double.infinity,
-                          ),
-                        ),
+                        OrderButton(
+                            homeCubit: widget.homeCubit,
+                            openEnterYourRouteFromOrderButton:
+                                openEnterYourRouteFromOrderButton)
                       ],
                     )
                   ],

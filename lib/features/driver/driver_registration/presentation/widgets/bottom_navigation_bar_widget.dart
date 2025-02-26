@@ -29,6 +29,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(15.0.sp),
       child: Row(
@@ -40,10 +41,12 @@ class BottomNavigationBarWidget extends StatelessWidget {
               children: [
                 Text(
                   "${currentPage + 1} of ${onboardingData.length}",
-                  style: TextStyles.font24BlackBold,
+                  style: theme.brightness == Brightness.dark
+                      ? TextStyles.font24WhiteBold
+                      : TextStyles.font24BlackBold,
                   textDirection: TextDirection.ltr,
                 ),
-                verticalSpacing(10.h),
+                verticalSpacing(10),
                 AnimatedBuilder(
                   animation: progressAnimation,
                   builder: (context, child) {
@@ -51,8 +54,9 @@ class BottomNavigationBarWidget extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: LinearProgressIndicator(
                         value: progressAnimation.value,
-                        backgroundColor:
-                            AppColors.semiGrey.withValues(alpha: 0.2),
+                        backgroundColor: theme.brightness == Brightness.dark
+                            ? AppColors.semiGrey.withValues(alpha: 0.6)
+                            : AppColors.semiGrey.withValues(alpha: 0.2),
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(10.r),
                         minHeight: 10.h,
@@ -73,7 +77,12 @@ class BottomNavigationBarWidget extends StatelessWidget {
                 );
               },
               elevation: 0,
-              child: const Icon(Icons.arrow_back_ios_new_outlined),
+              child: Icon(
+                Icons.arrow_back_ios_new_outlined,
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
             ),
           Align(
             alignment: Alignment.bottomRight,

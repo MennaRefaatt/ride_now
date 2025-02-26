@@ -12,7 +12,8 @@ import '../../../../../core/components/app_icon.dart';
 import '../../../../../generated/l10n.dart';
 
 class RideCategories extends StatefulWidget {
-  const RideCategories({super.key, required this.categories, required this.onCategorySelected});
+  const RideCategories(
+      {super.key, required this.categories, required this.onCategorySelected});
   final List<CategoryModel> categories;
   final ValueChanged<String> onCategorySelected;
 
@@ -61,6 +62,7 @@ class RideCategoriesState extends State<RideCategories> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.15,
       child: Stack(
@@ -118,9 +120,13 @@ class RideCategoriesState extends State<RideCategories> {
                       ),
                       Text(
                         widget.categories[index].name,
-                        style: TextStyles.font24BlackBold.copyWith(
-                          fontSize: 14.sp,
-                        ),
+                        style: theme.brightness == Brightness.dark
+                            ? TextStyles.font18WhiteBold.copyWith(
+                                fontSize: 14.sp,
+                              )
+                            : TextStyles.font24BlackBold.copyWith(
+                                fontSize: 14.sp,
+                              ),
                       ),
                     ],
                   ),

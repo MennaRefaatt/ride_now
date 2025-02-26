@@ -32,6 +32,7 @@ class PickImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: onTap,
       splashColor: Colors.transparent,
@@ -61,7 +62,7 @@ class PickImage extends StatelessWidget {
             height: 50.h,
             child: Text(
               formatText(text),
-              style: TextStyles.font14BlackRegular,
+              style: theme.brightness == Brightness.dark ? TextStyles.font14WhiteRegular : TextStyles.font14BlackRegular,
               textAlign: TextAlign.center,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,

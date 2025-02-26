@@ -38,53 +38,56 @@ class AppTextFormField extends StatelessWidget {
   final bool? withShadow;
   final Color? controllerTextColor;
   final String? errorText;
-  final  List<TextInputFormatter>? inputFormatters;
+  final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onFieldSubmitted;
-  const AppTextFormField({
-    super.key,
-    this.contentPadding,
-    this.focusedBorder,
-    this.enabledBorder,
-    this.inputTextStyle,
-    this.hintStyle,
-    this.hintText,
-    this.isObscureText,
-    this.suffixIcon,
-    this.backgroundColor,
-    this.controller,
-    this.validator,
-    this.onChanged,
-    this.withTitle,
-    this.initialValue,
-    this.title,
-    this.minLines = 1,
-    this.maxLines = 1,
-    this.maxLength,
-    this.keyboardType,
-    this.textInputAction,
-    this.borderRadius,
-    this.isFilled,
-    this.enable,
-    this.focusNode,
-    this.borderColor,
-    this.withHint,
-    this.titleStyle,
-    this.prefixIcon,
-    this.withShadow = false,
-    this.controllerTextColor,
-    this.errorText, this.inputFormatters,
-    this.onFieldSubmitted
-  });
+  const AppTextFormField(
+      {super.key,
+      this.contentPadding,
+      this.focusedBorder,
+      this.enabledBorder,
+      this.inputTextStyle,
+      this.hintStyle,
+      this.hintText,
+      this.isObscureText,
+      this.suffixIcon,
+      this.backgroundColor,
+      this.controller,
+      this.validator,
+      this.onChanged,
+      this.withTitle,
+      this.initialValue,
+      this.title,
+      this.minLines = 1,
+      this.maxLines = 1,
+      this.maxLength,
+      this.keyboardType,
+      this.textInputAction,
+      this.borderRadius,
+      this.isFilled,
+      this.enable,
+      this.focusNode,
+      this.borderColor,
+      this.withHint,
+      this.titleStyle,
+      this.prefixIcon,
+      this.withShadow = false,
+      this.controllerTextColor,
+      this.errorText,
+      this.inputFormatters,
+      this.onFieldSubmitted});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (withTitle == true)
           Text(title ?? '',
-              style: TextStyles.font14BlackRegular
-                  .copyWith(fontWeight: FontWeight.bold)),
+              style: theme.brightness == Brightness.light
+                  ? TextStyles.font14BlackRegular
+                      .copyWith(fontWeight: FontWeight.bold)
+                  : TextStyles.font14WhiteRegular),
         verticalSpacing(10.h),
         Container(
           decoration: BoxDecoration(
@@ -92,11 +95,11 @@ class AppTextFormField extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: withShadow == true
-                      ? Colors.grey.withOpacity(0.5)
+                      ? Colors.grey.withValues(alpha: 0.5)
                       : Colors.transparent,
                   spreadRadius: 1,
                   blurRadius: 10,
-                  offset: const Offset(0, 3), // changes position of shadow
+                  offset: const Offset(0, 3),
                 ),
               ]),
           child: TextFormField(
@@ -156,7 +159,10 @@ class AppTextFormField extends StatelessWidget {
                 ),
                 borderRadius: borderRadius ?? BorderRadius.circular(30.0.r),
               ),
-              hintStyle: hintStyle ?? TextStyles.font14grayRegular,
+              hintStyle: hintStyle ??
+                  (theme.brightness == Brightness.light
+                      ? TextStyles.font14grayRegular
+                      : TextStyles.font14WhiteRegular),
               hintText: withHint == true ? hintText : null,
               suffixIcon: suffixIcon,
               fillColor: backgroundColor ?? Colors.transparent,

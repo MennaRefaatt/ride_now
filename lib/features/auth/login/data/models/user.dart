@@ -18,19 +18,18 @@ class UserModel {
   final String? deviceToken;
   final RatingModel? rating;
   final int ratingGivenCount;
-  UserModel({
-    required this.phoneNumber,
-    required this.uid,
-    required this.name,
-    required this.email,
-    required this.city,
-    required this.type,
-    required this.photoUrl,
-    required this.currentTripId,
-    required this.deviceToken,
-    this.rating,
-    this.ratingGivenCount = 0
-  });
+  UserModel(
+      {required this.phoneNumber,
+      required this.uid,
+      required this.name,
+      required this.email,
+      required this.city,
+      required this.type,
+      required this.photoUrl,
+      required this.currentTripId,
+      required this.deviceToken,
+      this.rating,
+      this.ratingGivenCount = 0});
 
   factory UserModel.fromDocument(DocumentSnapshot doc) {
     return UserModel.fromJson(doc.data() as Map<String, dynamic>);
@@ -38,7 +37,22 @@ class UserModel {
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      uid: json['uid'] as String,
+      name: json['name'] as String,
+      email: json['email'] as String,
+      phoneNumber: json['phoneNumber'] as String,
+      photoUrl: json['photoUrl'] as String,
+      city: json['city'] as String?,
+      type: json['type'] as String?,
+      currentTripId: json['currentTripId'] as String?,
+      deviceToken: json['deviceToken'] as String?,
+      rating:
+          json['rating'] != null ? RatingModel.fromJson(json['rating']) : null,
+      ratingGivenCount: json['ratingGivenCount'] != null
+          ? json['ratingGivenCount'] as int
+          : 0,
+    );
+  }
 }
-

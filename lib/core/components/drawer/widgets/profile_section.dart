@@ -12,14 +12,17 @@ class ProfileSection extends StatelessWidget {
   final String pictureUrl;
   final String userName;
 
-  const ProfileSection({required this.pictureUrl, required this.userName, super.key});
+  const ProfileSection(
+      {required this.pictureUrl, required this.userName, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     ImageProvider? imageProvider;
 
     if (pictureUrl.isNotEmpty) {
-      if (Uri.tryParse(pictureUrl)?.hasAbsolutePath == true && pictureUrl.startsWith('http')) {
+      if (Uri.tryParse(pictureUrl)?.hasAbsolutePath == true &&
+          pictureUrl.startsWith('http')) {
         imageProvider = NetworkImage(pictureUrl);
       } else if (File(pictureUrl).existsSync()) {
         imageProvider = FileImage(File(pictureUrl));
@@ -31,7 +34,8 @@ class ProfileSection extends StatelessWidget {
       children: [
         verticalSpacing(20),
         InkWell(
-          onTap: () => Navigator.pushReplacementNamed(context, RoutingEndpoints.profile),
+          onTap: () =>
+              Navigator.pushReplacementNamed(context, RoutingEndpoints.profile),
           child: Row(
             children: [
               CircleAvatar(
@@ -39,9 +43,9 @@ class ProfileSection extends StatelessWidget {
                 backgroundImage: imageProvider,
                 child: imageProvider == null
                     ? Text(
-                  userName.isNotEmpty ? userName[0] : '',
-                  style: TextStyles.font18BlackRegular,
-                )
+                        userName.isNotEmpty ? userName[0] : '',
+                        style: TextStyles.font18BlackRegular,
+                      )
                     : null,
               ),
               horizontalSpacing(10),
@@ -50,12 +54,14 @@ class ProfileSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      SharedPref.getString(key: MySharedKeys.userName) ?? 'Unknown User',
-                      style: TextStyles.font14BlackRegular,
+                      SharedPref.getString(key: MySharedKeys.userName) ??
+                          'Unknown User',
+                      style: theme.textTheme.bodyLarge!,
                     ),
                     Text(
-                      SharedPref.getString(key: MySharedKeys.email) ?? 'No Email',
-                      style: TextStyles.font12BlackRegular,
+                      SharedPref.getString(key: MySharedKeys.email) ??
+                          'No Email',
+                      style: theme.brightness==Brightness.light? TextStyles.font12BlackRegular:TextStyles.font12WhiteRegular,
                     ),
                   ],
                 ),

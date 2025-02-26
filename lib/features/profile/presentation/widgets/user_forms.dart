@@ -96,11 +96,14 @@ class _UserFormsState extends State<UserForms> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       margin: EdgeInsets.all(10.sp),
       padding: EdgeInsets.all(10.sp),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.brightness == Brightness.dark
+            ? AppColors.black
+            : Colors.white,
         borderRadius: BorderRadius.circular(25.r),
       ),
       child: Column(
@@ -134,8 +137,9 @@ class _UserFormsState extends State<UserForms> {
                 }
                 return null;
               },
-              controllerTextColor:
-                  missingPhoneMessage != null ? AppColors.red : AppColors.primary,
+              controllerTextColor: missingPhoneMessage != null
+                  ? AppColors.red
+                  : AppColors.primary,
               borderColor: missingPhoneMessage != null
                   ? AppColors.red
                   : Colors.transparent),
