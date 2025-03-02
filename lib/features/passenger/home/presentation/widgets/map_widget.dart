@@ -32,18 +32,16 @@ class _MapWidgetState extends State<MapWidget> {
   void _onMapStop() {
     widget.updateHiddenState(false);
   }
+  void _onMapCreated(GoogleMapController controller) async {
+    mapController = controller;
+    final theme = Theme.of(context);
 
-  // void _updateCameraPosition(LatLng position) {
-  //   if (mapController != null) {
-  //     final cameraPosition = CameraPosition(
-  //       target: position,
-  //       zoom: 18,
-  //     );
-  //     mapController.animateCamera(
-  //       CameraUpdate.newCameraPosition(cameraPosition),
-  //     );
-  //   }
-  // }
+    if (theme.brightness == Brightness.dark) {
+      String style = await DefaultAssetBundle.of(context)
+          .loadString('assets/map_styles/dark_map_style.json');
+      mapController.setMapStyle(style);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +80,6 @@ class _MapWidgetState extends State<MapWidget> {
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mapController != null && selectedLocation != null) {
-           // _updateCameraPosition(selectedLocation!);
             widget.homeCubit.fromController.text = address;
             widget.homeCubit.fromLatLng = selectedLocation;
           }
@@ -103,7 +100,7 @@ class _MapWidgetState extends State<MapWidget> {
                     target: position,
                     zoom: 18,
                   ),
-                  onMapCreated: (controller) => mapController = controller,
+                  onMapCreated: _onMapCreated,
                   markers: {
                     Marker(
                       markerId: const MarkerId('selectedLocation'),
@@ -114,7 +111,6 @@ class _MapWidgetState extends State<MapWidget> {
                       ),
                     ),
                   },
-                  //onCameraMove: (position) => _updateCameraPosition(position.target),
                   onTap: (LatLng tappedLocation) {
                     context.read<LocationCubit>().setMarker(tappedLocation);
                     widget.homeCubit.fromLatLng = tappedLocation;

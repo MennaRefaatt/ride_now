@@ -70,7 +70,7 @@ class PhoneField extends ConsumerWidget {
         else if (userDataFormValidators.phoneController.text.isEmpty)
           Center(
             child: AppButton(
-                text: "S().next",
+                text: S().next,
                 backgroundColor: AppColors.primary,
                 onPressed: () async {
                   final phoneNumber = phoneNum;

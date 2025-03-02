@@ -42,7 +42,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: DefaultAppBar(
             text: S().profile,
             withDivider: false,
-            backgroundColor: Colors.white,
           ),
         ),
         drawer: DrawerItems(),

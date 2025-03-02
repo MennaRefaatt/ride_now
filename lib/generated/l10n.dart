@@ -2814,6 +2814,51 @@ class S {
       args: [],
     );
   }
+
+  /// `Submit`
+  String get submit {
+    return Intl.message('Submit', name: 'submit', desc: '', args: []);
+  }
+
+  /// `Please Select Rating`
+  String get pleaseSelectRating {
+    return Intl.message(
+      'Please Select Rating',
+      name: 'pleaseSelectRating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Thank you for rating`
+  String get thankYouForRating {
+    return Intl.message(
+      'Thank you for rating',
+      name: 'thankYouForRating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave Comment`
+  String get leaveComment {
+    return Intl.message(
+      'Leave Comment',
+      name: 'leaveComment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rate your driver`
+  String get rateYourDriver {
+    return Intl.message(
+      'Rate your driver',
+      name: 'rateYourDriver',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

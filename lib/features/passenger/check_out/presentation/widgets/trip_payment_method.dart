@@ -51,14 +51,17 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
     );
   }
 
-  Widget _buildPaymentOption(BuildContext context, {required PaymentMethod method}) {
+  Widget _buildPaymentOption(BuildContext context,
+      {required PaymentMethod method}) {
     return Container(
       color: widget.selectedPaymentMethod == method.name
           ? AppColors.primary.withValues(alpha: 0.2)
           : Colors.transparent,
       child: ListTile(
         leading: Icon(
-          method == PaymentMethod.cash ? Icons.wallet : CupertinoIcons.creditcard,
+          method == PaymentMethod.cash
+              ? Icons.wallet
+              : CupertinoIcons.creditcard,
           color: widget.selectedPaymentMethod == method.name
               ? AppColors.primary
               : AppColors.semiGrey,
@@ -76,7 +79,9 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: AppColors.primary,
                 content: Text("Processing payment...")));
-            String paymentStatus = await _processStripePayment(widget.cost, widget.tripId,context: context);
+            String paymentStatus = await _processStripePayment(
+                widget.cost, widget.tripId,
+                context: context);
             widget.tripCubit.updatePaymentStatus(paymentStatus);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.orange, content: Text(paymentStatus)));
@@ -94,7 +99,7 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
       {required BuildContext context}) async {
     try {
       String paymentStatus =
-      await StripePaymentManager.makePayment(amount, "EGP", tripId);
+          await StripePaymentManager.makePayment(amount, "EGP", tripId);
       widget.tripCubit.updatePaymentStatus(paymentStatus);
 
       if (paymentStatus == StripePaymentStatus.holding.name) {
@@ -114,13 +119,15 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => _showPaymentMethodSheet(context),
       child: Container(
         padding: EdgeInsets.all(15.sp),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color:
+              theme.brightness == Brightness.dark ? Colors.black : Colors.white,
           borderRadius: BorderRadius.circular(30.r),
         ),
         child: Row(
@@ -130,8 +137,11 @@ class _TripPaymentMethodState extends State<TripPaymentMethod> {
             Expanded(
               child: Text(
                 widget.selectedPaymentMethod,
-                style: TextStyles.font18BlackRegular
-                    .copyWith(fontWeight: FontWeight.bold),
+                style: theme.brightness == Brightness.dark
+                    ? TextStyles.font18WhiteRegular
+                        .copyWith(fontWeight: FontWeight.bold)
+                    : TextStyles.font18BlackRegular
+                        .copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             Icon(CupertinoIcons.right_chevron),

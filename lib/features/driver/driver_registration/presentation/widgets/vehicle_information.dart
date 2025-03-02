@@ -60,16 +60,21 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(15.sp),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(S().vehicleInformation, style: TextStyles.font24BlackBold),
+            Text(
+              S().vehicleInformation,
+              style: theme.brightness == Brightness.dark
+                  ? TextStyles.font24WhiteBold
+                  : TextStyles.font24BlackBold,
+            ),
             verticalSpacing(20),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -81,8 +86,10 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                     image: widget.cubit.vehicleImage ?? '',
                     onTap: () async {
                       await widget.cubit.pickImage(ImageType.vehicleImage);
-                      if (widget.cubit.vehicleImage != null && widget.cubit.vehicleImage!.isNotEmpty) {
-                        String extractedPlate = await scanPlateNumber(widget.cubit.vehicleImage!);
+                      if (widget.cubit.vehicleImage != null &&
+                          widget.cubit.vehicleImage!.isNotEmpty) {
+                        String extractedPlate =
+                            await scanPlateNumber(widget.cubit.vehicleImage!);
                         setState(() {
                           _plateNumberController.text = extractedPlate;
                           widget.cubit.updateVehicleInfo(
@@ -92,8 +99,10 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                             color: _colorController.text,
                             productionYear: _productionYearController.text,
                             vehicleImage: widget.cubit.vehicleImage ?? '',
-                            vehicleRegistrationCertificate: widget.cubit.registrationCertificate ?? '',
-                            backOfCertificate: widget.cubit.backOfCertificate ?? '',
+                            vehicleRegistrationCertificate:
+                                widget.cubit.registrationCertificate ?? '',
+                            backOfCertificate:
+                                widget.cubit.backOfCertificate ?? '',
                           );
                         });
                       }
@@ -119,27 +128,6 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                 ],
               ),
             ),
-            // BlocBuilder<DriverRegistrationCubit, DriverRegistrationState>(
-            //   builder: (context, state) {
-            //     if (state is DriverRegistrationDataFetched) {
-            //       return DropdownButton<String>(
-            //         value: _brandController.text.isNotEmpty ? _brandController.text : null,
-            //         items: state.brands
-            //             .map((brand) => DropdownMenuItem<String>(
-            //           value: brand.name,
-            //           child: Text(brand.name),
-            //         ))
-            //             .toList(),
-            //         onChanged: (value) {
-            //           setState(() {
-            //             _brandController.text = value!;
-            //           });
-            //         },
-            //       );
-            //     }
-            //     return CircularProgressIndicator();
-            //   },
-            // ),
             InkWell(
               onTap: () => _showBottomSheet(
                 context: context,
@@ -280,24 +268,30 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
                     return S().requiredField;
                   }
                   return null;
-                }),],
+                }),
+          ],
         ),
       ),
     );
   }
+
   Future<String> scanPlateNumber(String imagePath) async {
     final inputImage = InputImage.fromFilePath(imagePath);
     final textRecognizer = TextRecognizer();
     try {
-      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+      final RecognizedText recognizedText =
+          await textRecognizer.processImage(inputImage);
       String plateNumber = extractPlateNumber(recognizedText);
-      return plateNumber.isNotEmpty ? plateNumber : "لم يتم التعرف على رقم اللوحة";
+      return plateNumber.isNotEmpty
+          ? plateNumber
+          : "لم يتم التعرف على رقم اللوحة";
     } catch (e) {
       return "حدث خطأ أثناء المسح: $e";
     } finally {
       textRecognizer.close();
     }
   }
+
   String extractPlateNumber(RecognizedText recognizedText) {
     List<String> plateParts = [];
 
@@ -311,13 +305,15 @@ class _VehicleInformationPageState extends State<VehicleInformationPage> {
     // تجميع النص كما هو بدون أي تعديلات
     String plateNumber = plateParts.join(' ');
 
-    return plateNumber.isNotEmpty ? plateNumber : "لم يتم التعرف على رقم اللوحة";
+    return plateNumber.isNotEmpty
+        ? plateNumber
+        : "لم يتم التعرف على رقم اللوحة";
   }
+
   String convertNumbersToArabic(String input) {
     const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
     return input.replaceAllMapped(RegExp(r'[0-9]'), (match) {
       return arabicNumbers[int.parse(match.group(0)!)];
     });
   }
-
 }

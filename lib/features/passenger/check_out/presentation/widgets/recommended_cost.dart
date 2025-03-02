@@ -10,15 +10,18 @@ class RecommendedCost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     double cost = double.tryParse(costText) ?? 0.0;
-    String formattedCost =
-    (cost == cost.toInt()) ? cost.toInt().toString() : cost.toStringAsFixed(2);
+    String formattedCost = (cost == cost.toInt())
+        ? cost.toInt().toString()
+        : cost.toStringAsFixed(2);
 
     return Container(
       padding: EdgeInsets.all(15.sp),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color:
+            theme.brightness == Brightness.dark ? Colors.black : Colors.white,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30.r),
           bottomRight: Radius.circular(30.r),
@@ -29,7 +32,9 @@ class RecommendedCost extends StatelessWidget {
         children: [
           Text(
             S().theCostOfTheOrderWillBe,
-            style: TextStyles.font18BlackRegular,
+            style: theme.brightness == Brightness.dark
+                ? TextStyles.font18WhiteRegular
+                : TextStyles.font18BlackRegular,
           ),
           verticalSpacing(10.h),
           RichText(
@@ -43,7 +48,9 @@ class RecommendedCost extends StatelessWidget {
                 ),
                 TextSpan(
                   text: formattedCost,
-                  style: TextStyles.font32BlueBold.copyWith(color: Colors.black),
+                  style: theme.brightness == Brightness.dark
+                      ? TextStyles.font32BlueBold.copyWith(color: Colors.white)
+                      : TextStyles.font32BlueBold.copyWith(color: Colors.black),
                 ),
               ],
             ),
@@ -54,9 +61,17 @@ class RecommendedCost extends StatelessWidget {
               Icon(Icons.account_balance_wallet),
               horizontalSpacing(10.w),
               Text(S().recommendedFare,
-                  style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
+                  style: theme.brightness == Brightness.dark
+                      ? TextStyles.font18WhiteRegular
+                          .copyWith(fontWeight: FontWeight.bold)
+                      : TextStyles.font18BlackRegular
+                          .copyWith(fontWeight: FontWeight.bold)),
               Text(": $formattedCost EGP",
-                  style: TextStyles.font18BlackRegular.copyWith(fontWeight: FontWeight.bold)),
+                  style: theme.brightness == Brightness.dark
+                      ? TextStyles.font18WhiteRegular
+                          .copyWith(fontWeight: FontWeight.bold)
+                      : TextStyles.font18BlackRegular
+                          .copyWith(fontWeight: FontWeight.bold)),
             ],
           ),
         ],

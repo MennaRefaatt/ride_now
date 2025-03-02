@@ -5,9 +5,11 @@ class CheckOutArgs {
   final String toAddress;
   final LatLng fromLatLng;
   final LatLng toLatLng;
+  final String selectedCategory;
   CheckOutArgs(
       {required this.fromLatLng,
       required this.toLatLng,
       required this.fromAddress,
-      required this.toAddress});
+      required this.toAddress,
+      required this.selectedCategory});
 }

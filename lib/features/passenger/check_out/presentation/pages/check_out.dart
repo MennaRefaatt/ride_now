@@ -53,13 +53,14 @@ class _CheckOutState extends State<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => tripCubit,
       child: Scaffold(
         backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),
         appBar: AppBar(
-          title: Text(S().checkout, style: TextStyles.font24BlackBold),
-          backgroundColor: Colors.white,
+          title: Text(S().checkout, style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold),
+          backgroundColor: theme.brightness == Brightness.dark ? Colors.black : Colors.white,
           centerTitle: true,
           leading: Visibility(
             visible:
@@ -136,10 +137,11 @@ class _CheckOutState extends State<CheckOut> {
                         tripCubit.paymentStatus ==
                             StripePaymentStatus.holding.name)) {
                   return Container(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark ? Colors.black : Colors.white,
                     padding: EdgeInsets.all(15.sp),
                     child: CheckOutButtons(
                       tripCubit: tripCubit,
+                      selectedCategory: widget.args.selectedCategory,
                       fromAddress: widget.args.fromAddress,
                       toAddress: newPickedToAddress == true
                           ? newToAddress

@@ -6,8 +6,8 @@ import '../../../../../core/services/fcm/device_token_service.dart';
 import '../../domain/repositories/phone_repo_base.dart';
 import '../data_sources/firestore_service/firestore_param.dart';
 import '../data_sources/firestore_service/firestore_service.dart';
+import '../data_sources/local_data_source/local_data_source.dart';
 import '../data_sources/phone_auth_service/phone_auth_service.dart';
-import '../data_sources/remote_data_source/local_data_source.dart';
 import '../models/user.dart';
 
 class PhoneAuthRepositoryImpl implements PhoneAuthRepositoryBase {

@@ -15,6 +15,7 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
@@ -30,6 +31,7 @@ class SettingsScreen extends StatelessWidget {
             settingsItems(
               text: S().phone,
               onTap: () {},
+              theme: theme,
               returnedValue: SharedPref.getString(key: MySharedKeys.phone) == ""
                   ? S().missingPhoneNumber
                   : SharedPref.getString(key: MySharedKeys.phone),
@@ -37,17 +39,24 @@ class SettingsScreen extends StatelessWidget {
             settingsItems(
               text: S().email,
               onTap: () {},
-              returnedValue: SharedPref.getString(key: MySharedKeys.email),
+              theme: theme,
+              returnedValue:
+                  SharedPref.getString(key: MySharedKeys.email) ?? "",
             ),
             settingsItems(
+              theme: theme,
               text: S().appLanguage,
               onTap: () => _showBottomSheet(context, S().language),
-              returnedValue: SharedPref.getString(key: MySharedKeys.currentLanguage),
+              returnedValue:
+                  SharedPref.getString(key: MySharedKeys.currentLanguage) ??
+                      "en",
             ),
             settingsItems(
               text: S().appTheme,
+              theme: theme,
               onTap: () => _showBottomSheet(context, S().theme),
-              returnedValue: SharedPref.getString(key: MySharedKeys.theme),
+              returnedValue:
+                  SharedPref.getString(key: MySharedKeys.theme) ?? "Light",
             ),
             AppButton(
               text: S().logout,
@@ -64,6 +73,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget settingsItems({
     required String text,
+    required ThemeData theme,
     required VoidCallback onTap,
     String? returnedValue,
   }) {
@@ -76,11 +86,13 @@ class SettingsScreen extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: TextStyles.font18BlackRegular,
+                style: theme.brightness == Brightness.light
+                    ? TextStyles.font18BlackRegular
+                    : TextStyles.font18WhiteRegular,
               ),
             ),
             Text(
-              returnedValue ?? "",
+              returnedValue!,
               style: TextStyles.font14grayRegular,
             ),
             Icon(

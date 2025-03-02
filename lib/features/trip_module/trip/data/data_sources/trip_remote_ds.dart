@@ -125,6 +125,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
         estimatedTime: estimatedTime,
         moreThan4Passengers: tripModel.moreThan4Passengers,
         comment: tripModel.comment,
+        selectedCategory: tripModel.selectedCategory,
         driverData: DriverData(
           driverId: "",
           driverName: "",
@@ -314,7 +315,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           "🚀 Attempting to decline trip. Driver ID: $driverId, Trip ID: $tripId");
 
       final driverDocRef =
-      FirebaseFirestore.instance.collection('drivers').doc(driverId);
+          FirebaseFirestore.instance.collection('drivers').doc(driverId);
       final driverDoc = await driverDocRef.get();
 
       safePrint("📄 Retrieved Driver Document: ${driverDoc.data()}");

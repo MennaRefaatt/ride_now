@@ -100,7 +100,6 @@ class _WalletScreenState extends State<WalletScreen> {
                         controller: _amountController,
                         hintText: "Enter Amount",
                         withHint: true,
-                        hintStyle: TextStyles.font14BlackRegular,
                         backgroundColor:
                             AppColors.semiGrey.withValues(alpha: 0.2),
                         isFilled: true,

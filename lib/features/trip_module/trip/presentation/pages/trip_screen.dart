@@ -90,6 +90,7 @@ class _TripScreenState extends State<TripScreen> {
                         toLatLng: widget.args.tripTrackingArgs.toLatLng,
                         driverLatLng: driverLocation,
                         tripStatus: tripStatus,
+                        selectedCategory: widget.args.tripTrackingArgs.selectedCategory,
                       );
                       return Stack(
                         children: [

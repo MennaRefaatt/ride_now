@@ -65,6 +65,7 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                               toAddress: widget.cubit.toController.text,
                               fromLatLng: widget.cubit.fromLatLng!,
                               toLatLng: widget.cubit.toLatLng!,
+                              selectedCategory: widget.cubit.selectedCategory!,
                             ),
                           );
                         }
@@ -118,6 +119,7 @@ class _LastTripsListViewState extends State<LastTripsListView> {
                             toAddress: widget.cubit.toController.text,
                             fromLatLng: widget.cubit.fromLatLng!,
                             toLatLng: widget.cubit.toLatLng!,
+                            selectedCategory: widget.cubit.selectedCategory!,
                           ),
                         );
                       } else {

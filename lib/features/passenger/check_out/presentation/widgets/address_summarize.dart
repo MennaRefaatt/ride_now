@@ -84,12 +84,15 @@ class _AddressSummarizeState extends State<AddressSummarize> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Expanded(
       child: Container(
         padding: EdgeInsets.all(15.sp),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color:
+              theme.brightness == Brightness.dark ? Colors.black : Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30.r),
             topRight: Radius.circular(30.r),
@@ -106,10 +109,15 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                 Expanded(
                   child: Text(
                     widget.fromAddress,
-                    style: TextStyles.font18BlackRegular.copyWith(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    style: theme.brightness == Brightness.dark
+                        ? TextStyles.font18WhiteRegular.copyWith(
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : TextStyles.font18BlackRegular.copyWith(
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                   ),
                 ),
               ],
@@ -121,10 +129,15 @@ class _AddressSummarizeState extends State<AddressSummarize> {
                 Expanded(
                   child: Text(
                     widget.newToAddress,
-                    style: TextStyles.font18BlackRegular.copyWith(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    style: theme.brightness == Brightness.dark
+                        ? TextStyles.font18WhiteRegular.copyWith(
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          )
+                        : TextStyles.font18BlackRegular.copyWith(
+                            fontWeight: FontWeight.bold,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                   ),
                 ),
                 IconButton(

@@ -10,6 +10,11 @@ import 'package:ride_now/features/notifications/data/repositories/notification_r
 import 'package:ride_now/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:ride_now/features/privacy_policy/data/repositories/privacy_repo.dart';
 import 'package:ride_now/features/privacy_policy/domain/use_cases/privacy_use_case.dart';
+import 'package:ride_now/features/rating/data/repositories/rating_repo_impl.dart';
+import 'package:ride_now/features/rating/domain/repositories/rating_repo.dart';
+import 'package:ride_now/features/rating/domain/use_cases/submit_driver_rating.dart';
+import 'package:ride_now/features/rating/domain/use_cases/submit_passenger_rating.dart';
+import 'package:ride_now/features/rating/presentation/manager/rating_cubit.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/decline_trip_usecase.dart';
 import 'package:ride_now/features/wallet/data/data_sources/wallet_data_source.dart';
@@ -151,8 +156,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetTripsUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => GetTripDetailsUseCase(tripRepoBase: sl()));
   sl.registerLazySingleton(() => CancelTripUseCase(sl()));
- sl.registerLazySingleton(() => CompleteTripUseCase(sl()));
- sl.registerLazySingleton(() => DeclineTripUseCase(sl()));
+  sl.registerLazySingleton(() => CompleteTripUseCase(sl()));
+  sl.registerLazySingleton(() => DeclineTripUseCase(sl()));
 
   sl.registerFactory(
     () => TripCubit(
@@ -173,13 +178,23 @@ Future<void> init() async {
   sl.registerFactory(() => WalletCubit(sl(), sl()));
 
   ///privacy policy
-  sl.registerLazySingleton<PrivacyDataSource>(() => PrivacyDataSourceImpl(sl()));
-  sl.registerLazySingleton<PrivacyRepository>(() => PrivacyRepositoryImpl(sl()));
+  sl.registerLazySingleton<PrivacyDataSource>(
+      () => PrivacyDataSourceImpl(sl()));
+  sl.registerLazySingleton<PrivacyRepository>(
+      () => PrivacyRepositoryImpl(sl()));
   sl.registerLazySingleton(() => FetchPrivacyPolicyUseCase(sl()));
   sl.registerFactory(() => PrivacyCubit(sl()));
 
   ///notifications
   sl.registerLazySingleton<NotificationDs>(() => NotificationDsImpl(sl()));
-  sl.registerLazySingleton<NotificationsRepository>(() => NotificationsRepositoryImpl(notificationDs: sl()));
+  sl.registerLazySingleton<NotificationsRepository>(
+      () => NotificationsRepositoryImpl(notificationDs: sl()));
   sl.registerFactory(() => NotificationsCubit(sl()));
+
+  ///rating
+  sl.registerLazySingleton<RatingRepository>(() => RatingRepositoryImpl());
+  sl.registerLazySingleton(() => SubmitDriverRatingUseCase(sl()));
+  sl.registerLazySingleton(() => SubmitPassengerRatingUseCase(sl()));
+
+  sl.registerFactory(() => RatingCubit(sl()));
 }

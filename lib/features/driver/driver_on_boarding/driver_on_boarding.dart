@@ -20,6 +20,7 @@ class DriverOnBoarding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: AppColors.semiGrey.withValues(alpha: 0.1),
       appBar: PreferredSize(
@@ -40,7 +41,7 @@ class DriverOnBoarding extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(20.sp),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.3),
+                  color: theme.brightness == Brightness.dark ? AppColors.primary.withValues(alpha: 0.5) : AppColors.primary.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Column(
@@ -67,7 +68,7 @@ class DriverOnBoarding extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.all(20.sp),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark ? AppColors.black : Colors.white,
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Row(
@@ -77,7 +78,7 @@ class DriverOnBoarding extends StatelessWidget {
                       Expanded(
                         child: Text(
                           S().driver,
-                          style: TextStyles.font18BlackRegular,
+                          style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular: TextStyles.font18BlackRegular,
                         ),
                       ),
                       Icon(Icons.navigate_next),

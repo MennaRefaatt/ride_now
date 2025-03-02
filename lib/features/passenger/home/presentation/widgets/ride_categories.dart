@@ -12,8 +12,10 @@ import '../../../../../core/components/app_icon.dart';
 import '../../../../../generated/l10n.dart';
 
 class RideCategories extends StatefulWidget {
-  const RideCategories({super.key, required this.categories});
+  const RideCategories(
+      {super.key, required this.categories, required this.onCategorySelected});
   final List<CategoryModel> categories;
+  final ValueChanged<String> onCategorySelected;
 
   @override
   RideCategoriesState createState() => RideCategoriesState();
@@ -37,8 +39,8 @@ class RideCategoriesState extends State<RideCategories> {
   @override
   void initState() {
     super.initState();
-    final defaultCategoryIndex = widget.categories
-        .indexWhere((category) => category.name == "Ride");
+    final defaultCategoryIndex =
+        widget.categories.indexWhere((category) => category.name == "Ride");
 
     if (defaultCategoryIndex != -1) {
       final rideCategory = widget.categories.removeAt(defaultCategoryIndex);
@@ -47,6 +49,9 @@ class RideCategoriesState extends State<RideCategories> {
     } else {
       selectedIndex = 0;
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onCategorySelected(widget.categories.first.name);
+    });
   }
 
   @override
@@ -57,6 +62,7 @@ class RideCategoriesState extends State<RideCategories> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.15,
       child: Stack(
@@ -75,13 +81,14 @@ class RideCategoriesState extends State<RideCategories> {
                   setState(() {
                     selectedIndex = index;
                   });
+                  widget.onCategorySelected(widget.categories[index].name);
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  padding: EdgeInsets.all(10.sp),
+                  padding: EdgeInsets.all(5.sp),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? AppColors.primary.withOpacity(0.2)
+                        ? AppColors.primary.withValues(alpha: 0.2)
                         : (isHovered ? AppColors.red : Colors.transparent),
                     borderRadius: BorderRadius.circular(10.r),
                   ),
@@ -96,7 +103,7 @@ class RideCategoriesState extends State<RideCategories> {
                             height: 70.h,
                             width: 100.w,
                           ),
-                          horizontalSpacing(5.w),
+                          horizontalSpacing(5),
                           if (isSelected)
                             InkWell(
                               onTap: () => _showBottomSheet(
@@ -111,12 +118,15 @@ class RideCategoriesState extends State<RideCategories> {
                             ),
                         ],
                       ),
-                      verticalSpacing(5.h),
                       Text(
                         widget.categories[index].name,
-                        style: TextStyles.font24BlackBold.copyWith(
-                          fontSize: 14.sp,
-                        ),
+                        style: theme.brightness == Brightness.dark
+                            ? TextStyles.font18WhiteBold.copyWith(
+                                fontSize: 14.sp,
+                              )
+                            : TextStyles.font24BlackBold.copyWith(
+                                fontSize: 14.sp,
+                              ),
                       ),
                     ],
                   ),
@@ -140,11 +150,11 @@ class RideCategoriesState extends State<RideCategories> {
   }
 
   void _showBottomSheet(
-      BuildContext context,
-      String image,
-      String text,
-      String description,
-      ) {
+    BuildContext context,
+    String image,
+    String text,
+    String description,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (_) => CustomBottomSheet(

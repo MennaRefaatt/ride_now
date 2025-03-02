@@ -23,10 +23,11 @@ class CustomBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.brightness == Brightness.dark ? Colors.grey.withValues(alpha: 0.2) : Colors.white,
         borderRadius:
             BorderRadius.vertical(top: Radius.circular(borderRadius.r)),
       ),

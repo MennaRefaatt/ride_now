@@ -8,6 +8,7 @@ class TripTrackingArgs {
   final LatLng fromLatLng;
   final LatLng toLatLng;
   final LatLng? driverLatLng;
+  final String selectedCategory;
   TripTrackingArgs(
       {required this.fromAddress,
       required this.toAddress,
@@ -15,5 +16,6 @@ class TripTrackingArgs {
       required this.toLatLng,
       required this.driverLatLng,
       required this.tripStatus,
-      required this.tripId});
+      required this.tripId,
+      required this.selectedCategory});
 }

@@ -35,14 +35,15 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(20.sp),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(S().personalInformation, style: TextStyles.font24BlackBold),
-            verticalSpacing(20.h),
+            Text(S().personalInformation, style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold),
+            verticalSpacing(20),
             PickImage(
               text: S().pickYourPersonalPicture,
               image: widget.cubit.personalImage ?? '',
@@ -51,7 +52,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                 setState(() {});
               },
             ),
-            verticalSpacing(20.h),
+            verticalSpacing(20),
             TextFormEntry(
               hintText: S().firstName,
               controller: firstNameController,

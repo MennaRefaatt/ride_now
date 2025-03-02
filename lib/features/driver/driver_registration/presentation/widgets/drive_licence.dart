@@ -30,6 +30,7 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(10.sp),
       child: SingleChildScrollView(
@@ -38,7 +39,7 @@ class _DriverLicensePageState extends State<DriverLicensePage> {
           children: [
             Text(
               S().driverLicence,
-              style: TextStyles.font24BlackBold,
+              style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold :TextStyles.font24BlackBold,
             ),
             verticalSpacing(20.h),
             SingleChildScrollView(
