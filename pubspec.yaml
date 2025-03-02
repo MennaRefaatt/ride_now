@@ -171,6 +171,7 @@ flutter:
     - assets/icons/
     - assets/sounds/
     - assets/service-account.json
+    - assets/map_styles/dark_map_style.json
 
 
 
