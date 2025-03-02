@@ -295,6 +295,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "lastName": MessageLookupByLibrary.simpleMessage("Last Name"),
     "lastUpdated": MessageLookupByLibrary.simpleMessage("Last Updated"),
     "latitude": MessageLookupByLibrary.simpleMessage("Latitude"),
+    "leaveComment": MessageLookupByLibrary.simpleMessage("Leave Comment"),
     "lengthMustBeEqual11": MessageLookupByLibrary.simpleMessage(
       "Length Must Be Equal 11",
     ),
@@ -508,6 +509,9 @@ class MessageLookup extends MessageLookupByLibrary {
         MessageLookupByLibrary.simpleMessage(
           "Please enter your vehicle registration certificate",
         ),
+    "pleaseSelectRating": MessageLookupByLibrary.simpleMessage(
+      "Please Select Rating",
+    ),
     "privacyPolicy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
     "productDetails": MessageLookupByLibrary.simpleMessage("Product Details"),
     "productionYear": MessageLookupByLibrary.simpleMessage("Production Year"),
@@ -518,6 +522,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
     "profileInfo": MessageLookupByLibrary.simpleMessage("Profile Info"),
     "quantity": MessageLookupByLibrary.simpleMessage("Quantity: "),
+    "rateYourDriver": MessageLookupByLibrary.simpleMessage("Rate your driver"),
     "recentRides": MessageLookupByLibrary.simpleMessage("Recent Rides"),
     "recommendedFare": MessageLookupByLibrary.simpleMessage("Recommended Fare"),
     "region": MessageLookupByLibrary.simpleMessage("Region"),
@@ -572,12 +577,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "spacialForYou": MessageLookupByLibrary.simpleMessage("Spacial For You"),
     "startTyping": MessageLookupByLibrary.simpleMessage("Start Typing"),
     "subTotal": MessageLookupByLibrary.simpleMessage("Sub Total"),
+    "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "suggestedForYou": MessageLookupByLibrary.simpleMessage(
       "Suggested For You",
     ),
     "systemDefault": MessageLookupByLibrary.simpleMessage("System Default"),
     "termsAndConditions": MessageLookupByLibrary.simpleMessage(
       "Terms and Conditions",
+    ),
+    "thankYouForRating": MessageLookupByLibrary.simpleMessage(
+      "Thank you for rating",
     ),
     "theCostOfTheOrderWillBe": MessageLookupByLibrary.simpleMessage(
       "The Cost Of The Order Will Be",

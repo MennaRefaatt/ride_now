@@ -328,5 +328,10 @@
   "noTripRequestsAvailable": "No Trip Requests Available",
   "getStarted": "Get Started",
   "noNotificationsFound": "No Notifications Found",
-  "tripCompleted": "Trip Completed"
+  "tripCompleted": "Trip Completed",
+  "submit": "Submit",
+  "pleaseSelectRating": "Please Select Rating",
+  "thankYouForRating": "Thank you for rating",
+  "leaveComment": "Leave Comment",
+  "rateYourDriver" : "Rate your driver"
 }

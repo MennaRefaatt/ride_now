@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../features/notifications/data/models/notification_model.dart';
 import '../../features/notifications/presentation/manager/notification_cubit.dart';
 import '../../generated/l10n.dart';
+import '../di/di.dart';
 import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
 import '../services/fcm/firebase_messaging_service.dart';
@@ -44,93 +45,114 @@ class DefaultAppBar extends StatefulWidget {
 class _DefaultAppBarState extends State<DefaultAppBar> {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        widget.text,
-        style: TextStyles.font24BlackBold.copyWith(
-          fontSize: 20.sp,
+    final theme = Theme.of(context);
+    return BlocProvider<NotificationsCubit>(
+      create: (context) => NotificationsCubit(sl()),
+      child: AppBar(
+        title: Text(
+          widget.text,
+          style: theme.brightness == Brightness.light
+              ? TextStyles.font24BlackBold.copyWith(
+                  fontSize: 20.sp,
+                )
+              : TextStyles.font14WhiteBold.copyWith(
+                  fontSize: 20.sp,
+                ),
         ),
-      ),
-      backgroundColor: widget.backgroundColor,
-      centerTitle: true,
-      leadingWidth: Scaffold.of(context).hasDrawer
-          ? MediaQuery.of(context).size.width * 0.1
-          : MediaQuery.of(context).size.width * 0.3,
-      leading: Scaffold.of(context).hasDrawer
-          ? BlocBuilder<NotificationsCubit, List<NotificationModel>>(
-              builder: (context, notifications) {
-                int unreadCount = notifications.where((n) => !n.isRead).length;
-                return Stack(
-                  children: [
-                    IconButton(
-                      onPressed: () => Scaffold.of(context).openDrawer(),
-                      icon: const Icon(Icons.menu, color: Colors.black),
-                    ),
-                    if (unreadCount > 0)
-                      Positioned(
-                        right: 8,
-                        top: 8,
-                        child: CircleAvatar(
-                          radius: 8,
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            unreadCount.toString(),
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.white),
-                          ),
+        backgroundColor: widget.backgroundColor,
+        centerTitle: true,
+        leadingWidth: Scaffold.of(context).hasDrawer
+            ? MediaQuery.of(context).size.width * 0.1
+            : MediaQuery.of(context).size.width * 0.3,
+        leading: Scaffold.of(context).hasDrawer
+            ? BlocBuilder<NotificationsCubit, List<NotificationModel>>(
+                builder: (context, notifications) {
+                  int unreadCount =
+                      notifications.where((n) => !n.isRead).length;
+                  return Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                        icon: Icon(
+                          Icons.menu,
+                          color: theme.brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
                         ),
                       ),
-                  ],
-                );
-              },
-            )
-          : widget.withProfilePicture == false
-              ? SizedBox()
-              : Padding(
-                  padding: EdgeInsets.all(2.0.sp),
-                  child: Row(
-                    children: [
-                      const BackButton(),
-                      CircleAvatar(
-                        radius: 30.r,
-                        backgroundColor:
-                            AppColors.primary.withValues(alpha: 0.3),
-                        backgroundImage: (SharedPref.getString(
-                                        key: MySharedKeys.picture) !=
-                                    null &&
-                                SharedPref.getString(key: MySharedKeys.picture)!
-                                    .isNotEmpty)
-                            ? NetworkImage(SharedPref.getString(
-                                key: MySharedKeys.picture)!)
-                            : null,
-                        child: (SharedPref.getString(
-                                        key: MySharedKeys.picture) ==
-                                    null ||
-                                SharedPref.getString(key: MySharedKeys.picture)!
-                                    .isEmpty)
-                            ? Icon(Icons.person,
-                                size: 24.sp, color: Colors.white)
-                            : null,
-                      ),
+                      if (unreadCount > 0)
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              unreadCount.toString(),
+                              style: const TextStyle(
+                                  fontSize: 10, color: Colors.white),
+                            ),
+                          ),
+                        ),
                     ],
-                  ),
-                ),
-      actions: [
-        widget.audioCallIcon == false
-            ? const SizedBox()
-            : IconButton(
-                onPressed: () {
-                  _showCallOptions();
+                  );
                 },
-                icon: const Icon(CupertinoIcons.phone),
               )
-      ],
-      bottom: widget.withDivider == true
-          ? const PreferredSize(
-              preferredSize: Size.fromHeight(1),
-              child: Divider(),
-            )
-          : null,
+            : widget.withProfilePicture == false
+                ? SizedBox()
+                : Padding(
+                    padding: EdgeInsets.all(2.0.sp),
+                    child: Row(
+                      children: [
+                        const BackButton(),
+                        CircleAvatar(
+                          radius: 30.r,
+                          backgroundColor:
+                              AppColors.primary.withValues(alpha: 0.3),
+                          backgroundImage: (SharedPref.getString(
+                                          key: MySharedKeys.picture) !=
+                                      null &&
+                                  SharedPref.getString(
+                                          key: MySharedKeys.picture)!
+                                      .isNotEmpty)
+                              ? NetworkImage(SharedPref.getString(
+                                  key: MySharedKeys.picture)!)
+                              : null,
+                          child: (SharedPref.getString(
+                                          key: MySharedKeys.picture) ==
+                                      null ||
+                                  SharedPref.getString(
+                                          key: MySharedKeys.picture)!
+                                      .isEmpty)
+                              ? Icon(Icons.person,
+                                  size: 24.sp, color: Colors.white)
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+        actions: [
+          widget.audioCallIcon == false
+              ? const SizedBox()
+              : IconButton(
+                  onPressed: () {
+                    _showCallOptions();
+                  },
+                  icon: Icon(
+                    CupertinoIcons.phone,
+                    color: theme.brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white,
+                  ),
+                )
+        ],
+        bottom: widget.withDivider == true
+            ? const PreferredSize(
+                preferredSize: Size.fromHeight(1),
+                child: Divider(),
+              )
+            : null,
+      ),
     );
   }
 
@@ -190,8 +212,8 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
         fcmToken: widget.receiverFCMToken!,
         title: "Incoming Call",
         body: "Driver is calling...",
-         callerName: widget.callerName,
-         channelId: AgoraConstants.channelId,
+        callerName: widget.callerName,
+        channelId: AgoraConstants.channelId,
       );
 
       appNavKey.currentState?.pushNamed(RoutingEndpoints.audioCall);

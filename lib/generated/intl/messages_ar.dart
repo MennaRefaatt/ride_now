@@ -290,6 +290,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "lastName": MessageLookupByLibrary.simpleMessage("الاسم الأخير"),
     "lastUpdated": MessageLookupByLibrary.simpleMessage("اخر تحديث"),
     "latitude": MessageLookupByLibrary.simpleMessage("خط العرض"),
+    "leaveComment": MessageLookupByLibrary.simpleMessage("اترك تعليق"),
     "lengthMustBeEqual11": MessageLookupByLibrary.simpleMessage(
       "يجب ان يكون الرقم 11 رقم",
     ),
@@ -475,6 +476,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseEnterYourPhone": MessageLookupByLibrary.simpleMessage(
       "من فضلك ادخل رقم هاتفك",
     ),
+    "pleaseSelectRating": MessageLookupByLibrary.simpleMessage(
+      "يرجى تحديد التقييم",
+    ),
     "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
     "productDetails": MessageLookupByLibrary.simpleMessage("تفاصيل المنتج"),
     "productionYear": MessageLookupByLibrary.simpleMessage("سنة الإنتاج"),
@@ -485,6 +489,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
     "profileInfo": MessageLookupByLibrary.simpleMessage("معلومات الحساب"),
     "quantity": MessageLookupByLibrary.simpleMessage("الكمية: "),
+    "rateYourDriver": MessageLookupByLibrary.simpleMessage("قيم السائق"),
     "recentRides": MessageLookupByLibrary.simpleMessage("الرحلات الحديثة"),
     "recommendedFare": MessageLookupByLibrary.simpleMessage(
       "الأجرة الموصى بها",
@@ -537,10 +542,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "spacialForYou": MessageLookupByLibrary.simpleMessage("مميز لك"),
     "startTyping": MessageLookupByLibrary.simpleMessage("ابدأ الكتابة"),
     "subTotal": MessageLookupByLibrary.simpleMessage("المجموع الفرعي"),
+    "submit": MessageLookupByLibrary.simpleMessage("تقديم"),
     "suggestedForYou": MessageLookupByLibrary.simpleMessage("مقترح لك"),
     "systemDefault": MessageLookupByLibrary.simpleMessage("افتراضي النظام"),
     "termsAndConditions": MessageLookupByLibrary.simpleMessage(
       "الشروط والاحكام",
+    ),
+    "thankYouForRating": MessageLookupByLibrary.simpleMessage(
+      "شكرا لك على التقييم",
     ),
     "theCostOfTheOrderWillBe": MessageLookupByLibrary.simpleMessage(
       "تكلفة الطلب ستكون",

@@ -38,15 +38,14 @@ class ProfileCubit extends Cubit<ProfileState> {
       firstNameController.text = profile.name.split(' ').first;
       lastNameController.text = profile.name.split(' ').last;
       emailController.text = profile.email;
-      phoneController.text = profile.phoneNumber == "missing phone number"
-          ? ""
-          : profile.phoneNumber;
+      phoneController.text = profile.phoneNumber == "missing phone number" ? "" : profile.phoneNumber;
       cityController.text = profile.city ?? '';
 
-      /// save profile in shared pref
-      SharedPref.setString(key: MySharedKeys.phone, value: profile.phoneNumber);
-      SharedPref.setString(key: MySharedKeys.city, value: profile.city!);
-      SharedPref.setString(key: MySharedKeys.picture, value: profile.photoUrl);
+      // ✅ Save profile image to SharedPreferences
+      if (profile.photoUrl.isNotEmpty) {
+        await SharedPref.setString(key: MySharedKeys.picture, value: profile.photoUrl);
+      }
+
       emit(ProfileLoaded(profile));
     } catch (e) {
       emit(ProfileError(message: e.toString()));

@@ -26,6 +26,7 @@ class CheckOutButtons extends StatefulWidget {
   final LatLng toLatLng;
   final String paymentMethod;
   final double cost;
+  final String selectedCategory;
   const CheckOutButtons({
     super.key,
     required this.tripCubit,
@@ -35,6 +36,7 @@ class CheckOutButtons extends StatefulWidget {
     required this.toLatLng,
     required this.paymentMethod,
     required this.cost,
+    required this.selectedCategory,
   });
 
   @override
@@ -77,14 +79,15 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                         moreThan4Passengers,
                         commentController.text,
                         widget.cost,
+                        widget.selectedCategory,
                       ).then((_) async {
-                        await Future.delayed(Duration(milliseconds: 500)); // Allow time for storage
+                        await Future.delayed(Duration(milliseconds: 500));
 
                         tripId = SharedPref.getString(key: MySharedKeys.currentTripId) ?? "";
                         if (tripId.isNotEmpty) {
                           safePrint("Trip id: $tripId");
 
-                          if (!mounted) return; // ✅ Fix: Ensure widget is still mounted
+                          if (!mounted) return;
 
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -95,7 +98,7 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
 
                           onTripCreated();
 
-                          if (!mounted) return; // ✅ Fix: Ensure widget is still mounted
+                          if (!mounted) return;
                           Navigator.pushReplacementNamed(
                             context,
                             RoutingEndpoints.tripTracking,
@@ -108,6 +111,7 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                                 toLatLng: widget.toLatLng,
                                 driverLatLng: LatLng(0, 0),
                                 tripStatus: TripStatus.pending.name,
+                                selectedCategory: widget.selectedCategory,
                               ),
                               isPassenger: true,
                             ),
@@ -119,7 +123,7 @@ class _CheckOutButtonsState extends State<CheckOutButtons> {
                     } catch (error) {
                       safePrint("Error creating trip: $error");
 
-                      if (!mounted) return; // ✅ Fix: Ensure widget is still mounted
+                      if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           backgroundColor: AppColors.red,

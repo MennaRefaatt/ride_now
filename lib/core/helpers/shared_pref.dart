@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:ride_now/core/helpers/safe_print.dart';
 import 'package:ride_now/core/helpers/shared_pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,6 +76,7 @@ class SharedPref {
   static String getCurrentLanguage() {
     return _preferences?.getString(MySharedKeys.currentLanguage.name) ?? "en";
   }
+
   static Future<void> setCurrentLanguage(String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(MySharedKeys.currentLanguage.name, languageCode);
@@ -94,7 +96,18 @@ class SharedPref {
     await _preferences?.setBool(MySharedKeys.firstOpen.name, value);
   }
 
-  // Method to store driver data when driver is accepted
+  static Future<void> setBrightness(ThemeMode themeMode) async {
+    await _preferences?.setInt(MySharedKeys.themeMode.name, themeMode.index);
+  }
+
+  static ThemeMode getBrightness() {
+    int? themeIndex = _preferences?.getInt(MySharedKeys.themeMode.name);
+    if (themeIndex != null) {
+      return ThemeMode.values[themeIndex];
+    }
+    return ThemeMode.light;
+  }
+
   static Future<void> storeDriverData({
     required String driverId,
     required String driverStatus,
@@ -126,6 +139,5 @@ class SharedPref {
     }
   }
 
-  // private constructor as I don't want to allow creating an instance of this class itself.
   SharedPref._();
 }

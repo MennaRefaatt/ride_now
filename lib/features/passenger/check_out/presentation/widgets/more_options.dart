@@ -25,10 +25,11 @@ class MoreOptions extends StatefulWidget {
 }
 
 class _MoreOptionsState extends State<MoreOptions> {
-  bool moreThan4Passengers = false; // ✅ Move state here
+  bool moreThan4Passengers = false;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return FloatingActionButton(
       onPressed: () => showModalBottomSheet(
         context: context,
@@ -45,7 +46,9 @@ class _MoreOptionsState extends State<MoreOptions> {
                   return Container(
                     padding: EdgeInsets.all(15.sp),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(15.r),
                       ),
@@ -56,13 +59,14 @@ class _MoreOptionsState extends State<MoreOptions> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Header
                           Row(
                             children: [
                               Expanded(
                                 child: Text(
                                   S().options,
-                                  style: TextStyles.font24BlackBold,
+                                  style: theme.brightness == Brightness.dark
+                                      ? TextStyles.font24WhiteBold
+                                      : TextStyles.font24BlackBold,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -74,20 +78,23 @@ class _MoreOptionsState extends State<MoreOptions> {
                                     borderRadius: BorderRadius.circular(30.r),
                                     color: Colors.grey.shade200,
                                   ),
-                                  child: Icon(CupertinoIcons.xmark),
+                                  child: Icon(
+                                    CupertinoIcons.xmark,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          verticalSpacing(30.h),
-
-                          // More than 4 Passengers Switch
+                          verticalSpacing(30),
                           Row(
                             children: [
                               Expanded(
                                 child: Text(
                                   S().moreThan4Passengers,
-                                  style: TextStyles.font18BlackRegular,
+                                  style: theme.brightness == Brightness.dark
+                                      ? TextStyles.font18WhiteRegular
+                                      : TextStyles.font18BlackRegular,
                                 ),
                               ),
                               CupertinoSwitch(
@@ -104,8 +111,6 @@ class _MoreOptionsState extends State<MoreOptions> {
                           ),
 
                           verticalSpacing(20.h),
-
-                          // Comment Input Field
                           AppTextFormField(
                             hintText: S().comment,
                             withHint: true,

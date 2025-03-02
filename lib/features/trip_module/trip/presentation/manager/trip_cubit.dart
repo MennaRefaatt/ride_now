@@ -121,6 +121,7 @@ class TripCubit extends Cubit<TripState> {
     bool moreThan4Passengers,
     String comment,
     double cost,
+      String selectedCategory
   ) async {
     emit(CreateTripLoading());
     try {
@@ -135,6 +136,7 @@ class TripCubit extends Cubit<TripState> {
       final tripModel = TripModel(
         tripId: "",
         from: from,
+        selectedCategory:selectedCategory,
         moreThan4Passengers: moreThan4Passengers,
         comment: comment,
         paymentMethod: paymentMethod,

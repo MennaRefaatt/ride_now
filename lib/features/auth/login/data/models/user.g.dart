@@ -16,6 +16,10 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       photoUrl: json['photoUrl'] as String,
       currentTripId: json['currentTripId'] as String?,
       deviceToken: json['deviceToken'] as String?,
+      rating: json['rating'] == null
+          ? null
+          : RatingModel.fromJson(json['rating'] as Map<String, dynamic>),
+      ratingGivenCount: (json['ratingGivenCount'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -28,4 +32,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'type': instance.type,
       'currentTripId': instance.currentTripId,
       'deviceToken': instance.deviceToken,
+      'rating': instance.rating,
+      'ratingGivenCount': instance.ratingGivenCount,
     };

@@ -16,6 +16,8 @@
 - the passenger cant nav to checkout screen when there is no from or to address ✅
 - fix the cancel trip bug ✅
 - make a animation on the driver home screen when the driver receives a new trip ✅
+- theming
+- mark all the notifications
 ===========================================================
 - Users => Client, Driver, Admin
 - Driver => driver data, car data,Reviews, wallet data, charge,rides.
@@ -53,6 +55,5 @@ Trip
 - trip payment method ✅ 
 - trip payment status ✅
 - trip estimated time ✅
-- rating
-- trip type
+- trip type ✅
 ==============================================================

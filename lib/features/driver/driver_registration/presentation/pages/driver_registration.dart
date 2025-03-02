@@ -69,12 +69,13 @@ class _DriverRegistration extends State<DriverRegistration>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => driverCubit..fetchColorsBrandsModels(),
       child: Scaffold(
         appBar: AppBar(
           title:
-              Text(S().driverRegistration, style: TextStyles.font18BlackBold),
+              Text(S().driverRegistration, style:theme.brightness == Brightness.dark ? TextStyles.font18WhiteBold : TextStyles.font18BlackBold),
           leading: Container(),
           centerTitle: true,
           actions: [
@@ -82,7 +83,7 @@ class _DriverRegistration extends State<DriverRegistration>
               onPressed: () {
                 Navigator.pushNamed(context, RoutingEndpoints.driverOnBoarding);
               },
-              child: Text(S().close, style: TextStyles.font18BlackBold),
+              child: Text(S().close, style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteBold : TextStyles.font18BlackBold),
             ),
           ],
         ),
@@ -91,7 +92,7 @@ class _DriverRegistration extends State<DriverRegistration>
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
-                physics: NeverScrollableScrollPhysics(),
+                //physics: NeverScrollableScrollPhysics(),
                 onPageChanged: (page) {
                   setState(() {
                     _currentPage = page;

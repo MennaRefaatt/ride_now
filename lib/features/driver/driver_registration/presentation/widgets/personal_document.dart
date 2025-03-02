@@ -27,6 +27,7 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(15.sp),
       child: SingleChildScrollView(
@@ -35,7 +36,7 @@ class _PersonalDocumentsPageState extends State<PersonalDocumentsPage> {
           children: [
             Text(
               S().personalDocuments,
-              style: TextStyles.font24BlackBold,
+              style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold :TextStyles.font24BlackBold,
             ),
             verticalSpacing(20),
             SingleChildScrollView(

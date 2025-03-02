@@ -8,6 +8,10 @@ class TextStyles {
     fontSize: 24.sp,
     fontWeight: FontWeightHelper.bold,
     color: Colors.black,
+  ); static TextStyle font24WhiteBold = TextStyle(
+    fontSize: 24.sp,
+    fontWeight: FontWeightHelper.bold,
+    color: Colors.white,
   );
 
   static TextStyle font32BlueBold = TextStyle(
@@ -264,6 +268,10 @@ class TextStyles {
     fontSize: 34.sp,
     fontWeight: FontWeightHelper.extraBold,
     color: AppColors.black,
+  );  static TextStyle get font34WhiteExtraBold => TextStyle(
+    fontSize: 34.sp,
+    fontWeight: FontWeightHelper.extraBold,
+    color: Colors.white,
   );
   static TextStyle get font34WhiteMedium => TextStyle(
     fontSize: 34.sp,

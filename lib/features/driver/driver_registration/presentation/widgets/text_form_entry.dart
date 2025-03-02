@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../core/components/app_text_form_field.dart';
@@ -33,6 +34,7 @@ class TextFormEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AppTextFormField(
       withHint: true,
       hintText: hintText,
@@ -41,7 +43,7 @@ class TextFormEntry extends StatelessWidget {
       keyboardType: keyboardType,
       suffixIcon: suffixIcon,
       enable: enable,
-      controllerTextColor: AppColors.black,
+      controllerTextColor:theme.brightness == Brightness.dark ? Colors.white : AppColors.black,
       textInputAction: textInputAction ?? TextInputAction.next,
       borderRadius: BorderRadius.circular(10.r),
       backgroundColor: AppColors.semiGrey.withValues(alpha: 0.2),

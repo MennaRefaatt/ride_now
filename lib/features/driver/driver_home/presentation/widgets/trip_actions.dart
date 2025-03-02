@@ -84,6 +84,7 @@ class TripActions extends StatelessWidget {
                     toLatLng: trip.toLatLng,
                     driverLatLng: driverData.driverLocation,
                     tripStatus: trip.status,
+                    selectedCategory: trip.selectedCategory,
                   ),
                   isPassenger: false,
                 ),
