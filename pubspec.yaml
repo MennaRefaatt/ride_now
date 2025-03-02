@@ -153,6 +153,7 @@ dependencies:
   blurrycontainer: ^2.1.0
   u_credit_card: ^1.4.0
   googleapis_auth: ^1.6.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:
