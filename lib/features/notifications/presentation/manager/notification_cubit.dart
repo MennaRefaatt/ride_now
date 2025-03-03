@@ -11,6 +11,9 @@ class NotificationsCubit extends Cubit<List<NotificationModel>> {
   final NotificationsRepository _repository;
 
   NotificationsCubit(this._repository) : super([]) {
+    fetchNotifications();
+  }
+  Future<void> fetchNotifications() async {
     _repository.getNotifications().listen((notifications) {
       emit(notifications);
     });
@@ -34,9 +37,11 @@ class NotificationsCubit extends Cubit<List<NotificationModel>> {
   Future<void> markAllNotificationsAsRead() async {
     try {
       await _repository.markAllAsRead();
-      List<NotificationModel> updatedNotifications = state.map(
+      List<NotificationModel> updatedNotifications = state
+          .map(
             (notification) => notification.copyWith(isRead: true),
-      ).toList();
+          )
+          .toList();
       emit(updatedNotifications);
     } catch (e) {
       safePrint("Error marking all notifications as read: $e");

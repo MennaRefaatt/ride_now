@@ -609,6 +609,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "vehicleRegistrationCertificate": MessageLookupByLibrary.simpleMessage(
       "Vehicle Registration Certificate",
     ),
+    "waitingForDriver": MessageLookupByLibrary.simpleMessage(
+      "Waiting for driver",
+    ),
     "wallet": MessageLookupByLibrary.simpleMessage("Wallet"),
     "whereTo": MessageLookupByLibrary.simpleMessage("Where To ?"),
     "writeYourComplaintHere": MessageLookupByLibrary.simpleMessage(
@@ -624,6 +627,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "You are not eligible to access driver mode.",
     ),
     "yourBalance": MessageLookupByLibrary.simpleMessage("Your Balance"),
+    "yourCurrentTrip": MessageLookupByLibrary.simpleMessage(
+      "Your Current Trip",
+    ),
     "yourOrderHasBeenPlacedSuccessfullyProcessedAndIsOnItsWayToYouSoon":
         MessageLookupByLibrary.simpleMessage(
           "Your Order Has Been Placed Successfully Processed And Is On Its Way To You Soon.",

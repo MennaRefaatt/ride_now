@@ -10,9 +10,13 @@ import 'package:ride_now/core/helpers/secure_storage/secure_storage.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
+import 'package:rxdart/rxdart.dart';
+import '../../../../../core/components/app_entry_point.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
+import '../../../../rating/presentation/pages/rating_bottom_sheet.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
 import '../../data/models/trip_model.dart';
 import '../../domain/use_cases/accept_trip_usecase.dart';
@@ -67,27 +71,32 @@ class TripCubit extends Cubit<TripState> {
   }
 
   Stream<List<TripModel>> listenToTrips(String driverId) {
-    final driverDoc =
-        FirebaseFirestore.instance.collection('drivers').doc(driverId);
+    final driverStream = FirebaseFirestore.instance
+        .collection('drivers')
+        .doc(driverId)
+        .snapshots();
 
-    return driverDoc.snapshots().asyncMap((driverSnapshot) async {
-      if (!driverSnapshot.exists) return [];
+    return driverStream.switchMap((driverSnapshot) {
+      if (!driverSnapshot.exists) {
+        return Stream.value([]);
+      }
 
       final driverData = driverSnapshot.data()!;
       List<String> declinedTrips =
           List<String>.from(driverData['declinedTrips'] ?? []);
 
-      final tripsSnapshot = await FirebaseFirestore.instance
+      final tripsStream = FirebaseFirestore.instance
           .collection('trips')
           .where('status', isEqualTo: TripStatus.pending.name)
-          .get();
+          .snapshots()
+          .map((tripsSnapshot) {
+        return tripsSnapshot.docs
+            .map((doc) => TripModel.fromJson(doc.data()))
+            .where((trip) => !declinedTrips.contains(trip.tripId))
+            .toList();
+      });
 
-      List<TripModel> trips = tripsSnapshot.docs
-          .map((doc) => TripModel.fromJson(doc.data()))
-          .where((trip) => !declinedTrips.contains(trip.tripId))
-          .toList();
-
-      return trips;
+      return tripsStream;
     });
   }
 
@@ -113,16 +122,15 @@ class TripCubit extends Cubit<TripState> {
   }
 
   Future<void> createTrip(
-    String from,
-    LatLng fromLatLng,
-    String to,
-    LatLng toLatLng,
-    String paymentMethod,
-    bool moreThan4Passengers,
-    String comment,
-    double cost,
-      String selectedCategory
-  ) async {
+      String from,
+      LatLng fromLatLng,
+      String to,
+      LatLng toLatLng,
+      String paymentMethod,
+      bool moreThan4Passengers,
+      String comment,
+      double cost,
+      String selectedCategory) async {
     emit(CreateTripLoading());
     try {
       final tripHelper = TripHelper();
@@ -136,7 +144,7 @@ class TripCubit extends Cubit<TripState> {
       final tripModel = TripModel(
         tripId: "",
         from: from,
-        selectedCategory:selectedCategory,
+        selectedCategory: selectedCategory,
         moreThan4Passengers: moreThan4Passengers,
         comment: comment,
         paymentMethod: paymentMethod,
@@ -161,11 +169,11 @@ class TripCubit extends Cubit<TripState> {
           driverLocation: LatLng(0, 0),
         ),
         passengerData: PassengerData(
-          passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
-          passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
-          passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
-          passengerToken: passengerToken,
-        ),
+            passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
+            passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
+            passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
+            passengerToken: passengerToken,
+            passengerImage: SharedPref.getString(key: MySharedKeys.picture)!),
       );
 
       await createTripUseCase.call(tripModel);
@@ -224,17 +232,76 @@ class TripCubit extends Cubit<TripState> {
     }
   }
 
-  Future<void> completeTrip(String tripId) async {
+  Future<void> completeTrip(
+      String tripId, BuildContext context, bool isPassenger) async {
     try {
       emit(CompleteTripLoading());
       await completeTripUseCase.call(tripId);
       emit(CompleteTripLoaded("Trip completed successfully"));
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Trip completed successfully!')),
+        );
+      }
+
+      String destination = isPassenger
+          ? RoutingEndpoints.passengerHome
+          : RoutingEndpoints.driverHome;
+
+      Future.delayed(Duration(milliseconds: 300), () {
+        safePrint("🚀 Navigating to: $destination");
+        if (appNavKey.currentState != null) {
+          appNavKey.currentState!.pushReplacementNamed(destination);
+          safePrint("✅ Navigation successful!");
+        } else if (context.mounted) {
+          Navigator.of(context).pushReplacementNamed(destination);
+        }
+      });
+
+      if (isPassenger) {
+        FirebaseFirestore.instance.collection('trips').doc(tripId).get().then((tripDoc) {
+          if (tripDoc.exists) {
+            final tripData = tripDoc.data()!;
+            final driverId = tripData['driverData']?['driverId'] ?? '';
+
+            if (driverId.isNotEmpty) {
+              Future.delayed(Duration(milliseconds: 500), () {
+                if (context.mounted) {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
+                      child: RatingBottomSheet(
+                        tripId: tripId,
+                        ratedUserId: driverId,
+                        isDriver: false,
+                      ),
+                    ),
+                  );
+                }
+              });
+            }
+          }
+        }).catchError((error) {
+          safePrint("🚨 Error fetching trip data: $error");
+        });
+      }
     } catch (error) {
-      safePrint("Error completing trip: $error");
       emit(CompleteTripError(error.toString()));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error completing trip: ${error.toString()}')),
+        );
+      }
     }
   }
-  Future<void> declineTrip(String driverId,String tripId) async {
+
+  Future<void> declineTrip(String driverId, String tripId) async {
     try {
       emit(DeclineTripLoading());
 
@@ -243,7 +310,8 @@ class TripCubit extends Cubit<TripState> {
       safePrint("📌 Driver ID passed to function: $driverId");
 
       if (storedDriverId != driverId) {
-        safePrint("⚠️ MISMATCH: The stored driver ID and function argument are different!");
+        safePrint(
+            "⚠️ MISMATCH: The stored driver ID and function argument are different!");
       }
       final driverDoc = await FirebaseFirestore.instance
           .collection('drivers')
@@ -261,5 +329,4 @@ class TripCubit extends Cubit<TripState> {
       emit(DeclineTripError(error.toString()));
     }
   }
-
 }

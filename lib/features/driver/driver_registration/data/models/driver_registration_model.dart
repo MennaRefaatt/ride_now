@@ -32,7 +32,24 @@ class DriverRegistrationModel{
     this.rating
   });
 
-  factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) => _$DriverRegistrationModelFromJson(json);
+  factory DriverRegistrationModel.fromJson(Map<String, dynamic> json) {
+    return DriverRegistrationModel(
+      driverId: json['driverId'] ?? '',
+      driverStatus: json['driverStatus'] ?? '',
+      personalInfo: PersonalRegistrationModel.fromJson(json['personalInfo'] ?? {}),
+      vehicleInfo: VehicleRegistrationModel.fromJson(json['vehicleInfo'] ?? {}),
+      driverInfo: DriverLicenseModel.fromJson(json['driverInfo'] ?? {}),
+      personalDocument: PersonalDocumentModel.fromJson(json['personalDocument'] ?? {}),
+      driverTripStatus: json['driverTripStatus'] ?? '',
+      currentTripId: json['currentTripId'] ?? '',
+      location: json['location'] != null
+          ? DriverLocation.fromJson(json['location'])
+          : DriverLocation(latitude: 0.0, longitude: 0.0), // Default safe values
+      driverToken: json['driverToken'] ?? '',
+      declinedTrips: (json['declinedTrips'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      rating: json['rating'] != null ? RatingModel.fromJson(json['rating']) : null,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'driverStatus': driverStatus,
@@ -59,12 +76,9 @@ class DriverLocation{
   });
 
   factory DriverLocation.fromJson(Map<String, dynamic> json) {
-    final latitude = json['latitude'];
-    final longitude = json['longitude'];
-
     return DriverLocation(
-      latitude: latitude is String ? double.tryParse(latitude) ?? 0.0 : latitude.toDouble(),
-      longitude: longitude is String ? double.tryParse(longitude) ?? 0.0 : longitude.toDouble(),
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
     );
   }
 

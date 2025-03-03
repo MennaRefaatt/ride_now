@@ -2859,6 +2859,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Waiting for driver`
+  String get waitingForDriver {
+    return Intl.message(
+      'Waiting for driver',
+      name: 'waitingForDriver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your Current Trip`
+  String get yourCurrentTrip {
+    return Intl.message(
+      'Your Current Trip',
+      name: 'yourCurrentTrip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

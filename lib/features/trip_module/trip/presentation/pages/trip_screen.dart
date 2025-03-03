@@ -6,6 +6,7 @@ import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
+import '../../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../passenger/maps/presentation/manager/location_cubit.dart';
 import '../../data/models/trip_model.dart';
 import '../manager/trip_cubit.dart';
@@ -71,6 +72,12 @@ class _TripScreenState extends State<TripScreen> {
                         snapshot.data?.data() as Map<String, dynamic>?;
                     if (tripData != null) {
                       final tripStatus = tripData['status'];
+                      if (tripStatus == TripStatus.completed.name) {
+                        Future.microtask(() {
+                          Navigator.of(context).pushReplacementNamed(
+                              RoutingEndpoints.passengerHome);
+                        });
+                      }
                       final driverData = tripData['driverData'];
                       final paymentStatus = tripData['paymentStatus'];
                       final driverLocation =
@@ -90,7 +97,8 @@ class _TripScreenState extends State<TripScreen> {
                         toLatLng: widget.args.tripTrackingArgs.toLatLng,
                         driverLatLng: driverLocation,
                         tripStatus: tripStatus,
-                        selectedCategory: widget.args.tripTrackingArgs.selectedCategory,
+                        selectedCategory:
+                            widget.args.tripTrackingArgs.selectedCategory,
                       );
                       return Stack(
                         children: [

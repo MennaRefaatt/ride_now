@@ -10,7 +10,6 @@ import '../core/helpers/enums/user_type.dart';
 import '../core/helpers/safe_print.dart';
 import '../core/helpers/shared_pref.dart';
 import '../core/helpers/shared_pref_keys.dart';
-import 'driver/driver_registration/data/models/driver_registration_model.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,13 +42,13 @@ class _SplashScreenState extends State<SplashScreen>
 
     _slideAnimationRide =
         Tween<Offset>(begin: const Offset(-1.0, 0.0), end: Offset.zero).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
 
     _slideAnimationNow =
         Tween<Offset>(begin: const Offset(1.0, 0.0), end: Offset.zero).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-    );
+          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+        );
 
     _carAnimation = Tween<Offset>(
       begin: const Offset(1.5, 0),
@@ -69,7 +68,6 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     _animationController.forward();
-
     await Future.delayed(const Duration(seconds: 2));
     _audioPlayer.play(AssetSource('sounds/car_horn.mp3'));
     await Future.delayed(const Duration(seconds: 3));
@@ -98,19 +96,37 @@ class _SplashScreenState extends State<SplashScreen>
             .get();
 
         if (!driverSnapshot.exists) {
+          safePrint("Driver document does not exist");
           Navigator.pushReplacementNamed(
               context, RoutingEndpoints.driverNotEligibleScreen);
           return;
         }
 
-        DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
-            driverSnapshot.data() as Map<String, dynamic>);
+        Map<String, dynamic>? driverData =
+        driverSnapshot.data() as Map<String, dynamic>?;
 
-        if (driver.driverStatus == DriverStatus.pending.name) {
+        if (driverData == null) {
+          safePrint("Driver data is null");
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverNotEligibleScreen);
+          return;
+        }
+
+        String? driverStatus = driverData['driverStatus'] as String?;
+        if (driverStatus == null) {
+          safePrint("Driver status is null");
+          Navigator.pushReplacementNamed(
+              context, RoutingEndpoints.driverNotEligibleScreen);
+          return;
+        }
+
+        safePrint("Driver Status: $driverStatus");
+
+        if (driverStatus == DriverStatus.pending.name) {
           Navigator.pushReplacementNamed(
               context, RoutingEndpoints.driverPendingScreen);
           return;
-        } else if (driver.driverStatus == DriverStatus.rejected.name) {
+        } else if (driverStatus == DriverStatus.rejected.name) {
           Navigator.pushReplacementNamed(
               context, RoutingEndpoints.driverNotEligibleScreen);
           return;
@@ -142,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen>
         children: [
           Expanded(
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               SlideTransition(
                 position: _carAnimation,
                 child: AnimatedOpacity(

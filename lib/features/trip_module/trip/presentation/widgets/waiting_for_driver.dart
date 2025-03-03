@@ -5,6 +5,7 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import '../../../../../core/theming/app_colors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../generated/l10n.dart';
 import '../manager/trip_cubit.dart';
 import 'cancel_button.dart';
 
@@ -24,6 +25,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return DraggableScrollableSheet(
       controller: _controller,
       initialChildSize: _childSize,
@@ -34,7 +36,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
           width: double.infinity,
           height: _childSize * MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-            color: AppColors.semiGrey.withValues(alpha: 0.8),
+            color:  AppColors.semiGrey.withValues(alpha: 0.8),
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(40.r),
               topLeft: Radius.circular(40.r),
@@ -48,8 +50,8 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                   children: [
                     Expanded(
                       child: Text(
-                        "Waiting for driver",
-                        style: TextStyles.font18WhiteRegular
+                        S().waitingForDriver,
+                        style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -62,7 +64,7 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                   width: double.infinity,
                   padding: EdgeInsets.all(15.sp),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.brightness == Brightness.dark ? AppColors.black : Colors.white,
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(40.r),
                       topLeft: Radius.circular(40.r),
@@ -87,15 +89,15 @@ class _WaitingForDriverState extends State<WaitingForDriver>
                                 children: [
                                   Text(
                                     'Destination: ${state.trip.to}',
-                                    style: TextStyles.font24BlackBold,
+                                    style:theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold,
                                   ),
                                   Text(
                                     'From: ${state.trip.from}',
-                                    style: TextStyles.font18BlackRegular,
+                                    style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
                                   ),
                                   Text(
                                     'Price: ${state.trip.price} ${state.trip.paymentMethod}',
-                                    style: TextStyles.font18BlackRegular,
+                                    style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
                                   ),
                                 ],
                               );

@@ -572,6 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "vehicleRegistrationCertificate": MessageLookupByLibrary.simpleMessage(
       "شهادة تسجيل المركبة",
     ),
+    "waitingForDriver": MessageLookupByLibrary.simpleMessage("انتظار السائق"),
     "wallet": MessageLookupByLibrary.simpleMessage("المحفظة"),
     "whereTo": MessageLookupByLibrary.simpleMessage("اين؟"),
     "writeYourComplaintHere": MessageLookupByLibrary.simpleMessage(
@@ -587,6 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "أنت غير مؤهل للوصول إلى وضع السائق.",
     ),
     "yourBalance": MessageLookupByLibrary.simpleMessage("رصيدك"),
+    "yourCurrentTrip": MessageLookupByLibrary.simpleMessage("رحلتك الحالية"),
     "yourOrderHasBeenPlacedSuccessfullyProcessedAndIsOnItsWayToYouSoon":
         MessageLookupByLibrary.simpleMessage(
           "تم تقديم طلبك بنجاح وهو في الطريق لك قريبا",

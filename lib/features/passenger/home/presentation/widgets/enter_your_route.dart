@@ -122,6 +122,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       margin: EdgeInsets.all(15.sp),
       padding: EdgeInsets.only(
@@ -136,7 +137,7 @@ class _EnterYourRouteState extends State<EnterYourRoute> {
                 Expanded(
                   child: Text(
                     S().enterYourRoute,
-                    style: TextStyles.font24BlackBold,
+                    style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold,
                     textAlign: TextAlign.center,
                   ),
                 ),
