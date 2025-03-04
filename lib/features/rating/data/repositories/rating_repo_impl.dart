@@ -12,8 +12,7 @@ class RatingRepositoryImpl implements RatingRepository {
   Future<void> submitDriverRating(
       String tripId, String driverId, double rating, String comment) async {
     try {
-      final driverDoc =
-          await _firestore.collection('drivers').doc(driverId).get();
+      final driverDoc = await _firestore.collection('drivers').doc(driverId).get();
       if (!driverDoc.exists) {
         throw Exception('Driver not found');
       }
@@ -29,8 +28,6 @@ class RatingRepositoryImpl implements RatingRepository {
         'rating': {
           'rating': newRating,
           'ratingCount': currentRatingCount + 1,
-          'comment':
-              comment, // Store just the last comment or consider adding to a list
         }
       });
 
@@ -48,16 +45,23 @@ class RatingRepositoryImpl implements RatingRepository {
         'timestamp': FieldValue.serverTimestamp(),
         'type': 'driver_rating',
       });
+
+      // ✅ حفظ التقييم في بروفايل الراكب أيضًا
+      await _firestore.collection('users').doc(currentUserId).update({
+        'givenRatings': FieldValue.arrayUnion([
+          {
+            'driverId': driverId,
+            'rating': rating,
+            'comment': comment,
+            'timestamp': FieldValue.serverTimestamp(),
+          }
+        ])
+      });
+
     } catch (e) {
       safePrint("Error submitting driver rating: $e");
       throw Exception("Error submitting rating: $e");
     }
   }
 
-  // Keep this method for interface compatibility but it won't be used
-  @override
-  Future<void> submitPassengerRating(
-      String tripId, String passengerId, double rating, String comment) async {
-    throw UnimplementedError('Passenger rating is not implemented');
   }
-}

@@ -90,7 +90,7 @@ class RideCategoriesState extends State<RideCategories> {
                     color: isSelected
                         ? AppColors.primary.withValues(alpha: 0.2)
                         : (isHovered ? AppColors.red : Colors.transparent),
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Column(
                     children: [

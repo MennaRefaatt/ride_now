@@ -14,6 +14,10 @@ class PassengerTripDetails extends StatelessWidget {
   final bool isPassenger;
   @override
   Widget build(BuildContext context) {
+    final userName = tripModel.passengerData.passengerName.split(' ');
+    final imageProvider = NetworkImage(tripModel.passengerData.passengerImage);
+    final theme = Theme.of(context);
+
     return ListView(
       physics: NeverScrollableScrollPhysics(),
       children: [
@@ -26,7 +30,7 @@ class PassengerTripDetails extends StatelessWidget {
                 Expanded(
                   child: Text(
                     "${tripModel.driverData.carColor} ${tripModel.driverData.carModel}",
-                    style: TextStyles.font24BlackBold,
+                    style:theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold,
                   ),
                 ),
                 Column(
@@ -39,14 +43,14 @@ class PassengerTripDetails extends StatelessWidget {
                     ),
                     Text(
                       " ${tripModel.driverData.carNumber}",
-                      style: TextStyles.font24BlackBold,
+                      style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold,
                     ),
                   ],
                 ),
               ],
             ),
             Divider(),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -54,15 +58,22 @@ class PassengerTripDetails extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 30.r,
+                      backgroundImage: imageProvider,
+                      child: imageProvider == null
+                          ? Text(
+                        userName.isNotEmpty ? userName[0] : '',
+                        style: TextStyles.font18BlackRegular,
+                      )
+                          : null,
                     ),
-                    horizontalSpacing(10.w),
+                    horizontalSpacing(10),
                     Text(
                       tripModel.driverData.driverName,
-                      style: TextStyles.font18BlackRegular,
+                      style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
                     ),
                   ],
                 ),
-                horizontalSpacing(20.w),
+                horizontalSpacing(20),
                 Column(
                   children: [
                     ContactCall(
@@ -70,34 +81,34 @@ class PassengerTripDetails extends StatelessWidget {
                       callerName: tripModel.passengerData.passengerName,
                       receiverFCMToken: tripModel.driverData.driverToken,
                     ),
-                    horizontalSpacing(10.w),
+                    horizontalSpacing(10),
                     Text(
                      S().contactDriver,
-                      style: TextStyles.font18BlackRegular,
+                      style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
                     ),
                   ],
                 ),
               ],
             ),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             Divider(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Payment",
-                  style: TextStyles.font24BlackBold,
+                  S().payment,
+                  style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold : TextStyles.font24BlackBold,
                 ),
                 verticalSpacing(20.h),
                 Text(
                   "EGP ${tripModel.price} ${tripModel.paymentMethod}",
-                  style: TextStyles.font18BlackRegular,
+                  style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
                 ),
               ],
             ),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             Divider(),
-            verticalSpacing(10.h),
+            verticalSpacing(10),
             YourCurrentTrip(
                 tripId: tripModel.tripId,
               isPassenger: isPassenger,

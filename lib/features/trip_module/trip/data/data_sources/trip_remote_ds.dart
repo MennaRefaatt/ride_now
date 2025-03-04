@@ -138,6 +138,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           driverLocation: LatLng(0, 0),
         ),
         passengerData: PassengerData(
+          passengerImage: SharedPref.getString(key: MySharedKeys.picture)!,
           passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
           passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
           passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,

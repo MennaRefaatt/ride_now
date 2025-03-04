@@ -11,98 +11,111 @@ import '../../../../../core/theming/app_colors.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../rating/presentation/pages/rating_bottom_sheet.dart';
 import '../manager/trip_cubit.dart';
-
 class CompleteButton extends StatelessWidget {
-  const CompleteButton(
-      {super.key, required this.isPassenger, required this.tripId});
+  const CompleteButton({
+    super.key,
+    required this.isPassenger,
+    required this.tripId,
+  });
+
   final bool isPassenger;
   final String tripId;
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TripCubit, TripState>(listener: (context, state) {
-      if (state is CompleteTripLoaded) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Trip canceled successfully!')),
-        );
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          safePrint("Checking navigator state...");
+    return BlocListener<TripCubit, TripState>(
+      listener: (context, state) {
+        safePrint("🚀 BlocListener received state: $state");
 
-          if (appNavKey.currentState != null) {
-            safePrint(
-                "✅ Navigating to ${isPassenger ? RoutingEndpoints.passengerHome : RoutingEndpoints.driverHome}");
-            appNavKey.currentState!.pushReplacementNamed(
-              isPassenger
-                  ? RoutingEndpoints.passengerHome
-                  : RoutingEndpoints.driverHome,
-            );
-          } else {
-            safePrint(
-                "🚨 Navigation failed: appNavKey is null. Trying context-based navigation...");
-            Navigator.of(context).pushReplacementNamed(
-              isPassenger
-                  ? RoutingEndpoints.passengerHome
-                  : RoutingEndpoints.driverHome,
-            );
-          }
+        if (state is CompleteTripLoaded) {
+          safePrint("✅ BlocListener detected CompleteTripLoaded");
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Trip completed successfully!')),
+          );
+
+          String destination = isPassenger
+              ? RoutingEndpoints.passengerHome
+              : RoutingEndpoints.driverHome;
+
+          Future.delayed(Duration(milliseconds: 300), () {
+            if (appNavKey.currentState != null) {
+              safePrint("✅ Using appNavKey to navigate to: $destination");
+              appNavKey.currentState!.pushReplacementNamed(destination).then((_) {
+                safePrint("✅ Navigation successful!");
+              }).catchError((error) {
+                safePrint("🚨 Navigation error: $error");
+              });
+            } else {
+              safePrint("⚠️ appNavKey is null. Using context.");
+              Navigator.of(context).pushReplacementNamed(destination).then((_) {
+                safePrint("✅ Context-based navigation successful!");
+              }).catchError((error) {
+                safePrint("🚨 Context navigation error: $error");
+              });
+            }
+          });
+
           if (isPassenger) {
-            FirebaseFirestore.instance
-                .collection('trips')
-                .doc(tripId)
-                .get()
-                .then((tripDoc) {
+            FirebaseFirestore.instance.collection('trips').doc(tripId).get().then((tripDoc) {
               if (tripDoc.exists) {
                 final tripData = tripDoc.data()!;
-                final driverId = tripData['driverData']['driverId'];
+                final driverId = tripData['driverData']?['driverId'] ?? '';
 
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: RatingBottomSheet(
-                      tripId: tripId,
-                      ratedUserId: driverId,
-                      isDriver: false,
-                    ),
-                  ),
-                );
-              }
-            }
-            );
-          }
-        });
-      } else if (state is CompleteTripError) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error canceling trip: ${state.message}')),
-        );
-      }
-    }, builder: (context, state) {
-      if (tripId.isEmpty) {
-        return Visibility(
-          visible: false,
-          child: CircularProgressIndicator(),
-        );
-      }
-
-      return Visibility(
-        visible: tripId.isNotEmpty,
-        child: Center(
-          child: AppButton(
-              onPressed: () {
-                if (tripId.isNotEmpty) {
-                  context.read<TripCubit>().completeTrip(tripId);
+                if (driverId.isNotEmpty) {
+                  Future.delayed(Duration(milliseconds: 500), () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: RatingBottomSheet(
+                          tripId: tripId,
+                          ratedUserId: driverId,
+                          isDriver: false,
+                        ),
+                      ),
+                    );
+                  });
+                } else {
+                  safePrint("🚨 Driver ID missing in trip data!");
                 }
-              },
-              text: S().tripCompleted,
-              textStyle:
-                  TextStyles.font18WhiteBold,
-              backgroundColor: AppColors.primary,
-              borderRadius: 10.r),
-        ),
-      );
-    });
+              }
+            }).catchError((error) {
+              safePrint("🚨 Error fetching trip data: $error");
+            });
+          }
+        } else if (state is CompleteTripError) {
+          safePrint("🚨 Error: ${state.message}");
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error completing trip: ${state.message}')),
+          );
+        }
+      },
+      child: BlocBuilder<TripCubit, TripState>(
+        builder: (context, state) {
+          return Visibility(
+            visible: tripId.isNotEmpty,
+            child: Center(
+              child: AppButton(
+                onPressed: () {
+                  if (tripId.isNotEmpty) {
+                    safePrint("🛠 Calling completeTrip() for tripId: $tripId");
+                    context.read<TripCubit>().completeTrip(tripId,context,isPassenger);
+                  }
+                },
+                text: S().tripCompleted,
+                textStyle: TextStyles.font18WhiteBold,
+                backgroundColor: AppColors.primary,
+                borderRadius: 10.r,
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

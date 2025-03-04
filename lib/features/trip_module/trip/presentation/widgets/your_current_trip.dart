@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ride_now/core/theming/app_colors.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import '../../../../../core/helpers/spacing.dart';
+import '../../../../../generated/l10n.dart';
 import 'complete_button.dart';
 
 class YourCurrentTrip extends StatelessWidget {
@@ -17,12 +18,15 @@ class YourCurrentTrip extends StatelessWidget {
       required this.tripId});
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Your Current Trip",
-          style: TextStyles.font24BlackBold,
+          S().yourCurrentTrip,
+          style: theme.brightness == Brightness.dark
+              ? TextStyles.font24WhiteBold
+              : TextStyles.font24BlackBold,
         ),
         verticalSpacing(20),
         Row(
@@ -35,10 +39,15 @@ class YourCurrentTrip extends StatelessWidget {
             Expanded(
               child: Text(
                 from,
-                style: TextStyles.font18BlackRegular.copyWith(
-                  fontWeight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                style: theme.brightness == Brightness.dark
+                    ? TextStyles.font18WhiteRegular.copyWith(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : TextStyles.font18BlackRegular.copyWith(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
               ),
             ),
           ],
@@ -54,10 +63,15 @@ class YourCurrentTrip extends StatelessWidget {
             Expanded(
               child: Text(
                 to,
-                style: TextStyles.font18BlackRegular.copyWith(
-                  fontWeight: FontWeight.bold,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                style: theme.brightness == Brightness.dark
+                    ? TextStyles.font18WhiteRegular.copyWith(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      )
+                    : TextStyles.font18BlackRegular.copyWith(
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.ellipsis,
+                      ),
               ),
             ),
           ],
