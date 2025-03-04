@@ -1,6 +1,6 @@
 - animated splash ✅
 - firebase auth ✅
-- riverpod ✅
+- Riverpod ✅
 - google maps ✅
 - license plate scanner ✅
 - payment ✅
@@ -16,8 +16,9 @@
 - the passenger cant nav to checkout screen when there is no from or to address ✅
 - fix the cancel trip bug ✅
 - make a animation on the driver home screen when the driver receives a new trip ✅
-- theming
-- mark all the notifications
+- theming ✅
+- mark all the notifications as read ✅
+- rating 
 ===========================================================
 - Users => Client, Driver, Admin
 - Driver => driver data, car data,Reviews, wallet data, charge,rides.

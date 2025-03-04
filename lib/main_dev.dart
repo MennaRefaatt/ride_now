@@ -23,20 +23,19 @@ Future<void> main() async {
   );
   FirebaseMessagingService.initialize();
   ApiService.init();
+  SecureStorageService();
   await init();
   await SharedPref.init();
-   final userId = SharedPref.getString(key: MySharedKeys.userId);
+  final userId = SharedPref.getString(key: MySharedKeys.userId);
   safePrint(userId);
   safePrint(SharedPref.getString(key: MySharedKeys.type));
   final deviceTokenService = sl<DeviceTokenService>();
   String? deviceToken = await deviceTokenService.getDeviceToken();
   safePrint(deviceToken);
-
   DriverStatusListener driverStatusListener = DriverStatusListener(
     userId: userId!,
   );
   driverStatusListener.listenToDriverStatusChanges();
-  SecureStorageService();
   runApp(
     AppEntryPoint(initialRoute: RoutingEndpoints.splash),
   );
