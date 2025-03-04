@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/features/trip_module/trip/presentation/widgets/passenger_trip_details.dart';
+import '../../../../../core/theming/app_colors.dart';
 import '../../data/models/trip_model.dart';
 import 'driver_trip_details.dart';
 
@@ -22,6 +23,7 @@ class _TripDetailsState extends State<TripDetails> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return DraggableScrollableSheet(
       controller: _controller,
       initialChildSize: _childSize,
@@ -44,7 +46,7 @@ class _TripDetailsState extends State<TripDetails> {
               width: double.infinity,
               padding: EdgeInsets.all(15.sp),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: theme.brightness == Brightness.dark ? AppColors.black : Colors.white,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(40.r),
                   topLeft: Radius.circular(40.r),

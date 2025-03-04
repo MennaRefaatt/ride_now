@@ -13,7 +13,6 @@ import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/notifications/presentation/widgets/notification_icon.dart';
 import '../../../features/auth/login/data/data_sources/firestore_service/firestore_service.dart';
-import '../../../features/driver/driver_registration/data/models/driver_registration_model.dart';
 import '../../di/di.dart';
 import '../../helpers/safe_print.dart';
 import '../../../generated/l10n.dart';
@@ -161,28 +160,50 @@ class _DrawerItemsState extends State<DrawerItems> {
           .doc(userId)
           .get();
 
+      safePrint("Driver Data: ${driverSnapshot.data()}");
+
       if (!driverSnapshot.exists) {
+        safePrint("Driver document does not exist.");
         Navigator.pushReplacementNamed(
             context, RoutingEndpoints.driverOnBoarding);
         return;
       }
 
-      DriverRegistrationModel driver = DriverRegistrationModel.fromJson(
-          driverSnapshot.data() as Map<String, dynamic>);
 
-      if (driver.driverStatus == DriverStatus.pending.name) {
+      Map<String, dynamic>? driverData =
+      driverSnapshot.data() as Map<String, dynamic>?;
+      if (driverData == null) {
+        safePrint("Driver data is null");
+        Navigator.pushReplacementNamed(
+            context, RoutingEndpoints.driverNotEligibleScreen);
+        return;
+      }
+
+      String? driverStatus = driverData['driverStatus'] as String?;
+      if (driverStatus == null) {
+        safePrint("Driver status is null");
+        Navigator.pushReplacementNamed(
+            context, RoutingEndpoints.driverNotEligibleScreen);
+        return;
+      }
+      safePrint("Driver Status: $driverStatus");
+
+      if (driverStatus == DriverStatus.pending.name) {
         Navigator.pushReplacementNamed(
             context, RoutingEndpoints.driverPendingScreen);
-      } else if (driver.driverStatus == DriverStatus.accepted.name) {
-        Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
-      } else {
+        return;
+      } else if (driverStatus == DriverStatus.rejected.name) {
         Navigator.pushReplacementNamed(
-            context, RoutingEndpoints.driverOnBoarding);
+            context, RoutingEndpoints.driverNotEligibleScreen);
+        return;
       }
+
+      Navigator.pushReplacementNamed(context, RoutingEndpoints.driverHome);
     } catch (e) {
       safePrint("Error fetching driver status: $e");
       Navigator.pushReplacementNamed(
           context, RoutingEndpoints.driverNotEligibleScreen);
     }
+
   }
 }

@@ -5,6 +5,7 @@ import 'package:ride_now/core/components/app_bar.dart';
 import 'package:ride_now/core/components/drawer/drawer_items.dart';
 import 'package:ride_now/features/driver/driver_home/presentation/widgets/trip_request_dialogue.dart';
 import '../../../../../core/di/di.dart';
+import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../generated/l10n.dart';
 import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
@@ -26,6 +27,7 @@ class _DriverHomeState extends State<DriverHome> {
       getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
   @override
   Widget build(BuildContext context) {
+    safePrint("📌 Driver Home Loaded!");
     return BlocProvider(
       create: (context) => tripCubit..getTrips(),
       child: Scaffold(

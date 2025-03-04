@@ -178,11 +178,13 @@ class PassengerData {
   final String passengerName;
   final String passengerPhone;
   final String passengerToken;
+  final String passengerImage;
   PassengerData({
     required this.passengerId,
     required this.passengerName,
     required this.passengerPhone,
     required this.passengerToken,
+    required this.passengerImage,
   });
 
   factory PassengerData.fromJson(Map<String, dynamic> json) {
@@ -191,6 +193,7 @@ class PassengerData {
       passengerName: json['passengerName'],
       passengerPhone: json['passengerPhone'],
       passengerToken: json['passengerToken'],
+      passengerImage: json['passengerImage'],
     );
   }
 
@@ -199,5 +202,6 @@ class PassengerData {
         'passengerName': passengerName,
         'passengerPhone': passengerPhone,
         'passengerToken': passengerToken,
+        'passengerImage': passengerImage,
       };
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/auth/login/presentation/pages/login_screen.dart';
@@ -13,6 +14,7 @@ import 'package:ride_now/features/driver/driver_home/presentation/pages/driver_h
 import 'package:ride_now/features/driver/driver_not_eligible_screen/driver_not_eligible_screen.dart';
 import 'package:ride_now/features/driver/driver_on_boarding/driver_on_boarding.dart';
 import 'package:ride_now/features/driver/driver_registration/presentation/pages/driver_registration.dart';
+import 'package:ride_now/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:ride_now/features/notifications/presentation/pages/notification_screen.dart';
 import 'package:ride_now/features/on_boarding_screen.dart';
 import 'package:ride_now/features/passenger/maps/presentation/maps_args.dart';
@@ -29,6 +31,7 @@ import '../../../features/passenger/home/presentation/pages/passenger_home.dart'
 import '../../../features/passenger/maps/presentation/screen/map_screen.dart';
 import '../../../features/trip_module/trip/presentation/pages/trip_screen.dart';
 import '../../../features/trip_module/trip/presentation/trip_tracking_route_args.dart';
+import '../../di/di.dart';
 import '../../helpers/safe_print.dart';
 
 class RouteServices {
@@ -100,8 +103,11 @@ class RouteServices {
         return _customFadeRoute(PrivacyPolicyScreen(), routeSettings.name!);
       case RoutingEndpoints.myTripsScreen:
         return _customFadeRoute(MyTripsScreen(), routeSettings.name!);
-     case RoutingEndpoints.notifications:
-        return _customFadeRoute(NotificationsScreen(), routeSettings.name!);
+      case RoutingEndpoints.notifications:
+        return _customFadeRoute(BlocProvider(
+          create: (context) => NotificationsCubit(sl()),
+          child: NotificationsScreen(),
+        ), routeSettings.name!);
       case RoutingEndpoints.otp:
         return _customFadeRoute(
             OTPScreen(verificationId: routeSettings.arguments as String),

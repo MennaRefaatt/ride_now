@@ -13,7 +13,6 @@ import 'package:ride_now/features/privacy_policy/domain/use_cases/privacy_use_ca
 import 'package:ride_now/features/rating/data/repositories/rating_repo_impl.dart';
 import 'package:ride_now/features/rating/domain/repositories/rating_repo.dart';
 import 'package:ride_now/features/rating/domain/use_cases/submit_driver_rating.dart';
-import 'package:ride_now/features/rating/domain/use_cases/submit_passenger_rating.dart';
 import 'package:ride_now/features/rating/presentation/manager/rating_cubit.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/decline_trip_usecase.dart';
@@ -194,7 +193,5 @@ Future<void> init() async {
   ///rating
   sl.registerLazySingleton<RatingRepository>(() => RatingRepositoryImpl());
   sl.registerLazySingleton(() => SubmitDriverRatingUseCase(sl()));
-  sl.registerLazySingleton(() => SubmitPassengerRatingUseCase(sl()));
-
   sl.registerFactory(() => RatingCubit(sl()));
 }

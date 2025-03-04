@@ -39,7 +39,7 @@ class ProfileSection extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                radius: 30.sp,
+                radius: 30.r,
                 backgroundImage: imageProvider,
                 child: imageProvider == null
                     ? Text(

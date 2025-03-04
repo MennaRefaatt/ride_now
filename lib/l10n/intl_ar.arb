@@ -335,5 +335,7 @@
   "pleaseSelectRating": "يرجى تحديد التقييم",
   "thankYouForRating": "شكرا لك على التقييم",
   "leaveComment": "اترك تعليق",
-  "rateYourDriver" : "قيم السائق"
+  "rateYourDriver" : "قيم السائق",
+  "waitingForDriver" : "انتظار السائق",
+  "yourCurrentTrip" : "رحلتك الحالية"
 }

@@ -7,6 +7,7 @@ import 'package:ride_now/features/passenger/home/presentation/widgets/map_widget
 import '../../../../../core/components/app_icon.dart';
 import '../../../../../core/components/drawer/drawer_items.dart';
 import '../../../../../core/di/di.dart';
+import '../../../../../core/helpers/safe_print.dart';
 import '../../../../notifications/data/models/notification_model.dart';
 import '../../../../notifications/presentation/manager/notification_cubit.dart';
 import '../../../maps/presentation/manager/location_cubit.dart';
@@ -33,6 +34,7 @@ class _PassengerHomeState extends State<PassengerHome> {
   final notificationsCubit = NotificationsCubit(sl());
   @override
   Widget build(BuildContext context) {
+    safePrint("📌 PassengerHome Loaded!");
     return MultiBlocProvider(
       providers: [
         BlocProvider(
