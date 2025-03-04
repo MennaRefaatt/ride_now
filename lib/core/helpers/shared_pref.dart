@@ -22,7 +22,7 @@ class SharedPref {
     await putString(key: MySharedKeys.phone, value: "");
   }
 
-  static void putBoolean({
+  static Future<void> putBoolean({
     required MySharedKeys key,
     required bool value,
   }) async {
@@ -65,8 +65,8 @@ class SharedPref {
     return _preferences?.getDouble(key.name);
   }
 
-  static Object setString({required MySharedKeys key, required String value}) {
-    return _preferences?.setString(key.name, value) ?? "";
+  static Future<bool> setString({required MySharedKeys key, required String value}) async {
+    return await _preferences?.setString(key.name, value) ?? false;
   }
 
   static String? getString({required MySharedKeys key}) {

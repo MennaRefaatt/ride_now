@@ -11,12 +11,9 @@ import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/driver/driver_registration/data/models/driver_registration_model.dart';
 import 'package:ride_now/features/trip_module/trip/domain/use_cases/complete_trip_usecase.dart';
 import 'package:rxdart/rxdart.dart';
-import '../../../../../core/components/app_entry_point.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
-import '../../../../../core/services/routing/routing_endpoints.dart';
-import '../../../../rating/presentation/pages/rating_bottom_sheet.dart';
 import '../../data/data_sources/distance_helper/distance_helper.dart';
 import '../../data/models/trip_model.dart';
 import '../../domain/use_cases/accept_trip_usecase.dart';
@@ -236,7 +233,9 @@ class TripCubit extends Cubit<TripState> {
       String tripId, BuildContext context, bool isPassenger) async {
     try {
       emit(CompleteTripLoading());
+
       await completeTripUseCase.call(tripId);
+
       emit(CompleteTripLoaded("Trip completed successfully"));
 
       if (context.mounted) {
@@ -244,52 +243,41 @@ class TripCubit extends Cubit<TripState> {
           SnackBar(content: Text('Trip completed successfully!')),
         );
       }
-
-      String destination = isPassenger
-          ? RoutingEndpoints.passengerHome
-          : RoutingEndpoints.driverHome;
-
-      Future.delayed(Duration(milliseconds: 300), () {
-        safePrint("🚀 Navigating to: $destination");
-        if (appNavKey.currentState != null) {
-          appNavKey.currentState!.pushReplacementNamed(destination);
-          safePrint("✅ Navigation successful!");
-        } else if (context.mounted) {
-          Navigator.of(context).pushReplacementNamed(destination);
-        }
-      });
-
+      final tripIdd = SharedPref.getString(key: MySharedKeys.currentTripId);
+      final driverIdd = SharedPref.getString(key: MySharedKeys.driverId);
       if (isPassenger) {
-        FirebaseFirestore.instance.collection('trips').doc(tripId).get().then((tripDoc) {
-          if (tripDoc.exists) {
-            final tripData = tripDoc.data()!;
-            final driverId = tripData['driverData']?['driverId'] ?? '';
+        final tripDoc = await FirebaseFirestore.instance
+            .collection('trips')
+            .doc(tripIdd)
+            .get();
 
-            if (driverId.isNotEmpty) {
-              Future.delayed(Duration(milliseconds: 500), () {
-                if (context.mounted) {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (context) => Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: RatingBottomSheet(
-                        tripId: tripId,
-                        ratedUserId: driverId,
-                        isDriver: false,
-                      ),
-                    ),
-                  );
-                }
-              });
-            }
+        if (tripDoc.exists) {
+          final tripData = tripDoc.data();
+          safePrint("🚀 Trip Data Retrieved: $tripData");
+
+          final driverId = tripData?['driverData']?['driverId'] ?? '';
+
+          if (driverIdd!.isNotEmpty) {
+            await SharedPref.putBoolean(
+                key: MySharedKeys.showRating, value: true);
+            await SharedPref.setString(
+                key: MySharedKeys.ratedUserId, value: driverId);
+            await SharedPref.setString(
+                key: MySharedKeys.ratedTripId, value: tripIdd!);
+
+            bool savedShowRating =
+                SharedPref.getBoolean(key: MySharedKeys.showRating);
+            String savedRatedUserId =
+                SharedPref.getString(key: MySharedKeys.ratedUserId) ?? "";
+            String savedTripId =
+                SharedPref.getString(key: MySharedKeys.ratedTripId) ?? "";
+
+            safePrint(
+                "✅ SharedPreferences Saved: showRating=$savedShowRating, ratedUserId=$savedRatedUserId, tripId=$savedTripId");
           }
-        }).catchError((error) {
-          safePrint("🚨 Error fetching trip data: $error");
-        });
+        } else {
+          safePrint("🚨 Error: Trip document does not exist in Firestore!");
+        }
       }
     } catch (error) {
       emit(CompleteTripError(error.toString()));

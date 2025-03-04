@@ -18,6 +18,7 @@ import 'core/services/network/api_service.dart';
 Future<void> main() async {
   Stripe.publishableKey = ApiConstants.stripePublishableKey;
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPref.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -25,7 +26,6 @@ Future<void> main() async {
   ApiService.init();
   SecureStorageService();
   await init();
-  await SharedPref.init();
   final userId = SharedPref.getString(key: MySharedKeys.userId);
   safePrint(userId);
   safePrint(SharedPref.getString(key: MySharedKeys.type));

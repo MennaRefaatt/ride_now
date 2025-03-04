@@ -12,7 +12,8 @@ class RatingRepositoryImpl implements RatingRepository {
   Future<void> submitDriverRating(
       String tripId, String driverId, double rating, String comment) async {
     try {
-      final driverDoc = await _firestore.collection('drivers').doc(driverId).get();
+      final driverDoc =
+          await _firestore.collection('drivers').doc(driverId).get();
       if (!driverDoc.exists) {
         throw Exception('Driver not found');
       }
@@ -32,36 +33,43 @@ class RatingRepositoryImpl implements RatingRepository {
       });
 
       final currentUserId = SharedPref.getString(key: MySharedKeys.userId);
+      final userDoc = await _firestore.collection('users').doc(currentUserId).get();
+      final currentRatingGivenCount = userDoc.data()?['ratingGivenCount'] ?? 0;
+
+      safePrint("Current ratingGivenCount before update: $currentRatingGivenCount");
+
       await _firestore.collection('users').doc(currentUserId).update({
         'ratingGivenCount': FieldValue.increment(1),
       });
 
-      await _firestore.collection('ratings').add({
-        'tripId': tripId,
-        'driverId': driverId,
-        'ratedBy': currentUserId,
-        'rating': rating,
-        'comment': comment,
-        'timestamp': FieldValue.serverTimestamp(),
+
+      DocumentReference ratingRef =
+          FirebaseFirestore.instance.collection("ratings").doc();
+
+      ratingRef.set({
+        "tripId": tripId,
+        "driverId": driverId,
+        "rating": rating,
+        "comment": comment,
+        "timestamp": FieldValue.serverTimestamp(),
         'type': 'driver_rating',
       });
 
-      // ✅ حفظ التقييم في بروفايل الراكب أيضًا
+      final timestamp = DateTime.now();
+
       await _firestore.collection('users').doc(currentUserId).update({
         'givenRatings': FieldValue.arrayUnion([
           {
             'driverId': driverId,
             'rating': rating,
             'comment': comment,
-            'timestamp': FieldValue.serverTimestamp(),
+            'timestamp': timestamp,
           }
         ])
       });
-
     } catch (e) {
       safePrint("Error submitting driver rating: $e");
       throw Exception("Error submitting rating: $e");
     }
   }
-
-  }
+}

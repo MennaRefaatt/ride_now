@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 
 import '../../../../core/di/di.dart';
@@ -33,12 +35,13 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
   final ratingCubit = RatingCubit(sl());
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => ratingCubit,
       child: Container(
         padding: EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.brightness == Brightness.dark ? Colors.black : Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
@@ -49,18 +52,19 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
           children: [
             Text(
               S().rateYourDriver,
-              style: TextStyles.font18BlackBold,
+              style:theme.brightness == Brightness.dark ? TextStyles.font18WhiteBold : TextStyles.font18BlackBold,
             ),
             verticalSpacing(10),
             RatingBar.builder(
               initialRating: _rating,
               minRating: 1,
+              glowColor: AppColors.primary,
               direction: Axis.horizontal,
               allowHalfRating: true,
               itemCount: 5,
               itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
               itemBuilder: (context, _) => Icon(
-                Icons.star,
+                CupertinoIcons.star,
                 color: AppColors.primary,
               ),
               onRatingUpdate: (rating) {
@@ -70,15 +74,13 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
               },
             ),
             verticalSpacing(10),
-            TextField(
+            AppTextFormField(
               controller: _commentController,
-              decoration: InputDecoration(
-                hintText: S().leaveComment,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              withHint: true,
+              hintText: S().leaveComment,
+              hintStyle: theme.brightness == Brightness.dark ? TextStyles.font14WhiteRegular : TextStyles.font14BlackRegular,
               maxLines: 3,
+              borderColor:theme.brightness == Brightness.dark ? Colors.white : AppColors.black,
             ),
             verticalSpacing(10),
             BlocConsumer<RatingCubit, RatingState>(

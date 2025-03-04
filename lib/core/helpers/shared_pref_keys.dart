@@ -28,5 +28,5 @@ enum MySharedKeys {
   carNumber,
   driverLatitude,
   driverLongitude,
-  previousDriverStatus, themeMode,
+  previousDriverStatus, themeMode, showRating, ratedUserId, ratedTripId,
 }
