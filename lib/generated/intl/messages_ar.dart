@@ -544,7 +544,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "subTotal": MessageLookupByLibrary.simpleMessage("المجموع الفرعي"),
     "submit": MessageLookupByLibrary.simpleMessage("تقديم"),
     "suggestedForYou": MessageLookupByLibrary.simpleMessage("مقترح لك"),
-    "systemDefault": MessageLookupByLibrary.simpleMessage("افتراضي النظام"),
+    "system": MessageLookupByLibrary.simpleMessage(" النظام"),
     "termsAndConditions": MessageLookupByLibrary.simpleMessage(
       "الشروط والاحكام",
     ),

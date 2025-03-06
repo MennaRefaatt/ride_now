@@ -1945,14 +1945,9 @@ class S {
     return Intl.message('Options', name: 'options', desc: '', args: []);
   }
 
-  /// `System Default`
-  String get systemDefault {
-    return Intl.message(
-      'System Default',
-      name: 'systemDefault',
-      desc: '',
-      args: [],
-    );
+  /// `System`
+  String get system {
+    return Intl.message('System', name: 'system', desc: '', args: []);
   }
 
   /// `Contact Driver`

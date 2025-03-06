@@ -234,7 +234,7 @@
   "light": "Light",
   "language": "Language",
   "options": "Options",
-  "systemDefault": "System Default",
+  "system": "System",
   "contactDriver": "Contact Driver",
   "contactPassenger": "Contact Passenger",
   "audioCall": "Audio Call",

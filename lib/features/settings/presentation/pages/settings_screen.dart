@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
+import 'package:ride_now/core/helpers/spacing.dart';
 import 'package:ride_now/core/theming/styles.dart';
 import 'package:ride_now/core/utils/app_button.dart';
 import 'package:ride_now/core/components/drawer/drawer_items.dart';
@@ -18,17 +20,19 @@ class SettingsScreen extends StatelessWidget {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: Size.fromHeight(50.h),
-          child: DefaultAppBar(
-            text: S().settings,
-            withDivider: false,
-          )),
+        preferredSize: Size.fromHeight(50.h),
+        child: DefaultAppBar(
+          text: S().settings,
+          withDivider: false,
+        ),
+      ),
       drawer: const DrawerItems(),
       body: Container(
         margin: EdgeInsets.all(10.sp),
         child: Column(
           children: [
             settingsItems(
+              icon: CupertinoIcons.phone,
               text: S().phone,
               onTap: () {},
               theme: theme,
@@ -37,6 +41,7 @@ class SettingsScreen extends StatelessWidget {
                   : SharedPref.getString(key: MySharedKeys.phone),
             ),
             settingsItems(
+              icon: CupertinoIcons.mail,
               text: S().email,
               onTap: () {},
               theme: theme,
@@ -44,19 +49,18 @@ class SettingsScreen extends StatelessWidget {
                   SharedPref.getString(key: MySharedKeys.email) ?? "",
             ),
             settingsItems(
-              theme: theme,
+              icon: CupertinoIcons.globe,
               text: S().appLanguage,
+              theme: theme,
               onTap: () => _showBottomSheet(context, S().language),
-              returnedValue:
-                  SharedPref.getString(key: MySharedKeys.currentLanguage) ??
-                      "en",
+              returnedValue: SharedPref.getCurrentLanguage(),
             ),
             settingsItems(
+              icon: CupertinoIcons.moon,
               text: S().appTheme,
               theme: theme,
               onTap: () => _showBottomSheet(context, S().theme),
-              returnedValue:
-                  SharedPref.getString(key: MySharedKeys.theme) ?? "Light",
+              returnedValue: _getThemeModeString(SharedPref.getBrightness()),
             ),
             AppButton(
               text: S().logout,
@@ -76,6 +80,7 @@ class SettingsScreen extends StatelessWidget {
     required ThemeData theme,
     required VoidCallback onTap,
     String? returnedValue,
+    required IconData icon,
   }) {
     return InkWell(
       onTap: onTap,
@@ -83,18 +88,24 @@ class SettingsScreen extends StatelessWidget {
         padding: EdgeInsets.all(10.sp),
         child: Row(
           children: [
+            Icon(
+              icon,
+              color: AppColors.semiGrey,
+            ),
+            horizontalSpacing(10),
             Expanded(
               child: Text(
                 text,
                 style: theme.brightness == Brightness.light
-                    ? TextStyles.font18BlackRegular
-                    : TextStyles.font18WhiteRegular,
+                    ? TextStyles.font18BlackBold
+                    : TextStyles.font18WhiteBold,
               ),
             ),
-            Text(
-              returnedValue!,
-              style: TextStyles.font14grayRegular,
-            ),
+            if (returnedValue != null)
+              Text(
+                returnedValue,
+                style: TextStyles.font14grayRegular,
+              ),
             Icon(
               Icons.navigate_next,
               color: AppColors.semiGrey,
@@ -110,5 +121,16 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (_) => BottomSheetWidget(type: type),
     );
+  }
+
+  String _getThemeModeString(ThemeMode themeMode) {
+    switch (themeMode) {
+      case ThemeMode.light:
+        return S().light;
+      case ThemeMode.dark:
+        return S().dark;
+      case ThemeMode.system:
+        return S().system;
+    }
   }
 }

@@ -102,10 +102,7 @@ class SharedPref {
 
   static ThemeMode getBrightness() {
     int? themeIndex = _preferences?.getInt(MySharedKeys.themeMode.name);
-    if (themeIndex != null) {
-      return ThemeMode.values[themeIndex];
-    }
-    return ThemeMode.light;
+    return themeIndex != null ? ThemeMode.values[themeIndex] : ThemeMode.light;
   }
 
   static Future<void> storeDriverData({

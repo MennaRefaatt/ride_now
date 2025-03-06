@@ -72,9 +72,11 @@ class TripModel {
       price: (json['price'] is String)
           ? double.tryParse(json['price'])?.toString() ?? '0.0'
           : json['price'].toString(),
-      distance: (json['distance'] is String)
-          ? double.tryParse(json['distance'])?.toString() ?? '0.0'
-          : json['distance'].toString(),
+      distance: json['distance'] != null
+          ? (json['distance'] is double || json['distance'] is int)
+          ? "${json['distance']} km"
+          : json['distance'].toString()
+          : "0.0 km",
       driverData: json['driverData'] is Map<String, dynamic>
           ? DriverData.fromJson(json['driverData'])
           : DriverData.fromJson({}),
@@ -108,7 +110,7 @@ class TripModel {
       'status': status,
       'dateTime': formattedDate,
       'price': price,
-      'distance': distance,
+      'distance': double.tryParse(distance.replaceAll(" km", "")) ?? 0.0,
       'driverData': driverData.toJson(),
       'passengerData': passengerData.toJson(),
     };

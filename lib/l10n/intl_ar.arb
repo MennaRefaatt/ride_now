@@ -230,7 +230,7 @@
   "light": "فاتح",
   "language": "اللغة",
   "options": "الخيارات",
-  "systemDefault": "افتراضي النظام",
+  "system": " النظام",
   "contactDriver": "التواصل مع السائق",
   "contactPassenger": "التواصل مع الراكب",
   "audioCall": "مكالمة صوتية",

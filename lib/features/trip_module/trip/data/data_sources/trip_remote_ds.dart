@@ -2,15 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ride_now/core/helpers/enums/stripe_payment_status.dart';
 import 'package:ride_now/core/helpers/shared_pref.dart';
-import '../../../../../../core/helpers/safe_print.dart';
-
 import '../../../../../core/helpers/enums/driver_trip_status.dart';
 import '../../../../../core/helpers/enums/trip_status.dart';
 import '../../../../../core/helpers/secure_storage/secure_keys.dart';
 import '../../../../../core/helpers/secure_storage/secure_storage.dart';
 import '../../../../../core/helpers/shared_pref_keys.dart';
+import '../../../../../core/services/logger/logger_service.dart';
 import '../models/trip_model.dart';
-import 'distance_helper/distance_helper.dart';
 
 abstract class TripRemoteDS {
   Future<List<TripModel>> getTrips(String userId);
@@ -36,20 +34,16 @@ class TripRemoteDSImpl implements TripRemoteDS {
 
       if (getTheTrip.exists) {
         final rawData = getTheTrip.data() as Map<String, dynamic>;
-        safePrint("Document data: $rawData");
+        LoggerService.logInfo("Document data: $rawData");
         TripModel tripModel = TripModel.fromJson(rawData);
-        safePrint("tripModel: $tripModel");
-        safePrint("driverData: ${tripModel.driverData}");
-        safePrint("driverData: ${tripModel.driverData.carColor}");
-        safePrint("passengerData: ${tripModel.passengerData}");
-        safePrint("status: ${tripModel.status}");
+        LoggerService.logInfo("tripModel: $tripModel");
         return tripModel;
       } else {
-        safePrint("No trip found for tripId: $tripId");
+        LoggerService.logInfo("No trip found for tripId: $tripId");
         throw Exception("No trip found");
       }
-    } catch (e) {
-      safePrint("Error getting trip details: $e");
+    } catch (e, stackTrace) {
+      LoggerService.logError("Error getting trip details", e, stackTrace);
       throw Exception("Error getting trips: $e");
     }
   }
@@ -65,12 +59,13 @@ class TripRemoteDSImpl implements TripRemoteDS {
           .get();
       return getTrips.docs.map((doc) {
         final data = doc.data();
-        safePrint("data: $data");
-        safePrint("driverData: ${data['driverData']}");
-        safePrint("passengerData: ${data['passengerData']}");
+        LoggerService.logInfo("data: $data");
+        LoggerService.logInfo("driverData: ${data['driverData']}");
+        LoggerService.logInfo("passengerData: ${data['passengerData']}");
         return TripModel.fromJson(doc.data());
       }).toList();
-    } catch (e) {
+    } catch (e, stackTrace) {
+      LoggerService.logError("Error getting trips", e, stackTrace);
       throw Exception("Error getting trips: $e");
     }
   }
@@ -99,67 +94,17 @@ class TripRemoteDSImpl implements TripRemoteDS {
           }
         }
       } else {
-        safePrint("User not found.");
+        LoggerService.logError("User not found.");
         throw Exception("User not found.");
       }
 
-      TripHelper tripHelper = TripHelper();
-      LatLng fromCoordinates = tripModel.fromLatLng;
-      LatLng toCoordinates = tripModel.toLatLng;
-
-      String distance = await tripHelper
-          .calculateDistance(fromCoordinates, toCoordinates, unit: 'km');
-      String estimatedTime = await tripHelper.calculateEstimatedArrivalTime(
-          fromCoordinates, toCoordinates, 30);
-      double calculatedCost =
-          tripHelper.calculateCost(double.parse(distance.split(" ")[0]));
-      String formattedCost = tripHelper.formatCost(calculatedCost);
-      final passengerToken =
-          await SecureStorageService.readData(SecureKeys.deviceToken) ?? '';
-
-      final model = TripModel(
-        fromLatLng: fromCoordinates,
-        toLatLng: toCoordinates,
-        paymentMethod: tripModel.paymentMethod,
-        paymentStatus: StripePaymentStatus.holding.name,
-        estimatedTime: estimatedTime,
-        moreThan4Passengers: tripModel.moreThan4Passengers,
-        comment: tripModel.comment,
-        selectedCategory: tripModel.selectedCategory,
-        driverData: DriverData(
-          driverId: "",
-          driverName: "",
-          driverPhone: "",
-          driverImage: "",
-          carColor: "",
-          carModel: "",
-          carNumber: "",
-          driverToken: "",
-          driverLocation: LatLng(0, 0),
-        ),
-        passengerData: PassengerData(
-          passengerImage: SharedPref.getString(key: MySharedKeys.picture)!,
-          passengerId: SharedPref.getString(key: MySharedKeys.userId)!,
-          passengerName: SharedPref.getString(key: MySharedKeys.userName)!,
-          passengerPhone: SharedPref.getString(key: MySharedKeys.phone)!,
-          passengerToken: passengerToken,
-        ),
-        tripId: "",
-        from: tripModel.from,
-        to: tripModel.to,
-        dateTime: tripModel.dateTime,
-        price: formattedCost,
-        status: TripStatus.pending.name,
-        distance: distance,
-      );
-
       final tripRef = await FirebaseFirestore.instance
           .collection('trips')
-          .add(model.toJson());
+          .add(tripModel.toJson());
       await tripRef.update({'tripId': tripRef.id});
       SharedPref.setString(key: MySharedKeys.currentTripId, value: tripRef.id);
       await userRef.update({'currentTripId': tripRef.id});
-      safePrint("Trip created successfully.");
+      LoggerService.logInfo("Trip created successfully.");
     } catch (e) {
       throw Exception("Error creating trip: $e");
     }
@@ -208,7 +153,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
           break;
         }
       }
-      safePrint("Driver data: $driverData");
+      LoggerService.logInfo("Driver data: $driverData");
       await tripRef.update({
         'status': TripStatus.accepted.name,
         "driverData": driverData.toJson(),
@@ -222,24 +167,26 @@ class TripRemoteDSImpl implements TripRemoteDS {
         'currentTripId': tripModel.tripId,
       });
 
-      safePrint("Trip $tripModel.tripId successfully accepted.");
-    } catch (e) {
+      LoggerService.logInfo("Trip $tripModel.tripId successfully accepted.");
+    } catch (e, stackTrace) {
+      LoggerService.logError("Error accepting trip $e", stackTrace);
       throw Exception("Error accepting trip: $e");
     }
   }
 
   @override
   Future<bool> cancelTripRequest(String tripId) async {
-    safePrint("Received tripId: $tripId"); // Debugging: Log tripId
+    LoggerService.logInfo("Received tripId: $tripId");
 
     if (tripId.isEmpty) {
-      safePrint("Error: Trip ID is empty");
+      LoggerService.logError("Error: Trip ID is empty");
       throw Exception('Trip ID is empty or invalid');
     }
 
     try {
       final userId = SharedPref.getString(key: MySharedKeys.userId);
       if (userId == null) {
+        LoggerService.logError("User ID not found in shared preferences.");
         throw Exception("User ID not found in shared preferences.");
       }
 
@@ -248,10 +195,10 @@ class TripRemoteDSImpl implements TripRemoteDS {
       final tripDoc = await tripRef.get();
 
       if (!tripDoc.exists) {
+        LoggerService.logError("Trip not found for tripId: $tripId");
         throw Exception("Trip not found for tripId: $tripId");
       }
 
-      // Proceed with cancellation logic
       await tripRef.update({'status': TripStatus.canceled.name});
       final userRef =
           FirebaseFirestore.instance.collection('users').doc(userId);
@@ -267,10 +214,10 @@ class TripRemoteDSImpl implements TripRemoteDS {
         });
       }
 
-      safePrint("Trip $tripId successfully canceled.");
+      LoggerService.logInfo("Trip $tripId successfully canceled.");
       return true;
     } catch (e) {
-      safePrint("Error canceling trip: $e");
+      LoggerService.logError("Error canceling trip: $e");
       throw Exception("Error canceling trip: $e");
     }
   }
@@ -282,6 +229,7 @@ class TripRemoteDSImpl implements TripRemoteDS {
       final tripDoc = await tripRef.get();
 
       if (!tripDoc.exists) {
+        LoggerService.logError("Trip not found");
         throw Exception("Trip not found");
       }
 
@@ -303,8 +251,9 @@ class TripRemoteDSImpl implements TripRemoteDS {
         'currentTripId': 'none',
       });
 
-      safePrint("Trip $tripId completed successfully.");
+      LoggerService.logInfo("Trip $tripId completed successfully.");
     } catch (e) {
+      LoggerService.logError("Error completing trip: $e");
       throw Exception("Error completing trip: $e");
     }
   }
@@ -312,17 +261,17 @@ class TripRemoteDSImpl implements TripRemoteDS {
   @override
   Future<void> declineTrip(String driverId, String tripId) async {
     try {
-      safePrint(
+      LoggerService.logInfo(
           "🚀 Attempting to decline trip. Driver ID: $driverId, Trip ID: $tripId");
 
       final driverDocRef =
           FirebaseFirestore.instance.collection('drivers').doc(driverId);
       final driverDoc = await driverDocRef.get();
 
-      safePrint("📄 Retrieved Driver Document: ${driverDoc.data()}");
+      LoggerService.logInfo("📄 Retrieved Driver Document: ${driverDoc.data()}");
 
       if (!driverDoc.exists) {
-        safePrint("❌ ERROR: Driver document does not exist!");
+        LoggerService.logError("❌ ERROR: Driver document does not exist!");
         throw Exception("⚠️ Driver document not found in Firestore!");
       }
 
@@ -330,9 +279,9 @@ class TripRemoteDSImpl implements TripRemoteDS {
         'declinedTrips': FieldValue.arrayUnion([tripId])
       });
 
-      safePrint("🚫 Trip $tripId declined successfully!");
+      LoggerService.logInfo("🚫 Trip $tripId declined successfully!");
     } catch (e) {
-      safePrint("❌ Error declining trip: $e");
+      LoggerService.logError("❌ Error declining trip: $e");
     }
   }
 }

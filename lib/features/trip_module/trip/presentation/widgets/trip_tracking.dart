@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,8 +30,8 @@ class _TripTrackingState extends State<TripTracking> {
   LatLng? cameraPosition;
   Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
-  bool _isAnimating = false;
-  Timer? _timer;
+  // bool _isAnimating = false;
+  // Timer? _timer;
   final _polylineCache = <String, List<LatLng>>{};
   Timer? _listenTimer;
   Timer? _pauseTimer;
@@ -51,22 +50,20 @@ class _TripTrackingState extends State<TripTracking> {
       if (_isListening) {
         _getDirections();
         _isListening = false;
-        _pauseTimer = Timer(const Duration(seconds: 5), () => _isListening = true);
+        _pauseTimer =
+            Timer(const Duration(seconds: 5), () => _isListening = true);
       }
     });
   }
 
-
-  void _stopPeriodicUpdate() {
-    _timer?.cancel();
-  }
+  // void _stopPeriodicUpdate() {
+  //   _timer?.cancel();
+  // }
 
   void _moveCamera(LatLng position) {
-    if (_mapController != null) {
-      _mapController.animateCamera(
-        CameraUpdate.newLatLng(position),
-      );
-    }
+    _mapController.animateCamera(
+      CameraUpdate.newLatLng(position),
+    );
   }
 
   Future<void> _getDirections() async {
@@ -79,13 +76,13 @@ class _TripTrackingState extends State<TripTracking> {
           '_${_toLatLng!.latitude},${_toLatLng!.longitude}';
 
       if (_polylineCache.containsKey(cacheKey)) {
-        _updatePolylines(_polylineCache[cacheKey]!);
+        _updatePolyLines(_polylineCache[cacheKey]!);
         return;
       }
 
       final routes = await _calculateRoutes();
       _polylineCache[cacheKey] = routes;
-      _updatePolylines(routes);
+      _updatePolyLines(routes);
     } catch (e) {
       safePrint('Error fetching directions: $e');
     }
@@ -100,8 +97,7 @@ class _TripTrackingState extends State<TripTracking> {
         _toLatLng!,
         useCache: true,
       );
-    }
-    else if (widget.args.tripStatus == TripStatus.accepted.name) {
+    } else if (widget.args.tripStatus == TripStatus.accepted.name) {
       if (_driverLatLng == _fromLatLng) {
         routeCoordinates = await _directionService.getRouteCoordinates(
           _fromLatLng!,
@@ -126,7 +122,7 @@ class _TripTrackingState extends State<TripTracking> {
     return routeCoordinates;
   }
 
-  void _updatePolylines(List<LatLng> coordinates) {
+  void _updatePolyLines(List<LatLng> coordinates) {
     if (!mounted) return;
 
     setState(() {
@@ -147,21 +143,20 @@ class _TripTrackingState extends State<TripTracking> {
     return Colors.blue;
   }
 
+  // void _startAnimation() {
+  //   setState(() {
+  //     _isAnimating = true;
+  //   });
+  //   _mapController.animateCamera(
+  //     CameraUpdate.newLatLngZoom(_fromLatLng!, 15),
+  //   );
+  // }
 
-  void _startAnimation() {
-    setState(() {
-      _isAnimating = true;
-    });
-    _mapController.animateCamera(
-      CameraUpdate.newLatLngZoom(_fromLatLng!, 15),
-    );
-  }
-
-  void _stopAnimation() {
-    setState(() {
-      _isAnimating = false;
-    });
-  }
+  // void _stopAnimation() {
+  //   setState(() {
+  //     _isAnimating = false;
+  //   });
+  // }
 
   void _getLatLngFromAddress() async {
     try {
@@ -219,21 +214,17 @@ class _TripTrackingState extends State<TripTracking> {
                 ? LatLng(state.position.latitude, state.position.longitude)
                 : (state as LocationMarkerSet).location;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (_mapController != null) {
-                if (widget.driverLatLng != null) {
-                  setState(() {
-                    _driverLatLng = widget.driverLatLng;
-                    _markers.add(Marker(
-                      markerId: const MarkerId('driverLocation'),
-                      position: widget.driverLatLng,
-                      infoWindow: const InfoWindow(title: 'Driver Location'),
-                      icon: BitmapDescriptor.defaultMarkerWithHue(
-                          BitmapDescriptor.hueBlue),
-                    ));
-                    _getDirections();
-                  });
-                }
-              }
+              setState(() {
+                _driverLatLng = widget.driverLatLng;
+                _markers.add(Marker(
+                  markerId: const MarkerId('driverLocation'),
+                  position: widget.driverLatLng,
+                  infoWindow: const InfoWindow(title: 'Driver Location'),
+                  icon: BitmapDescriptor.defaultMarkerWithHue(
+                      BitmapDescriptor.hueBlue),
+                ));
+                _getDirections();
+              });
             });
             return Stack(
               children: [

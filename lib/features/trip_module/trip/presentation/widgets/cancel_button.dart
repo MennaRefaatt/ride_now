@@ -21,27 +21,6 @@ class CancelButton extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Trip canceled successfully!')),
         );
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          safePrint("Checking navigator state...");
-
-          if (appNavKey.currentState != null) {
-            safePrint(
-                "✅ Navigating to ${isPassenger ? RoutingEndpoints.passengerHome : RoutingEndpoints.driverHome}");
-            appNavKey.currentState!.pushReplacementNamed(
-              isPassenger
-                  ? RoutingEndpoints.passengerHome
-                  : RoutingEndpoints.driverHome,
-            );
-          } else {
-            safePrint(
-                "🚨 Navigation failed: appNavKey is null. Trying context-based navigation...");
-            Navigator.of(context).pushReplacementNamed(
-              isPassenger
-                  ? RoutingEndpoints.passengerHome
-                  : RoutingEndpoints.driverHome,
-            );
-          }
-        });
       } else if (state is CancelTripError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error canceling trip: ${state.message}')),
@@ -60,7 +39,26 @@ class CancelButton extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             if (tripId.isNotEmpty) {
-              context.read<TripCubit>().cancelTrip(tripId);
+              context.read<TripCubit>().cancelTrip(tripId).then((_) {
+                safePrint("Trip canceled successfully!");
+                if (appNavKey.currentState != null) {
+                  safePrint(
+                      "✅ Navigating to ${isPassenger ? RoutingEndpoints.passengerHome : RoutingEndpoints.driverHome}");
+                  appNavKey.currentState!.pushReplacementNamed(
+                    isPassenger
+                        ? RoutingEndpoints.passengerHome
+                        : RoutingEndpoints.driverHome,
+                  );
+                } else {
+                  safePrint(
+                      "🚨 Navigation failed: appNavKey is null. Trying context-based navigation...");
+                  Navigator.of(context).pushReplacementNamed(
+                    isPassenger
+                        ? RoutingEndpoints.passengerHome
+                        : RoutingEndpoints.driverHome,
+                  );
+                }
+              });
             }
           },
           child: Center(

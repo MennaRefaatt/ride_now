@@ -192,7 +192,7 @@ class TripCubit extends Cubit<TripState> {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('drivers')
           .where('driverTripStatus',
-              isEqualTo: 'available') // Only fetch available drivers
+              isEqualTo: 'available')
           .get();
 
       return querySnapshot.docs
@@ -234,51 +234,45 @@ class TripCubit extends Cubit<TripState> {
     try {
       emit(CompleteTripLoading());
 
-      await completeTripUseCase.call(tripId);
+      await completeTripUseCase.call(tripId).then((_) async {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Trip completed successfully!')),
+          );
+        }
+        safePrint("tripId: $tripId");
+        final driverIdd = SharedPref.getString(key: MySharedKeys.driverId);
+        safePrint("driverIdd: $driverIdd");
+        if (isPassenger) {
+          final tripDoc = await FirebaseFirestore.instance
+              .collection('trips')
+              .doc(tripId)
+              .get();
+
+          if (tripDoc.exists) {
+            final tripData = tripDoc.data();
+            safePrint("🚀 Trip Data Retrieved: $tripData");
+
+            if (driverIdd!.isNotEmpty) {
+              await SharedPref.putBoolean(key: MySharedKeys.showRating, value: true);
+              await SharedPref.putString(key: MySharedKeys.ratedUserId, value: driverIdd);
+              await SharedPref.putString(key: MySharedKeys.ratedTripId, value: tripId);
+
+              Future.delayed(Duration(milliseconds: 300), () {
+                bool savedShowRating = SharedPref.getBoolean(key: MySharedKeys.showRating);
+                String savedRatedUserId = SharedPref.getString(key: MySharedKeys.ratedUserId) ?? "";
+                String savedTripId = SharedPref.getString(key: MySharedKeys.ratedTripId) ?? "";
+
+                safePrint("🔄 إعادة القراءة بعد الحفظ: showRating=$savedShowRating, ratedUserId=$savedRatedUserId, tripId=$savedTripId");
+              });
+            }
+          } else {
+            safePrint("🚨 Error: Trip document does not exist in Firestore!");
+          }
+        }
+      });
 
       emit(CompleteTripLoaded("Trip completed successfully"));
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Trip completed successfully!')),
-        );
-      }
-      final tripIdd = SharedPref.getString(key: MySharedKeys.currentTripId);
-      final driverIdd = SharedPref.getString(key: MySharedKeys.driverId);
-      if (isPassenger) {
-        final tripDoc = await FirebaseFirestore.instance
-            .collection('trips')
-            .doc(tripIdd)
-            .get();
-
-        if (tripDoc.exists) {
-          final tripData = tripDoc.data();
-          safePrint("🚀 Trip Data Retrieved: $tripData");
-
-          final driverId = tripData?['driverData']?['driverId'] ?? '';
-
-          if (driverIdd!.isNotEmpty) {
-            await SharedPref.putBoolean(
-                key: MySharedKeys.showRating, value: true);
-            await SharedPref.setString(
-                key: MySharedKeys.ratedUserId, value: driverId);
-            await SharedPref.setString(
-                key: MySharedKeys.ratedTripId, value: tripIdd!);
-
-            bool savedShowRating =
-                SharedPref.getBoolean(key: MySharedKeys.showRating);
-            String savedRatedUserId =
-                SharedPref.getString(key: MySharedKeys.ratedUserId) ?? "";
-            String savedTripId =
-                SharedPref.getString(key: MySharedKeys.ratedTripId) ?? "";
-
-            safePrint(
-                "✅ SharedPreferences Saved: showRating=$savedShowRating, ratedUserId=$savedRatedUserId, tripId=$savedTripId");
-          }
-        } else {
-          safePrint("🚨 Error: Trip document does not exist in Firestore!");
-        }
-      }
     } catch (error) {
       emit(CompleteTripError(error.toString()));
       if (context.mounted) {

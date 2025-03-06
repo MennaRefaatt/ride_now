@@ -1,16 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:ride_now/core/components/app_icon.dart';
-import 'package:ride_now/core/helpers/spacing.dart';
+import 'package:ride_now/features/passenger/maps/presentation/widgets/done_button.dart';
+import 'package:ride_now/features/passenger/maps/presentation/widgets/map_action_buttons.dart';
+import 'package:ride_now/features/passenger/maps/presentation/widgets/selected_location_container.dart';
 import '../../../../../core/di/di.dart';
-import '../../../../../core/theming/app_colors.dart';
-import '../../../../../core/theming/styles.dart';
-import '../../../../../core/utils/app_button.dart';
-import '../../../../../generated/l10n.dart';
-import '../../data/model/location_model.dart';
 import '../manager/location_cubit.dart';
 import '../maps_args.dart';
 
@@ -37,8 +31,9 @@ class _MapScreenState extends State<MapScreen> {
       Future.microtask(() => context.read<LocationCubit>().fetchUserLocation());
     }
   }
+
   void _onMapCreated(GoogleMapController controller) async {
-   _mapController = controller;
+    _mapController = controller;
     final theme = Theme.of(context);
 
     if (theme.brightness == Brightness.dark) {
@@ -82,7 +77,7 @@ class _MapScreenState extends State<MapScreen> {
           final position = data['position']!;
           final address = data['address']!;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_mapController != null && position != _selectedLocation) {
+            if (position != _selectedLocation) {
               _selectedLocation = position;
               _selectedAddress = address;
             }
@@ -90,146 +85,56 @@ class _MapScreenState extends State<MapScreen> {
 
           return Stack(
             children: [
-              Column(
-                children: [
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        GoogleMap(
-                          mapType: MapType.normal,
-                          initialCameraPosition: CameraPosition(
-                            target: _selectedLocation ?? position,
-                            zoom: 15,
-                          ),
-                          onMapCreated: _onMapCreated,
-                          zoomControlsEnabled: false,
-                          markers: _selectedLocation != null
-                              ? {
-                                  Marker(
-                                    markerId:
-                                        const MarkerId('selectedLocation'),
-                                    infoWindow: InfoWindow(
-                                      title: _selectedAddress ??
-                                          address.toString(),
-                                    ),
-                                    position: _selectedLocation!,
-                                    icon: BitmapDescriptor.defaultMarkerWithHue(
-                                      BitmapDescriptor.hueGreen,
-                                    ),
-                                  ),
-                                }
-                              : {},
-                          onCameraMove: (CameraPosition position) {
-                            setState(() {
-                              _selectedLocation = position.target;
-                            });
-                          },
-                          onCameraIdle: () {
-                            if (_selectedLocation != null) {
-                              context
-                                  .read<LocationCubit>()
-                                  .setMarker(_selectedLocation!);
-                            }
-                          },
-                        ),
-                        if (_selectedLocation != null)
-                          Positioned(
-                            top: 100,
-                            left: MediaQuery.of(context).size.width * 0.25,
-                            child: Center(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
-                                padding: EdgeInsets.all(8.sp),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  color: AppColors.primary,
+              Expanded(
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: CameraPosition(
+                        target: _selectedLocation ?? position,
+                        zoom: 15,
+                      ),
+                      onMapCreated: _onMapCreated,
+                      zoomControlsEnabled: false,
+                      markers: _selectedLocation != null
+                          ? {
+                              Marker(
+                                markerId: const MarkerId('selectedLocation'),
+                                infoWindow: InfoWindow(
+                                  title: _selectedAddress ?? address.toString(),
                                 ),
-                                child: Text(
-                                  address.toString(),
-                                  style: TextStyles.font18WhiteRegular,
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
+                                position: _selectedLocation!,
+                                icon: BitmapDescriptor.defaultMarkerWithHue(
+                                  BitmapDescriptor.hueGreen,
                                 ),
                               ),
-                            ),
-                          ),
-                        AppButton(
-                          text: S().done,
-                          backgroundColor: AppColors.primary,
-                          borderRadius: 15.r,
-                          onPressed: () {
-                            if (_selectedLocation != null) {
-                              Navigator.pop(
-                                context,
-                                LocationData(
-                                  address: _selectedAddress == null
-                                      ? address.toString()
-                                      : _selectedAddress!,
-                                  latitude: _selectedLocation!.latitude,
-                                  longitude: _selectedLocation!.longitude,
-                                ),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    backgroundColor: AppColors.red,
-                                    content: Text("Please select a location.")),
-                              );
                             }
-                          },
-                          textStyle: TextStyles.font18BlackRegular,
-                        ),
-                      ],
+                          : {},
+                      onCameraMove: (CameraPosition position) {
+                        setState(() {
+                          _selectedLocation = position.target;
+                        });
+                      },
+                      onCameraIdle: () {
+                        if (_selectedLocation != null) {
+                          context
+                              .read<LocationCubit>()
+                              .setMarker(_selectedLocation!);
+                        }
+                      },
                     ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 15.sp, vertical: 40.sp),
-                child: AppIcon(
-                    icon: CupertinoIcons.back,
-                    backgroundColor: Colors.white,
-                    iconColor: Colors.black,
-                    navigation: () => Navigator.pop(context),
-                    withShadow: false),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).padding.bottom + 20.sp,
-                      right: 20.sp),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AppIcon(
-                        icon: CupertinoIcons.zoom_in,
-                        backgroundColor: Colors.white,
-                        iconColor: Colors.black,
-                        navigation: _zoomIn,
-                        withShadow: false,
-                      ),
-                      verticalSpacing(10.h),
-                      AppIcon(
-                        icon: CupertinoIcons.zoom_out,
-                        backgroundColor: Colors.white,
-                        iconColor: Colors.black,
-                        navigation: _zoomOut,
-                        withShadow: false,
-                      ),
-                      verticalSpacing(10.h),
-                      AppIcon(
-                        icon: CupertinoIcons.location,
-                        backgroundColor: Colors.white,
-                        iconColor: Colors.black,
-                        navigation: () =>
-                            context.read<LocationCubit>().fetchUserLocation(),
-                        withShadow: false,
-                      ),
-                    ],
-                  ),
+                    if (_selectedLocation != null)
+                      SelectedLocationContainer(address: address),
+                    DoneButton(
+                        selectedAddress: _selectedAddress,
+                        selectedLocation: _selectedLocation,
+                        address: address),
+                    MapActionButtons(
+                      zoomIn: _zoomIn,
+                      zoomOut: _zoomOut,
+                    )
+                  ],
                 ),
               ),
             ],
@@ -240,19 +145,15 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _zoomIn() {
-    if (_mapController != null) {
-      _mapController.animateCamera(
-        CameraUpdate.zoomIn(),
-      );
-    }
+    _mapController.animateCamera(
+      CameraUpdate.zoomIn(),
+    );
   }
 
   void _zoomOut() {
-    if (_mapController != null) {
-      _mapController.animateCamera(
-        CameraUpdate.zoomOut(),
-      );
-    }
+    _mapController.animateCamera(
+      CameraUpdate.zoomOut(),
+    );
   }
 
   @override

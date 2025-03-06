@@ -8,6 +8,7 @@ import '../../../../../core/di/di.dart';
 import '../../../../../core/helpers/safe_print.dart';
 import '../../../../../core/theming/app_colors.dart';
 import '../../../../../generated/l10n.dart';
+import '../../../../notifications/presentation/manager/notification_cubit.dart';
 import '../../../../trip_module/trip/presentation/manager/trip_cubit.dart';
 
 class DriverHome extends StatefulWidget {
@@ -24,12 +25,22 @@ class _DriverHomeState extends State<DriverHome> {
       getTripsUseCase: sl(),
       completeTripUseCase: sl(),
       declineTripUseCase: sl(),
-      getTripDetailsUseCase: sl(),cancelTripUseCase: sl());
+      getTripDetailsUseCase: sl(),
+      cancelTripUseCase: sl());
+
+  final notificationCubit = NotificationsCubit(sl());
   @override
   Widget build(BuildContext context) {
     safePrint("📌 Driver Home Loaded!");
-    return BlocProvider(
-      create: (context) => tripCubit..getTrips(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => tripCubit..getTrips(),
+        ),
+        BlocProvider(
+          create: (context) =>notificationCubit..fetchNotifications(),
+        ),
+      ],
       child: Scaffold(
         backgroundColor: AppColors.semiGrey.withValues(alpha: 0.1),
         appBar: PreferredSize(

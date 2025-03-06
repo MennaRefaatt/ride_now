@@ -581,7 +581,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestedForYou": MessageLookupByLibrary.simpleMessage(
       "Suggested For You",
     ),
-    "systemDefault": MessageLookupByLibrary.simpleMessage("System Default"),
+    "system": MessageLookupByLibrary.simpleMessage("System"),
     "termsAndConditions": MessageLookupByLibrary.simpleMessage(
       "Terms and Conditions",
     ),

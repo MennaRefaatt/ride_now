@@ -151,26 +151,6 @@ class _PassengerHomeState extends State<PassengerHome> {
               homeCubit: homeCubit,
               isHidden: _isHidden,
             ),
-            ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: RatingBottomSheet(
-                      tripId: "ucYHrLUKwcHosH7Sxgle",
-                      ratedUserId: "MKfuCOrEpKc39biD4a6Bd243OtB2",
-                      isDriver: false,
-                    ),
-                  ),
-                );
-              },
-              child: Text("Show Rating Bottom Sheet"),
-            ),
             Align(
               alignment: Alignment.topCenter,
               child: ConnectionAwareWidget(),

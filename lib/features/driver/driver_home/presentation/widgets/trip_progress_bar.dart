@@ -38,14 +38,17 @@ class _TripProgressBarState extends State<TripProgressBar>
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
-        return LinearProgressIndicator(
-          value: _animation.value,
-          backgroundColor: Colors.grey.shade200,
-          color: AppColors.primary,
-          minHeight: 6,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30.r),
-            topRight: Radius.circular(30.r),
+        return Padding(
+          padding:  EdgeInsets.all(4.sp),
+          child: LinearProgressIndicator(
+            value: _animation.value,
+            backgroundColor: Colors.grey.shade400,
+            color: AppColors.primary,
+            minHeight: 7,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30.r),
+              topRight: Radius.circular(30.r),
+            ),
           ),
         );
       },

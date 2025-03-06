@@ -5,6 +5,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ride_now/core/components/app_text_form_field.dart';
 import 'package:ride_now/core/helpers/spacing.dart';
 
+import '../../../../core/components/custom_bottom_sheet.dart';
 import '../../../../core/di/di.dart';
 import '../../../../core/services/routing/routing_endpoints.dart';
 import '../../../../core/theming/app_colors.dart';
@@ -33,28 +34,17 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
   double _rating = 0;
   final TextEditingController _commentController = TextEditingController();
   final ratingCubit = RatingCubit(sl());
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return BlocProvider(
       create: (context) => ratingCubit,
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: theme.brightness == Brightness.dark ? Colors.black : Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
+      child: CustomBottomSheet(
+        title: S().rateYourDriver,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              S().rateYourDriver,
-              style:theme.brightness == Brightness.dark ? TextStyles.font18WhiteBold : TextStyles.font18BlackBold,
-            ),
-            verticalSpacing(10),
             RatingBar.builder(
               initialRating: _rating,
               minRating: 1,
@@ -74,14 +64,20 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
               },
             ),
             verticalSpacing(10),
-            AppTextFormField(
-              controller: _commentController,
-              withHint: true,
-              hintText: S().leaveComment,
-              hintStyle: theme.brightness == Brightness.dark ? TextStyles.font14WhiteRegular : TextStyles.font14BlackRegular,
-              maxLines: 3,
-              borderColor:theme.brightness == Brightness.dark ? Colors.white : AppColors.black,
-            ),
+            if (_rating > 0)
+              AppTextFormField(
+                controller: _commentController,
+                withHint: true,
+                hintText: S().leaveComment,
+                hintStyle: theme.brightness == Brightness.dark
+                    ? TextStyles.font14WhiteRegular
+                    : TextStyles.font14BlackRegular,
+                maxLines: 3,
+                borderColor: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : AppColors.black,
+              ),
+
             verticalSpacing(10),
             BlocConsumer<RatingCubit, RatingState>(
               listener: (context, state) {
@@ -106,12 +102,12 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
                   onPressed: () {
                     if (_rating > 0) {
                       context.read<RatingCubit>().submitRating(
-                            tripId: widget.tripId,
-                            ratedUserId: widget.ratedUserId,
-                            rating: _rating,
-                            comment: _commentController.text,
-                            isDriver: false,
-                          );
+                        tripId: widget.tripId,
+                        ratedUserId: widget.ratedUserId,
+                        rating: _rating,
+                        comment: _commentController.text,
+                        isDriver: false,
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(S().pleaseSelectRating)),
@@ -122,7 +118,6 @@ class _RatingBottomSheetState extends State<RatingBottomSheet> {
                   textStyle: TextStyles.font18WhiteBold,
                   backgroundColor: AppColors.primary,
                   borderRadius: 10,
-                  //isLoading: state is RatingSubmitLoading,
                 );
               },
             ),
