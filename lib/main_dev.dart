@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:ride_now/core/services/routing/routing_endpoints.dart';
 import 'package:ride_now/features/driver/driver_status_listener.dart';
@@ -16,8 +17,9 @@ import 'core/services/network/api_constants.dart';
 import 'core/services/network/api_service.dart';
 
 Future<void> main() async {
-  Stripe.publishableKey = ApiConstants.stripePublishableKey;
   WidgetsFlutterBinding.ensureInitialized();
+await dotenv.load(fileName: "assets/config/.env.dev");
+  Stripe.publishableKey = ApiConstants.stripePublishableKey;
   await SharedPref.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

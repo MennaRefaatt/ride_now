@@ -1,20 +1,18 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiConstants {
   static const String apiBaseUrl = "";
-  static const String googleApiKey = "AIzaSyBguCp1Dd56DuLnY_dpForpu_hIRfbUTQo";
-  static const String openRouteServiceApiKey =
-      "5b3ce3597851110001cf6248f5679835dc164e1fa6aa78fb59a2aecf";
-  static const String openRouteServiceBaseUrl =
-      "https://api.openrouteservice.org/v2/directions/driving-car?api_key=";
-  static const String stripePublishableKey =
-      "pk_test_51QUR44CAQYQfL0y3S5B7tCuRrMpFUG2xAVCFzMM8GK89zXNDnad6NnTFO48sNfpr9if4eu2B6gBxkAICMTj5eaT000XZBEv6Zu";
-  static const String stripeSecretKey =
-      "sk_test_51QUR44CAQYQfL0y3rRjWRWJmfWCsxPYGkPqcBCXS1QWbHMXhOiyX3fK1wNT6ufaTzzbHD5bdv9rGx8SJ528EmQhv00XsgQSea4";
+  static String get googleApiKey => dotenv.env['GOOGLE_API_KEY'] ?? "";
+  static String get openRouteServiceApiKey => dotenv.env['OPENROUTE_API_KEY'] ?? "";
+  static String get openRouteServiceBaseUrl =>dotenv.env['OPENROUTE_BASE_URL'] ?? "";
+  static String get stripePublishableKey =>dotenv.env['STRIPE_PUBLISHABLE_KEY'] ?? "";
+  static String get stripeSecretKey => dotenv.env['STRIPE_SECRET_KEY'] ?? "";
 }
 class AgoraConstants {
-  static const String appId = "fb581f774f4c46c884d1a0884843a551";
-  static const String token ="007eJxTYFg60XRjU+PS/efSL8pzzPxhdrzITfv3rHMurn519g7KvqIKDGlJphaGaebmJmkmySZmyRYWJimGiQZAysLEONHU1HC5zeb0hkBGhkk/BJkYGSAQxGdnKMpMSfXLL2dgAAB9+B+A";
-  static const String channelId = "rideNow";
-  static const String serverUrl="http://192.168.1.7:3000/send-call-notification";
+  static String get appId => dotenv.env['AGORA_APP_ID'] ?? "";
+  static String get token => dotenv.env['AGORA_TOKEN'] ?? "";
+  static String get channelId => dotenv.env['AGORA_CHANNEL_ID'] ?? "";
+  static String get serverUrl => dotenv.env['SERVER_URL'] ?? "";
 }
 
 class ApiErrors {

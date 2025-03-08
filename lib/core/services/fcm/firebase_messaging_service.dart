@@ -280,7 +280,7 @@ Future<void> sendNotificationCaller({
   String? callerName,
   String? channelId,
 }) async {
-  const String serverUrl = AgoraConstants.serverUrl;
+  String serverUrl = AgoraConstants.serverUrl;
   safePrint("Sending Notification via: $serverUrl");
 
   final Map<String, dynamic> message = {

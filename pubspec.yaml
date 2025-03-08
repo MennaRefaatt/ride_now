@@ -155,7 +155,14 @@ dependencies:
   googleapis_auth: ^1.6.0
   flutter_rating_bar: ^4.0.1
   rxdart: ^0.28.0
+  # --------------------------------------
+  # response logging
+  # --------------------------------------
   logger: ^2.5.0
+  # --------------------------------------
+  # Env API keys hidden
+  # --------------------------------------
+  flutter_dotenv: ^5.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -173,6 +180,10 @@ flutter:
     - assets/sounds/
     - assets/service-account.json
     - assets/map_styles/dark_map_style.json
+    - assets/config/.env.dev
+    - assets/config/.env.prod
+    - assets/config/.env.staging
+
 
 
 
