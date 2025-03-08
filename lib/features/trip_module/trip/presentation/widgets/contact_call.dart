@@ -7,10 +7,12 @@ import '../../../../../core/services/routing/routing_endpoints.dart';
 class ContactCall extends StatefulWidget {
   const ContactCall({super.key, required this.phone,
     required this.receiverFCMToken,
+    required this.receiverProfilePicture,
     required this.callerName});
   final String phone;
   final String receiverFCMToken;
   final String callerName;
+  final String receiverProfilePicture;
   @override
   State<ContactCall> createState() => _ContactCallState();
 }
@@ -24,7 +26,9 @@ class _ContactCallState extends State<ContactCall> {
       child: IconButton(
         onPressed: () {
           Navigator.pushNamed(context, RoutingEndpoints.contactScreen,
-              arguments: ContactArgs(callerName: widget.callerName, phoneNumber: widget.phone, receiverFCMToken: widget.receiverFCMToken));
+              arguments: ContactArgs(
+                receiverProfilePicture: widget.receiverProfilePicture,
+                  callerName: widget.callerName, phoneNumber: widget.phone, receiverFCMToken: widget.receiverFCMToken));
         },
         icon: const Icon(CupertinoIcons.phone),
       ),

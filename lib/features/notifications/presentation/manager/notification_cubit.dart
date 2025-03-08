@@ -15,7 +15,9 @@ class NotificationsCubit extends Cubit<List<NotificationModel>> {
   }
   Future<void> fetchNotifications() async {
     _repository.getNotifications().listen((notifications) {
-      emit(notifications);
+      if (!isClosed) {
+        emit(notifications);
+      }
     });
   }
 

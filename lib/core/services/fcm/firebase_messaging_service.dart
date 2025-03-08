@@ -43,7 +43,6 @@ class FirebaseMessagingService {
     FirebaseMessaging.onBackgroundMessage(handleFCMBackgroundMessage);
   }
 
-  /// **Handles FCM token & updates Firestore**
   static Future<void> _handleFCMToken() async {
     String? token = await _messaging.getToken();
     if (token != null) {

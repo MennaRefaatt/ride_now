@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:ride_now/features/contact/presentation/contact_args.dart';
 import '../../../../core/components/app_bar.dart';
-import '../../../../core/helpers/shared_pref_keys.dart';
 import '../../../../core/theming/app_colors.dart';
 import '../../core/service/socket_service.dart';
 import '../../manager/chat_cubit.dart';
@@ -59,7 +57,8 @@ class _ContactScreenState extends State<ContactScreen> {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50.h),
         child: DefaultAppBar(
-          text: SharedPref.getString(key: MySharedKeys.userName)!,
+          receiverProfilePicture: widget.contactArgs.receiverProfilePicture,
+          text: widget.contactArgs.callerName,
           audioCallIcon: true,
           phone: widget.contactArgs.phoneNumber,
           withDivider: false,
