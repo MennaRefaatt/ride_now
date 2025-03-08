@@ -9,7 +9,7 @@
 - audio call ✅
 - real time tracking
 - fix colors, brands, and models bug ✅
-- hide api keys
+- hide api keys ✅
 - firebase storage for profile image ✅
 - notifications ✅
 - solve audio call caller screen bug
