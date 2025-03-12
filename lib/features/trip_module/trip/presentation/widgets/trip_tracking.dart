@@ -192,7 +192,7 @@ class _TripTrackingState extends State<TripTracking> {
           ));
         }
       });
-      await _getDirections();
+     // await _getDirections();
     } catch (e) {
       safePrint('Error fetching coordinates: $e');
     }
@@ -223,7 +223,7 @@ class _TripTrackingState extends State<TripTracking> {
                   icon: BitmapDescriptor.defaultMarkerWithHue(
                       BitmapDescriptor.hueBlue),
                 ));
-                _getDirections();
+                //_getDirections();
               });
             });
             return Stack(

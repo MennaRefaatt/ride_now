@@ -19,7 +19,7 @@ class DriverTripDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userName = tripModel.driverData.driverName.split(' ');
-    final imageProvider = NetworkImage(tripModel.driverData.driverImage);
+    final imageProvider = NetworkImage(tripModel.passengerData.passengerImage);
     final theme = Theme.of(context);
     return ListView(
       physics: NeverScrollableScrollPhysics(),
@@ -38,15 +38,17 @@ class DriverTripDetails extends StatelessWidget {
                       backgroundImage: imageProvider,
                       child: imageProvider == null
                           ? Text(
-                        userName.isNotEmpty ? userName[0] : '',
-                        style: TextStyles.font18BlackRegular,
-                      )
+                              userName.isNotEmpty ? userName[0] : '',
+                              style: TextStyles.font18BlackRegular,
+                            )
                           : null,
                     ),
                     horizontalSpacing(10),
                     Text(
                       tripModel.passengerData.passengerName,
-                      style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
+                      style: theme.brightness == Brightness.dark
+                          ? TextStyles.font18WhiteRegular
+                          : TextStyles.font18BlackRegular,
                     ),
                   ],
                 ),
@@ -54,14 +56,18 @@ class DriverTripDetails extends StatelessWidget {
                 Column(
                   children: [
                     ContactCall(
-                      phone: tripModel.passengerData.passengerPhone,
-                      callerName: tripModel.driverData.driverName,
-                      receiverFCMToken: tripModel.passengerData.passengerToken,
-                    ),
+                        phone: tripModel.passengerData.passengerPhone,
+                        callerName: tripModel.driverData.driverName,
+                        receiverFCMToken:
+                            tripModel.passengerData.passengerToken,
+                        receiverProfilePicture:
+                            tripModel.passengerData.passengerImage),
                     horizontalSpacing(10),
                     Text(
                       S().contactPassenger,
-                      style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular : TextStyles.font18BlackRegular,
+                      style: theme.brightness == Brightness.dark
+                          ? TextStyles.font18WhiteRegular
+                          : TextStyles.font18BlackRegular,
                     ),
                   ],
                 ),
@@ -74,12 +80,16 @@ class DriverTripDetails extends StatelessWidget {
               children: [
                 Text(
                   S().payment,
-                  style: theme.brightness == Brightness.dark ? TextStyles.font24WhiteBold :TextStyles.font24BlackBold,
+                  style: theme.brightness == Brightness.dark
+                      ? TextStyles.font24WhiteBold
+                      : TextStyles.font24BlackBold,
                 ),
                 verticalSpacing(20),
                 Text(
                   "EGP ${tripModel.price} ${tripModel.paymentMethod}",
-                  style: theme.brightness == Brightness.dark ? TextStyles.font18WhiteRegular :TextStyles.font18BlackRegular,
+                  style: theme.brightness == Brightness.dark
+                      ? TextStyles.font18WhiteRegular
+                      : TextStyles.font18BlackRegular,
                 ),
               ],
             ),
@@ -89,7 +99,6 @@ class DriverTripDetails extends StatelessWidget {
             YourCurrentTrip(
                 isPassenger: isPassenger,
                 tripId: tripModel.tripId,
-
                 to: tripModel.to,
                 from: tripModel.from),
           ],

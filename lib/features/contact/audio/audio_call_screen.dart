@@ -40,17 +40,23 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           debugPrint("local user ${connection.localUid} joined");
           setState(() {
-            _callEnded = false;  // المكالمة تم قبولها
+            _callEnded = false;
             _localUserJoined = true;
           });        },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
-          remoteUid = remoteUid;
+          setState(() {
+            _remoteUid = remoteUid;
+            _callEnded = false;
+          });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
             UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
-          remoteUid = 0;
+          setState(() {
+            _remoteUid = null;
+            _callEnded = true;
+          });
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
           debugPrint(
@@ -58,6 +64,9 @@ class _AudioCallScreenState extends State<AudioCallScreen> {
         },
       ),
     );
+    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await _engine.enableAudio();
+
     await _engine.joinChannel(
       token: AgoraConstants.token,
       channelId: AgoraConstants.channelId,

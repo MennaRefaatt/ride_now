@@ -2,13 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ride_now/core/helpers/shared_pref.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../features/notifications/data/models/notification_model.dart';
 import '../../features/notifications/presentation/manager/notification_cubit.dart';
 import '../../generated/l10n.dart';
 import '../di/di.dart';
-import '../helpers/shared_pref_keys.dart';
 import '../helpers/spacing.dart';
 import '../services/fcm/firebase_messaging_service.dart';
 import '../services/network/api_constants.dart';
@@ -28,6 +26,7 @@ class DefaultAppBar extends StatefulWidget {
       this.phone,
       this.withProfilePicture = false,
       this.callerName,
+      this.receiverProfilePicture,
       this.receiverFCMToken});
 
   final String text;
@@ -38,6 +37,7 @@ class DefaultAppBar extends StatefulWidget {
   final bool? withProfilePicture;
   final String? callerName;
   final String? receiverFCMToken;
+  final String? receiverProfilePicture;
   @override
   State<DefaultAppBar> createState() => _DefaultAppBarState();
 }
@@ -109,21 +109,10 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
                           radius: 30.r,
                           backgroundColor:
                               AppColors.primary.withValues(alpha: 0.3),
-                          backgroundImage: (SharedPref.getString(
-                                          key: MySharedKeys.picture) !=
-                                      null &&
-                                  SharedPref.getString(
-                                          key: MySharedKeys.picture)!
-                                      .isNotEmpty)
-                              ? NetworkImage(SharedPref.getString(
-                                  key: MySharedKeys.picture)!)
+                          backgroundImage: widget.receiverProfilePicture != null
+                              ? NetworkImage(widget.receiverProfilePicture!)
                               : null,
-                          child: (SharedPref.getString(
-                                          key: MySharedKeys.picture) ==
-                                      null ||
-                                  SharedPref.getString(
-                                          key: MySharedKeys.picture)!
-                                      .isEmpty)
+                          child: (widget.receiverProfilePicture == null)
                               ? Icon(Icons.person,
                                   size: 24.sp, color: Colors.white)
                               : null,
@@ -167,7 +156,7 @@ class _DefaultAppBarState extends State<DefaultAppBar> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(S().chooseCallType, style: TextStyles.font24BlackBold),
-              verticalSpacing(20.h),
+              verticalSpacing(20),
               AppButton(
                 text: S().regularCall,
                 backgroundColor: AppColors.primary,
