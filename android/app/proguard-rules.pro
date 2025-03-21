@@ -24,3 +24,5 @@
 -keep class com.fasterxml.jackson.** { *; }
 -dontwarn com.google.**
 -dontwarn androidx.window.**
+-dontwarn com.fasterxml.jackson.**
+-dontwarn io.flutter.**
